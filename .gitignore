@@ -1,1 +1,18 @@
-.ipynb*
+# Python environments
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local dataset link and generated results
+data/
+outputs/
+figures/
+
+# Local configuration
+.env.ipynb*
