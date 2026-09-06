@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 """Inspect one released Localize-MI EEG run and its forward model."""
+# This inspection script is intended to be run from the command line. 
+# It checks the integrity of the released data and metadata, compares the EEG channel geometry against the participant-specific forward model, 
+# and reports any discrepancies or issues found.
 
 from argparse import ArgumentParser
 from pathlib import Path
@@ -25,7 +28,8 @@ from fx_bids import load_bids  # noqa: E402
 DEFAULT_DATASET = PROJECT_DIR / "data" / "Localize-MI"
 GEOMETRY_TOLERANCE_MM = 0.02
 
-
+# parse_arguments function adapted from the authors' fx_bids.py. It is used here to read the command-line arguments for this inspection script.
+# This will give the user the ability to specify the subject, run, task, and dataset path when running the script from the command line.
 def parse_arguments():
     """Read command-line arguments."""
 
