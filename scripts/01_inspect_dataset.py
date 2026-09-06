@@ -1,111 +1,146 @@
 #!/usr/bin/env python3
-"""Inspect one released Localize-MI EEG run and its forward model."""
-# This inspection script is intended to be run from the command line. 
-# It checks the integrity of the released data and metadata, compares the EEG channel geometry against the participant-specific forward model, 
-# and reports any discrepancies or issues found.
+"""
+Inspect one EEG stimulation run from the Localize-MI dataset.
+
+Purpose
+-------
+This script checks whether one released run can be safely used for source
+source-localization analysis. It combines the EEG data with the matching
+participant-specific forward model.
+
+The released EEG electrode TSV files are identical across participants.
+Therefore, the modern loader uses the sensor positions stored inside each
+participant's forward model.
+
+Inputs
+------
+The script reads:
+
+1. Preprocessed EEG epochs stored as a NumPy array.
+2. Channel and event information stored in TSV files.
+3. Baseline and coordinate descriptions stored in JSON files.
+4. The participant-specific forward model.
+5. Intracranial electrode coordinates for the stimulation pair.
+
+Outputs
+-------
+The script prints:
+
+1. EEG dimensions, timing, and channel quality.
+2. The baseline information applied before data release.
+3. A comparison between the released EEG coordinates and forward model.
+4. A check of the participant-specific geometry used by our loader.
+5. Forward-model dimensions.
+6. The stimulating SEEG contacts and their midpoint.
+7. A final validation summary.
+
+No files are created or modified by this script.
+
+Examples
+--------
+Run the default example:
+
+    python scripts/01_inspect_dataset.py
+
+Select another participant and run:
+
+    python scripts/01_inspect_dataset.py \
+        --subject sub-07 \
+        --run run-07
+"""
 
 from argparse import ArgumentParser
 from pathlib import Path
-import json
 import re
 import sys
 
-import mne
 import numpy as np
 import pandas as pd
 
 
-# Repository root:
-# mikulan-localize-mi/scripts/01_inspect_dataset.py
+# Locate the repository and its src directory automatically.
+# This allows the script to work without using an absolute project path.
 PROJECT_DIR = Path(__file__).resolve().parents[1]
+SOURCE_DIR = PROJECT_DIR / "src"
 
-# Allow importing the authors' fx_bids.py from the repository root.
-sys.path.insert(0, str(PROJECT_DIR))
+sys.path.insert(0, str(SOURCE_DIR))
 
-from fx_bids import load_bids  # noqa: E402
+from localize_mi import load_run  # noqa: E402
 
 
 DEFAULT_DATASET = PROJECT_DIR / "data" / "Localize-MI"
+
+# Differences below 0.02 mm are treated as numerical rounding.
 GEOMETRY_TOLERANCE_MM = 0.02
 
-# parse_arguments function adapted from the authors' fx_bids.py. It is used here to read the command-line arguments for this inspection script.
-# This will give the user the ability to specify the subject, run, task, and dataset path when running the script from the command line.
+
 def parse_arguments():
-    """Read command-line arguments."""
+    """
+    Read the participant, task, run, and dataset path.
+
+    Returns
+    -------
+    argparse.Namespace
+        The selections provided on the command line. Defaults are used
+        when no selections are provided.
+    """
 
     parser = ArgumentParser(description=__doc__)
 
     parser.add_argument(
         "--subject",
         default="sub-01",
-        help="BIDS participant ID, for example sub-01.",
+        help="Participant ID, for example sub-01.",
     )
-    parser.add_argument(
-        "--run",
-        default="run-01",
-        help="BIDS run ID, for example run-01.",
-    )
+
     parser.add_argument(
         "--task",
         default="seegstim",
-        help="BIDS task name.",
+        help="Task name. The released task is seegstim.",
     )
+
+    parser.add_argument(
+        "--run",
+        default="run-01",
+        help="Run ID, for example run-01.",
+    )
+
     parser.add_argument(
         "--dataset",
         type=Path,
         default=DEFAULT_DATASET,
-        help="Path to the Localize-MI BIDS dataset.",
+        help="Path to the Localize-MI dataset.",
     )
 
     return parser.parse_args()
 
 
-def parse_stimulation_contacts(description):
-    """
-    Extract monopolar contacts from a bipolar stimulation description.
-
-    Examples
-    --------
-    "Stimulation of channel K13-14 1mA"
-        becomes ("K13-14", ["K13", "K14"]).
-
-    "Stimulation of channel A'1-2 1mA"
-        becomes ("A'1-2", ["A'1", "A'2"]).
-    """
-
-    match = re.search(
-        r"([A-Za-z]+['’]?)(\d+)-(\d+)",
-        description,
-    )
-
-    if match is None:
-        raise ValueError(
-            "Could not parse the stimulation pair from "
-            f"description: {description!r}"
-        )
-
-    prefix, first_number, second_number = match.groups()
-
-    # Normalize curly apostrophes to match the electrode tables.
-    prefix = prefix.replace("’", "'")
-
-    first_contact = f"{prefix}{first_number}"
-    second_contact = f"{prefix}{second_number}"
-
-    stimulation_pair = (
-        f"{prefix}{first_number}-{second_number}"
-    )
-
-    return stimulation_pair, [
-        first_contact,
-        second_contact,
-    ]
-
-
 def require_files(paths):
-    """Check that every required file exists."""
+    """
+    Check that all files needed for the report exist.
 
-    missing = [path for path in paths if not path.is_file()]
+    Parameters
+    ----------
+    paths : list of pathlib.Path
+        Files required for the selected participant and run.
+
+    Returns
+    -------
+    None
+        The function returns nothing when all files exist.
+
+    Raises
+    ------
+    FileNotFoundError
+        Raised with a list of missing files when the selected run is
+        incomplete or the dataset path is incorrect.
+    """
+
+    missing = [
+        path
+        for path in paths
+        if not path.is_file()
+    ]
 
     if missing:
         formatted = "\n".join(
@@ -119,27 +154,128 @@ def require_files(paths):
         )
 
 
-def load_json(path):
-    """Load and return a JSON file."""
+def parse_stimulation_contacts(description):
+    """
+    Find the two contacts involved in bipolar stimulation.
 
-    with path.open("r", encoding="utf-8") as file:
-        return json.load(file)
+    For example, the description ``K13-14 1mA`` refers to contacts K13
+    and K14. Their midpoint represents the known stimulation location
+    used later to evaluate source-localization accuracy.
+
+    Parameters
+    ----------
+    description : str
+        Description from the run's epoch JSON file.
+
+    Returns
+    -------
+    stimulation_pair : str
+        Bipolar stimulation label, such as K13-14.
+    contacts : list of str
+        Two individual contact names, such as K13 and K14.
+    """
+
+    match = re.search(
+        r"([A-Za-z]+['’]?)(\d+)-(\d+)",
+        description,
+    )
+
+    if match is None:
+        raise ValueError(
+            "Could not identify the stimulation pair in "
+            f"description: {description!r}"
+        )
+
+    prefix, first_number, second_number = match.groups()
+
+    # The electrode files use straight apostrophes.
+    prefix = prefix.replace("’", "'")
+
+    first_contact = f"{prefix}{first_number}"
+    second_contact = f"{prefix}{second_number}"
+
+    stimulation_pair = (
+        f"{first_contact}-{second_number}"
+    )
+
+    return stimulation_pair, [
+        first_contact,
+        second_contact,
+    ]
 
 
-def count_channel_status(channels, status):
-    """Count channels with the requested status."""
+def calculate_position_differences(
+    first_positions,
+    second_positions,
+):
+    """
+    Calculate the distance between two versions of each sensor position.
 
-    normalized_status = (
+    Parameters
+    ----------
+    first_positions : numpy.ndarray
+        First set of sensor coordinates in metres.
+    second_positions : numpy.ndarray
+        Second set of sensor coordinates in metres.
+
+    Returns
+    -------
+    numpy.ndarray
+        One distance per EEG sensor in millimetres.
+    """
+
+    if first_positions.shape != second_positions.shape:
+        raise ValueError(
+            "The two coordinate arrays have different shapes: "
+            f"{first_positions.shape} and "
+            f"{second_positions.shape}."
+        )
+
+    differences_m = np.linalg.norm(
+        first_positions - second_positions,
+        axis=1,
+    )
+
+    return differences_m * 1000
+
+
+def status_count(channels, requested_status):
+    """
+    Count channels marked good or bad.
+
+    Parameters
+    ----------
+    channels : pandas.DataFrame
+        Released channel-information table.
+    requested_status : str
+        Status to count, normally ``good`` or ``bad``.
+
+    Returns
+    -------
+    int
+        Number of channels with the requested status.
+    """
+
+    statuses = (
         channels["status"]
         .astype(str)
         .str.lower()
     )
 
-    return int(normalized_status.eq(status.lower()).sum())
+    return int(
+        statuses.eq(requested_status.lower()).sum()
+    )
 
 
 def main():
-    """Inspect one Localize-MI run."""
+    """
+    Load the selected run, validate it, and print its summary.
+
+    Returns
+    -------
+    None
+        Results are printed to the terminal. No output file is created.
+    """
 
     args = parse_arguments()
 
@@ -169,37 +305,11 @@ def main():
         / "ieeg"
     )
 
-    run_basename = f"{subject}_task-{task}_{run}"
     task_basename = f"{subject}_task-{task}"
-
-    array_file = (
-        eeg_dir
-        / f"{run_basename}_epochs.npy"
-    )
-
-    channels_file = (
-        eeg_dir
-        / f"{run_basename}_channels.tsv"
-    )
-
-    events_file = (
-        eeg_dir
-        / f"{run_basename}_epochs.tsv"
-    )
-
-    metadata_file = (
-        eeg_dir
-        / f"{run_basename}_epochs.json"
-    )
 
     eeg_electrodes_file = (
         eeg_dir
         / f"{task_basename}_electrodes.tsv"
-    )
-
-    eeg_coordinates_file = (
-        eeg_dir
-        / f"{task_basename}_coordsystem.json"
     )
 
     seeg_electrodes_file = (
@@ -210,185 +320,126 @@ def main():
         )
     )
 
-    forward_file = (
-        dataset
-        / "derivatives"
-        / "sourcemodelling"
-        / subject
-        / "fwd"
-        / f"{subject}_fwd.fif"
-    )
-
-    required_files = [
-        array_file,
-        channels_file,
-        events_file,
-        metadata_file,
+    require_files([
         eeg_electrodes_file,
-        eeg_coordinates_file,
         seeg_electrodes_file,
-        forward_file,
-    ]
+    ])
 
-    require_files(required_files)
-
-    # Load the released data and metadata.
-    data = np.load(
-        array_file,
-        mmap_mode="r",
+    # Load the EEG epochs and participant-specific forward model.
+    #
+    # The loader obtains sensor geometry from the forward model rather
+    # than the duplicated electrode TSV file.
+    loaded = load_run(
+        dataset=dataset,
+        subject=subject,
+        task=task,
+        run=run,
     )
 
-    channels = pd.read_csv(
-        channels_file,
-        sep="\t",
+    epochs = loaded.epochs
+    forward = loaded.forward
+    channels = loaded.channels
+    events = loaded.events
+    metadata = loaded.metadata
+    coordinate_metadata = loaded.coordinate_metadata
+
+    epoch_data = epochs.get_data(copy=False)
+
+    n_epochs, n_channels, n_samples = (
+        epoch_data.shape
     )
 
-    events = pd.read_csv(
-        events_file,
-        sep="\t",
-    )
+    sfreq = float(epochs.info["sfreq"])
+    duration = (n_samples - 1) / sfreq
 
+    # Read the released EEG coordinate table separately.
+    #
+    # We do not use these coordinates for source localization. They are
+    # loaded only to document whether they agree with the participant's
+    # forward model.
     eeg_electrodes = pd.read_csv(
         eeg_electrodes_file,
         sep="\t",
-    )
-
-    seeg_electrodes = pd.read_csv(
-        seeg_electrodes_file,
-        sep="\t",
-    )
-
-    metadata = load_json(metadata_file)
-    coordinate_metadata = load_json(
-        eeg_coordinates_file
-    )
-
-    # Validate the basic epoch-array structure.
-    if data.ndim != 3:
-        raise ValueError(
-            "Expected a three-dimensional array with shape "
-            "epochs × channels × samples, but found "
-            f"{data.shape}."
-        )
-
-    if data.shape[0] != len(events):
-        raise ValueError(
-            "Epoch count does not match the number of "
-            f"event rows: {data.shape[0]} versus "
-            f"{len(events)}."
-        )
-
-    if data.shape[1] != len(channels):
-        raise ValueError(
-            "Channel count does not match the channel "
-            f"table: {data.shape[1]} versus "
-            f"{len(channels)}."
-        )
-
-    channel_names = (
-        channels["name"]
-        .astype(str)
-        .tolist()
-    )
-
-    electrode_names = (
-        eeg_electrodes["name"]
-        .astype(str)
-        .tolist()
-    )
-
-    if set(channel_names) != set(electrode_names):
-        raise ValueError(
-            "EEG channel and electrode name sets do not match."
-        )
-
-    sampling_frequencies = (
-        channels["sampling_frequency"]
-        .astype(float)
-        .unique()
-    )
-
-    if len(sampling_frequencies) != 1:
-        raise ValueError(
-            "The channel table contains inconsistent "
-            "sampling frequencies."
-        )
-
-    sfreq = float(sampling_frequencies[0])
-    zero_time = float(events["zero_time"].iloc[0])
-
-    tmin = -zero_time
-    duration = (data.shape[-1] - 1) / sfreq
-    tmax = tmin + duration
-
-    # Load epochs through the authors' original loader.
-    # This is used here for inspection and comparison.
-    with mne.use_log_level("WARNING"):
-        epochs = load_bids(
-            str(dataset),
-            subject,
-            task,
-            run,
-        )
-
-    # Load the participant-specific released forward model.
-    forward = mne.read_forward_solution(
-        forward_file,
-        verbose=False,
-    )
+    ).set_index("name")
 
     forward_channel_names = (
         forward["info"]["ch_names"]
     )
 
-    if channel_names != forward_channel_names:
-        channel_set = set(channel_names)
-        forward_set = set(forward_channel_names)
-
+    if epochs.ch_names != forward_channel_names:
         raise ValueError(
-            "Epoch and forward-model channel orders do not "
-            "match.\n"
-            f"Only in epochs: "
-            f"{sorted(channel_set - forward_set)}\n"
-            f"Only in forward: "
-            f"{sorted(forward_set - channel_set)}"
+            "The loaded epochs and forward model have "
+            "different channel orders."
         )
 
-    # Compare the montage reconstructed by the authors' loader
-    # against the sensor geometry embedded in the forward model.
-    epoch_positions = np.array([
-        channel["loc"][:3]
-        for channel in epochs.info["chs"]
-    ])
+    if not set(forward_channel_names).issubset(
+        eeg_electrodes.index
+    ):
+        missing = sorted(
+            set(forward_channel_names)
+            - set(eeg_electrodes.index)
+        )
+
+        raise ValueError(
+            "The released electrode table is missing "
+            f"channels: {missing}"
+        )
+
+    released_positions = (
+        eeg_electrodes.loc[
+            forward_channel_names,
+            ["x", "y", "z"],
+        ]
+        .to_numpy(dtype=float)
+    )
 
     forward_positions = np.array([
         channel["loc"][:3]
         for channel in forward["info"]["chs"]
     ])
 
-    position_differences = np.linalg.norm(
-        epoch_positions - forward_positions,
-        axis=1,
+    loaded_positions = np.array([
+        channel["loc"][:3]
+        for channel in epochs.info["chs"]
+    ])
+
+    # This comparison reveals whether the shared EEG TSV happens to
+    # match the selected participant's forward model.
+    released_differences_mm = (
+        calculate_position_differences(
+            released_positions,
+            forward_positions,
+        )
     )
 
-    mean_difference_mm = (
-        position_differences.mean() * 1000
+    # This comparison verifies the geometry actually used by our loader.
+    loaded_differences_mm = (
+        calculate_position_differences(
+            loaded_positions,
+            forward_positions,
+        )
     )
 
-    maximum_difference_mm = (
-        position_differences.max() * 1000
-    )
-
-    geometry_matches = (
-        maximum_difference_mm
+    released_geometry_matches = bool(
+        released_differences_mm.max()
         <= GEOMETRY_TOLERANCE_MM
     )
 
-    # Locate the two intracranial stimulation contacts.
+    loaded_geometry_matches = bool(
+        loaded_differences_mm.max()
+        <= GEOMETRY_TOLERANCE_MM
+    )
+
+    # Identify the known intracranial stimulation location.
     description = metadata["Description"]
 
     stimulation_pair, stimulation_contacts = (
         parse_stimulation_contacts(description)
+    )
+
+    seeg_electrodes = pd.read_csv(
+        seeg_electrodes_file,
+        sep="\t",
     )
 
     selected_contacts = seeg_electrodes.loc[
@@ -411,7 +462,7 @@ def main():
             f"found {found_contacts}."
         )
 
-    # Restore the contact order from the stimulation label.
+    # Restore the intended ordering before calculating the midpoint.
     selected_contacts = (
         selected_contacts
         .set_index("name")
@@ -424,16 +475,18 @@ def main():
         .to_numpy()
     )
 
-    good_channels = count_channel_status(
+    good_channels = status_count(
         channels,
         "good",
     )
 
-    bad_channels = count_channel_status(
+    bad_channels = status_count(
         channels,
         "bad",
     )
 
+    # Each hemisphere is one source space. The active vertices from
+    # both hemispheres give the total number of cortical locations.
     source_locations = sum(
         len(source_space["vertno"])
         for source_space in forward["src"]
@@ -443,17 +496,10 @@ def main():
         forward["sol"]["data"].shape
     )
 
-    if source_locations == 0:
-        raise ValueError(
-            "The forward model contains no active "
-            "source locations."
-        )
-
-    orientation_components = (
+    orientations_per_source = (
         leadfield_shape[1] // source_locations
     )
 
-    # Print the inspection report.
     print("\nLOCALIZE-MI RUN INSPECTION")
     print("--------------------------")
     print(f"Dataset             : {dataset}")
@@ -463,18 +509,18 @@ def main():
 
     print("\nEEG EPOCHS")
     print("----------")
-    print(f"Epochs              : {data.shape[0]}")
-    print(f"EEG channels        : {data.shape[1]}")
+    print(f"Epochs              : {n_epochs}")
+    print(f"EEG channels        : {n_channels}")
     print(f"Good channels       : {good_channels}")
     print(f"Bad channels        : {bad_channels}")
-    print(f"Samples per epoch   : {data.shape[2]}")
+    print(f"Samples per epoch   : {n_samples}")
     print(f"Sampling frequency  : {sfreq:.1f} Hz")
     print(
         f"Time range          : "
-        f"{tmin:.5f} to {tmax:.5f} s"
+        f"{epochs.tmin:.5f} to {epochs.tmax:.5f} s"
     )
     print(f"Duration            : {duration:.5f} s")
-    print(f"Data type           : {data.dtype}")
+    print(f"Data type           : {epoch_data.dtype}")
     print(
         f"Data units          : "
         f"{channels['units'].iloc[0]}"
@@ -485,15 +531,23 @@ def main():
     )
     print(
         "Original baseline   : "
-        f"{metadata.get('BaselinePeriod')} s"
+        f"{loaded.original_baseline} s"
     )
     print(
         "MNE baseline field  : "
         f"{epochs.baseline}"
     )
 
-    print("\nCOORDINATES")
-    print("-----------")
+    print("\nEVENTS")
+    print("------")
+    print(f"Event rows          : {len(events)}")
+    print(
+        f"Event description   : "
+        f"{events['trial_type'].iloc[0]}"
+    )
+
+    print("\nSENSOR GEOMETRY")
+    print("---------------")
     print(
         "Sidecar system      : "
         f"{coordinate_metadata.get('EEGCoordinateSystem')}"
@@ -503,27 +557,39 @@ def main():
         f"{coordinate_metadata.get('EEGCoordinateUnits')}"
     )
     print(
-        "MNE montage frame   : "
+        "Loaded montage frame: "
         f"{epochs.get_montage().get_positions()['coord_frame']}"
     )
     print(
-        "Mean EEG difference : "
-        f"{mean_difference_mm:.6f} mm"
+        "Released TSV mean   : "
+        f"{released_differences_mm.mean():.6f} mm"
     )
     print(
-        "Max EEG difference  : "
-        f"{maximum_difference_mm:.6f} mm"
+        "Released TSV maximum: "
+        f"{released_differences_mm.max():.6f} mm"
     )
     print(
-        "TSV matches forward : "
-        f"{'YES' if geometry_matches else 'NO'}"
+        "Released TSV matches: "
+        f"{'YES' if released_geometry_matches else 'NO'}"
+    )
+    print(
+        "Loaded mean error   : "
+        f"{loaded_differences_mm.mean():.6f} mm"
+    )
+    print(
+        "Loaded maximum error: "
+        f"{loaded_differences_mm.max():.6f} mm"
+    )
+    print(
+        "Loaded model matches: "
+        f"{'YES' if loaded_geometry_matches else 'NO'}"
     )
 
-    if not geometry_matches:
+    if not released_geometry_matches:
         print(
-            "Geometry note       : Released EEG TSV "
-            "geometry does not match this participant's "
-            "forward model."
+            "Geometry note       : The released EEG TSV "
+            "contains shared coordinates. The loader instead "
+            "uses this participant's forward-model geometry."
         )
 
     print("\nFORWARD MODEL")
@@ -533,7 +599,7 @@ def main():
     print(f"Source locations    : {source_locations}")
     print(
         f"Orientations/source : "
-        f"{orientation_components}"
+        f"{orientations_per_source}"
     )
     print(f"Lead-field shape    : {leadfield_shape}")
 
@@ -556,13 +622,21 @@ def main():
     print("----------")
     print("Epoch/event counts  : PASS")
     print("Epoch/channel counts: PASS")
-    print("Channel name sets   : PASS")
     print("Channel names/order : PASS")
-    print("Required files      : PASS")
     print(
-        "EEG geometry        : "
-        f"{'PASS' if geometry_matches else 'WARNING'}"
+        "Loaded EEG geometry : "
+        f"{'PASS' if loaded_geometry_matches else 'FAIL'}"
     )
+    print(
+        "Released TSV geometry: "
+        f"{'PASS' if released_geometry_matches else 'WARNING'}"
+    )
+
+    if not loaded_geometry_matches:
+        raise RuntimeError(
+            "The epochs do not match the participant-specific "
+            "forward-model geometry."
+        )
 
 
 if __name__ == "__main__":
