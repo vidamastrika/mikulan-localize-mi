@@ -61,6 +61,15 @@ Run sLORETA:
         --subject sub-01 \
         --run run-01 \
         --method sLORETA
+
+Run All methods for one run:
+
+    for method in MNE dSPM sLORETA eLORETA; do
+        python scripts/04_reproduce_method.py \
+            --subject sub-01 \
+            --run run-01 \
+            --method $method
+    done
 """
 
 from argparse import ArgumentParser
