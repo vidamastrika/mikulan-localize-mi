@@ -23,10 +23,71 @@ import mne
 import numpy as np
 
 
+def add_run_label(axis, subject=None, run=None):
+    """
+    Add the participant and run below a figure's main title.
+
+    This label makes figures from different recordings easier to
+    compare. If neither value is supplied, the figure is unchanged.
+
+    Parameters
+    ----------
+    axis : matplotlib axis
+        Plot that will receive the additional label.
+    subject : str or None
+        Participant ID, for example ``sub-01``.
+    run : str or None
+        Run ID, for example ``run-01``.
+
+    Returns
+    -------
+    None
+        The supplied plot is updated directly.
+    """
+
+    label_parts = [
+        value
+        for value in (subject, run)
+        if value
+    ]
+
+    if not label_parts:
+        return
+
+    label = " | ".join(label_parts)
+
+    # Three-dimensional plots need text2D for a label positioned
+    # relative to the plot rather than inside the brain coordinates.
+    if hasattr(axis, "text2D"):
+        axis.text2D(
+            0.5,
+            1.01,
+            label,
+            transform=axis.transAxes,
+            ha="center",
+            va="bottom",
+            fontsize=10,
+            color="#4d4d4d",
+        )
+    else:
+        axis.text(
+            0.5,
+            1.01,
+            label,
+            transform=axis.transAxes,
+            ha="center",
+            va="bottom",
+            fontsize=10,
+            color="#4d4d4d",
+        )
+
+
 def create_target_evoked_figure(
     evoked,
     method,
     output_file,
+    subject=None,
+    run=None,
 ):
     """
     Plot the scalp EEG interval supplied to the inverse method.
@@ -42,6 +103,10 @@ def create_target_evoked_figure(
         Name of the inverse method.
     output_file : path-like
         Destination PNG file.
+    subject : str or None
+        Participant ID displayed below the main title.
+    run : str or None
+        Run ID displayed below the main title.
 
     Returns
     -------
@@ -92,8 +157,10 @@ def create_target_evoked_figure(
     )
 
     axis.set_title(
-        f"Averaged EEG supplied to {method}"
+        f"Averaged EEG supplied to {method}",
+        pad=24,
     )
+    add_run_label(axis, subject, run)
     axis.set_xlabel(
         "Time relative to stimulation (ms)"
     )
@@ -117,6 +184,8 @@ def create_peak_time_course_figure(
     peak_time,
     method,
     output_file,
+    subject=None,
+    run=None,
 ):
     """
     Plot source activity at the strongest estimated location.
@@ -133,6 +202,10 @@ def create_peak_time_course_figure(
         Name of the inverse method.
     output_file : path-like
         Destination PNG file.
+    subject : str or None
+        Participant ID displayed below the main title.
+    run : str or None
+        Run ID displayed below the main title.
 
     Returns
     -------
@@ -187,8 +260,10 @@ def create_peak_time_course_figure(
     )
 
     axis.set_title(
-        f"{method} estimate at the maximum location"
+        f"{method} estimate at the maximum location",
+        pad=24,
     )
+    add_run_label(axis, subject, run)
     axis.set_xlabel(
         "Time relative to stimulation (ms)"
     )
@@ -271,6 +346,8 @@ def create_localization_figure(
     nearest_source_distance_mm,
     method,
     output_file,
+    subject=None,
+    run=None,
 ):
     """
     Compare estimated, known, and nearest-possible source locations.
@@ -304,6 +381,10 @@ def create_localization_figure(
         Name of the inverse method.
     output_file : path-like
         Destination PNG file.
+    subject : str or None
+        Participant ID displayed below the main title.
+    run : str or None
+        Run ID displayed below the main title.
 
     Returns
     -------
@@ -431,8 +512,10 @@ def create_localization_figure(
     axis.set_zlabel("Z (m)")
 
     axis.set_title(
-        f"{method}: estimated and known locations"
+        f"{method}: estimated and known locations",
+        pad=24,
     )
+    add_run_label(axis, subject, run)
 
     axis.legend(loc="upper right")
 

@@ -472,6 +472,8 @@ def main():
         evoked=inverse_result.evoked,
         method=method,
         output_file=target_figure,
+        subject=args.subject,
+        run=args.run,
     )
 
     create_peak_time_course_figure(
@@ -482,6 +484,8 @@ def main():
         peak_time=metrics.peak_time,
         method=method,
         output_file=peak_figure,
+        subject=args.subject,
+        run=args.run,
     )
 
     create_localization_figure(
@@ -502,6 +506,8 @@ def main():
         ),
         method=method,
         output_file=localization_figure,
+        subject=args.subject,
+        run=args.run,
     )
 
     summary = {
