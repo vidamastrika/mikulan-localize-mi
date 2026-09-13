@@ -21,6 +21,26 @@ For each run, the script:
 The covariance and inverse operator are shared across methods within the
 same run because their input data and modelling parameters are identical.
 
+Terminal Input
+--------------
+Test one run with all methods:
+python scripts/05_batch_inverse_methods.py \
+    --subjects sub-01 \
+    --runs run-01 \
+    --max-runs 1 \
+    --output outputs/tables/inverse_method_test.csv \
+    --overwrite
+
+Run the complete dataset:
+python scripts/05_batch_inverse_methods.py \
+    --output outputs/tables/inverse_method_results.csv \
+    --overwrite
+
+Continue an interrupted analysis without repeating successful results:
+python scripts/05_batch_inverse_methods.py \
+    --output outputs/tables/inverse_method_results.csv \
+    --resume
+
 Output
 ------
 The main output is:
