@@ -81,6 +81,28 @@ DEFAULT_DATASET = PROJECT_DIR / "data" / "Localize-MI"
 DEFAULT_OUTPUT_ROOT = PROJECT_DIR / "outputs" / "figures"
 
 
+def make_figure_title(title, subject, run):
+    """
+    Add the participant and run below a figure's main title.
+
+    Parameters
+    ----------
+    title : str
+        Main description of the figure.
+    subject : str
+        Participant ID, for example ``sub-01``.
+    run : str
+        Run ID, for example ``run-01``.
+
+    Returns
+    -------
+    str
+        Complete two-line figure title.
+    """
+
+    return f"{title}\n{subject} | {run}"
+
+
 def parse_arguments():
     """
     Read the participant, run, plot window, and output location.
@@ -348,6 +370,8 @@ def create_sensor_alignment_figure(
     surface_triangles,
     head_to_surface,
     output_file,
+    subject,
+    run,
 ):
     """
     Plot participant-specific EEG sensors around the scalp.
@@ -368,6 +392,10 @@ def create_sensor_alignment_figure(
         Transformation from head to anatomical surface coordinates.
     output_file : pathlib.Path
         Destination PNG file.
+    subject : str
+        Participant ID displayed in the figure title.
+    run : str
+        Run ID displayed in the figure title.
 
     Returns
     -------
@@ -474,7 +502,12 @@ def create_sensor_alignment_figure(
     axis.set_ylabel("Y (m)")
     axis.set_zlabel("Z (m)")
     axis.set_title(
-        "Participant-specific EEG sensor alignment"
+        make_figure_title(
+            "Participant-specific EEG sensor alignment",
+            subject,
+            run,
+        ),
+        pad=18,
     )
     axis.legend(loc="upper right")
     axis.view_init(
@@ -497,6 +530,8 @@ def create_evoked_butterfly_figure(
     plot_tmax,
     post_tmin,
     output_file,
+    subject,
+    run,
 ):
     """
     Plot the averaged response of all good EEG channels.
@@ -517,6 +552,10 @@ def create_evoked_butterfly_figure(
         Beginning of the enlarged post-stimulation panel.
     output_file : pathlib.Path
         Destination PNG file.
+    subject : str
+        Participant ID displayed in the figure title.
+    run : str
+        Run ID displayed in the figure title.
 
     Returns
     -------
@@ -630,7 +669,11 @@ def create_evoked_butterfly_figure(
     post_axis.set_ylabel("Amplitude (µV)")
 
     figure.suptitle(
-        "Averaged EEG response across good channels",
+        make_figure_title(
+            "Averaged EEG response across good channels",
+            subject,
+            run,
+        ),
         fontsize=15,
     )
 
@@ -648,6 +691,8 @@ def create_global_field_power_figure(
     plot_tmin,
     plot_tmax,
     output_file,
+    subject,
+    run,
 ):
     """
     Plot the overall strength of the scalp voltage pattern.
@@ -667,6 +712,10 @@ def create_global_field_power_figure(
         End of the displayed interval.
     output_file : pathlib.Path
         Destination PNG file.
+    subject : str
+        Participant ID displayed in the figure title.
+    run : str
+        Run ID displayed in the figure title.
 
     Returns
     -------
@@ -755,7 +804,12 @@ def create_global_field_power_figure(
     )
 
     axis.set_title(
-        "Global field power of the averaged EEG response"
+        make_figure_title(
+            "Global field power of the averaged EEG response",
+            subject,
+            run,
+        ),
+        pad=14,
     )
     axis.set_xlabel(
         "Time relative to stimulation (ms)"
@@ -777,6 +831,8 @@ def create_global_field_power_figure(
 def create_topography_figure(
     evoked,
     output_file,
+    subject,
+    run,
 ):
     """
     Plot scalp voltage patterns around stimulation.
@@ -795,6 +851,10 @@ def create_topography_figure(
         EEG response averaged across epochs.
     output_file : pathlib.Path
         Destination PNG file.
+    subject : str
+        Participant ID displayed in the figure title.
+    run : str
+        Run ID displayed in the figure title.
 
     Returns
     -------
@@ -803,12 +863,12 @@ def create_topography_figure(
     """
 
     requested_times = np.array([
-        -0.0010,
         -0.0005,
+        -0.00025,
         0.0000,
+        0.000125,
         0.0005,
         0.0010,
-        0.0020,
     ])
 
     valid_times = requested_times[
@@ -828,14 +888,18 @@ def create_topography_figure(
         scalings=1e6,
         units="µV",
         time_unit="ms",
-        time_format="%0.1f ms",
+        time_format="%0.3f ms",
         contours=6,
         sensors=True,
         show=False,
     )
 
     figure.suptitle(
-        "Scalp voltage patterns around stimulation",
+        make_figure_title(
+            "Scalp voltage patterns around stimulation",
+            subject,
+            run,
+        ),
         fontsize=14,
     )
 
@@ -964,6 +1028,8 @@ def main():
         surface_triangles=surface_triangles,
         head_to_surface=head_to_surface,
         output_file=sensor_file,
+        subject=args.subject,
+        run=args.run,
     )
 
     create_evoked_butterfly_figure(
@@ -972,6 +1038,8 @@ def main():
         plot_tmax=plot_tmax,
         post_tmin=args.post_tmin,
         output_file=butterfly_file,
+        subject=args.subject,
+        run=args.run,
     )
 
     create_global_field_power_figure(
@@ -979,11 +1047,15 @@ def main():
         plot_tmin=plot_tmin,
         plot_tmax=plot_tmax,
         output_file=gfp_file,
+        subject=args.subject,
+        run=args.run,
     )
 
     create_topography_figure(
         evoked=evoked,
         output_file=topography_file,
+        subject=args.subject,
+        run=args.run,
     )
 
     print("\nQUALITY-CONTROL FIGURES")
