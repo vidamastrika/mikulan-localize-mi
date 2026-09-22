@@ -12,6 +12,39 @@ Run from the repository root:
 
 Default output: outputs/parameter_pilot/pilot_results.csv
 The table is saved after each solution. Use --resume after interruption.
+
+Create figures from the parameter combination using script 04
+python scripts/04_reproduce_method.py \
+    --subject sub-05 \
+    --run run-06 \
+    --method MNE \
+    --loose 1.0 \
+    --depth 0.1 \
+    --snr 1 \
+    --output-root outputs/parameter_pilot/figures/baseline \
+    --quiet
+
+python scripts/04_reproduce_method.py \
+    --subject sub-05 \
+    --run run-06 \
+    --method MNE \
+    --loose 1.0 \
+    --depth 1.0 \
+    --snr 1 \
+    --output-root outputs/parameter_pilot/figures/depth_1 \
+    --quiet
+
+python scripts/04_reproduce_method.py \
+    --subject sub-07 \
+    --run run-05 \
+    --method dSPM \
+    --loose 1.0 \
+    --depth 0.1 \
+    --snr 2 \
+    --output-root outputs/parameter_pilot/figures/snr_2 \
+    --quiet
+
+You can see the parameter combinations in the output CSV, and the figures will show the same solution.
 """
 
 from __future__ import annotations
