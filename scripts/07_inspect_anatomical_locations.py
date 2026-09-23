@@ -12,6 +12,14 @@ The MNI coordinates are retained for later atlas-based interpretation. Named
 anatomical labels are intentionally not assigned here because the dataset does
 not contain a cortical annotation or a released transform for converting an
 arbitrary predicted surface vertex into MNI space.
+
+Population figures for representative runs
+python scripts/07_inspect_anatomical_locations.py \
+    --case sub-01 run-01 \
+    --case sub-05 run-06 \
+    --case sub-07 run-05 \
+    --case sub-07 run-07 \
+    --output-dir outputs/anatomical_inspection
 """
 
 from __future__ import annotations
@@ -39,6 +47,63 @@ METHOD_COLORS = {
     "sLORETA": "#59A14F",
     "eLORETA": "#8E5A9E",
 }
+
+
+def compact_number(value):
+    """Format a numeric parameter without unnecessary trailing zeros."""
+
+    return f"{float(value):.3f}".rstrip("0").rstrip(".")
+
+
+def signed_milliseconds(seconds):
+    """Format seconds as signed milliseconds."""
+
+    milliseconds = float(seconds) * 1000
+    if np.isclose(milliseconds, 0):
+        milliseconds = 0.0
+    return f"{milliseconds:+g}"
+
+
+def parameter_context(table, include_channel_count=False):
+    """Build a concise, data-driven inverse-parameter description."""
+
+    parts = []
+
+    if "montage" in table.columns:
+        montages = table["montage"].dropna().astype(str).unique()
+        if len(montages) == 1:
+            parts.append(f"Montage: {montages[0]}")
+    else:
+        parts.append("All-good montage")
+
+    if include_channel_count and "good_channels" in table.columns:
+        channel_counts = pd.to_numeric(
+            table["good_channels"], errors="coerce"
+        ).dropna().unique()
+        if len(channel_counts) == 1:
+            parts[-1] += f" ({int(channel_counts[0])} channels)"
+
+    if {"target_tmin_s", "target_tmax_s"}.issubset(table.columns):
+        starts = pd.to_numeric(
+            table["target_tmin_s"], errors="coerce"
+        ).dropna().unique()
+        stops = pd.to_numeric(
+            table["target_tmax_s"], errors="coerce"
+        ).dropna().unique()
+        if len(starts) == 1 and len(stops) == 1:
+            parts.append(
+                f"Target: {signed_milliseconds(starts[0])} to "
+                f"{signed_milliseconds(stops[0])} ms"
+            )
+
+    for column, label in (("loose", "Loose"), ("depth", "Depth"), ("snr", "SNR")):
+        if column not in table.columns:
+            continue
+        values = pd.to_numeric(table[column], errors="coerce").dropna().unique()
+        if len(values) == 1:
+            parts.append(f"{label}: {compact_number(values[0])}")
+
+    return " | ".join(parts)
 
 
 def parse_arguments():
@@ -537,7 +602,9 @@ def build_geometry_tables(results, dataset, checkpoint_file=None):
     return run_geometry, method_geometry
 
 
-def save_depth_measurements_figure(run_geometry, output_file, dpi):
+def save_depth_measurements_figure(
+    run_geometry, output_file, dpi, context_table=None
+):
     """Compare source-grid, anatomical-depth, and sensor-distance measurements."""
 
     measurements = [
@@ -592,8 +659,14 @@ def save_depth_measurements_figure(run_geometry, output_file, dpi):
         axis.set_xlabel("Participant")
         axis.set_ylabel(ylabel)
 
-    figure.suptitle("Geometric measurements of stimulation depth", y=1.01)
-    figure.tight_layout()
+    context = parameter_context(
+        context_table if context_table is not None else run_geometry
+    )
+    title = "Geometric measurements of stimulation depth"
+    if context:
+        title += f"\n{context}"
+    figure.suptitle(title, y=0.995, fontsize=20, linespacing=1.20)
+    figure.tight_layout(rect=(0, 0, 1, 0.92))
     figure.savefig(output_file, dpi=dpi, bbox_inches="tight")
     plt.close(figure)
 
@@ -637,8 +710,12 @@ def save_distance_relation_figure(method_geometry, output_file, dpi):
         ncol=4,
         frameon=False,
     )
-    figure.suptitle("Do source depth and geometry explain localization error?", y=0.99)
-    figure.tight_layout(rect=(0, 0.12, 1, 0.96))
+    context = parameter_context(method_geometry)
+    title = "Do source depth and geometry explain localization error?"
+    if context:
+        title += f"\n{context}"
+    figure.suptitle(title, y=0.995, fontsize=20, linespacing=1.20)
+    figure.tight_layout(rect=(0, 0.12, 1, 0.92))
     figure.savefig(output_file, dpi=dpi, bbox_inches="tight")
     plt.close(figure)
 
@@ -728,7 +805,11 @@ def save_directional_error_figure(method_geometry, output_file, dpi):
     axis.set_xticks(range(len(columns)), list(columns.values()))
     axis.set_xlim(-0.55, len(columns) - 0.45)
     axis.axhline(0, color="black", linewidth=1)
-    axis.set_title("Directional displacement of predicted sources")
+    context = parameter_context(method_geometry)
+    title = "Directional displacement of predicted sources"
+    if context:
+        title += f"\n{context}"
+    axis.set_title(title, pad=14)
     axis.set_xlabel("Coordinate direction in native surface space")
     axis.set_ylabel("Predicted minus stimulation coordinate (mm)")
     figure.text(
@@ -939,7 +1020,8 @@ def save_run_geometry_figure(
     axis.view_init(elev=22, azim=125)
     axis.set_title(
         f"Anatomical localization geometry\n"
-        f"{subject} | {run} | {row['stimulation_pair']}",
+        f"{subject} | {run} | {row['stimulation_pair']}\n"
+        f"{parameter_context(method_match, include_channel_count=True)}",
         pad=10,
     )
 
@@ -1057,6 +1139,7 @@ def main():
             run_geometry,
             output_dir / "01_stimulation_depth_measurements.png",
             args.dpi,
+            context_table=method_geometry,
         )
         save_distance_relation_figure(
             method_geometry,

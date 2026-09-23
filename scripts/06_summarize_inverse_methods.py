@@ -18,6 +18,10 @@ It creates:
 
 This script does not rerun source localization.
 
+python scripts/06_summarize_inverse_methods.py \
+    --input outputs/tables/inverse_method_results.csv \
+    --output-dir outputs/method_comparison
+
 Input
 -----
     outputs/tables/inverse_method_results.csv
@@ -72,6 +76,70 @@ REQUIRED_COLUMNS = {
     "geometric_excess_mm",
     "peak_time_ms",
 }
+
+
+def compact_number(value):
+    """Format a numeric setting without unnecessary trailing zeros."""
+
+    return f"{float(value):.3f}".rstrip("0").rstrip(".")
+
+
+def signed_milliseconds(seconds):
+    """Format seconds as signed milliseconds."""
+
+    milliseconds = float(seconds) * 1000
+    if np.isclose(milliseconds, 0):
+        milliseconds = 0.0
+    return f"{milliseconds:+g}"
+
+
+def create_analysis_context(table):
+    """Describe the sample and common analysis settings shown in figures."""
+
+    run_count = table[["subject", "run"]].drop_duplicates().shape[0]
+    participant_count = table["subject"].nunique()
+    first_line = f"{run_count} runs | {participant_count} participants"
+
+    if "montage" in table.columns:
+        montages = table["montage"].dropna().astype(str).unique()
+        if len(montages) == 1:
+            first_line += f" | Montage: {montages[0]}"
+    else:
+        first_line += " | All-good montage"
+
+    if {"target_tmin_s", "target_tmax_s"}.issubset(table.columns):
+        starts = pd.to_numeric(
+            table["target_tmin_s"], errors="coerce"
+        ).dropna().unique()
+        stops = pd.to_numeric(
+            table["target_tmax_s"], errors="coerce"
+        ).dropna().unique()
+        if len(starts) == 1 and len(stops) == 1:
+            first_line += (
+                f" | Target: {signed_milliseconds(starts[0])} to "
+                f"{signed_milliseconds(stops[0])} ms"
+            )
+
+    parameter_parts = []
+    for column, label in (
+        ("loose", "Loose"),
+        ("depth", "Depth"),
+        ("snr", "SNR"),
+    ):
+        if column not in table.columns:
+            continue
+        values = pd.to_numeric(
+            table[column], errors="coerce"
+        ).dropna().unique()
+        if len(values) == 1:
+            parameter_parts.append(
+                f"{label}: {compact_number(values[0])}"
+            )
+
+    lines = [first_line]
+    if parameter_parts:
+        lines.append(" | ".join(parameter_parts))
+    return "\n".join(lines)
 
 
 # Read the command-line options.
@@ -558,9 +626,10 @@ def identify_outliers(table):
 def create_distance_distribution_figure(
     table,
     output_file,
+    analysis_context,
 ):
     figure, axis = plt.subplots(
-        figsize=(10, 6)
+        figsize=(10, 7)
     )
 
     sns.boxplot(
@@ -599,7 +668,9 @@ def create_distance_distribution_figure(
     )
 
     axis.set_title(
-        "Localization error across all Localize-MI runs"
+        "Localization error across all Localize-MI runs\n"
+        f"{analysis_context}",
+        pad=14,
     )
     axis.set_xlabel("Inverse method")
     axis.set_ylabel("Localization distance (mm)")
@@ -629,6 +700,7 @@ def create_distance_distribution_figure(
 def create_paired_difference_figure(
     table,
     output_file,
+    analysis_context,
 ):
     # Place each method in a separate column while keeping participants
     # and runs aligned. This ensures that every comparison uses the same
@@ -674,7 +746,7 @@ def create_paired_difference_figure(
     )
 
     figure, axis = plt.subplots(
-        figsize=(9, 7)
+        figsize=(10, 8)
     )
 
     sns.heatmap(
@@ -698,7 +770,9 @@ def create_paired_difference_figure(
     )
 
     axis.set_title(
-        "Median paired difference in localization error"
+        "Median paired difference in localization error\n"
+        f"{analysis_context}",
+        pad=14,
     )
 
     axis.set_xlabel("Comparison method")
@@ -751,9 +825,10 @@ def create_paired_difference_figure(
 def create_participant_median_figure(
     participant_summary,
     output_file,
+    analysis_context,
 ):
     figure, axis = plt.subplots(
-        figsize=(12, 7)
+        figsize=(12, 8)
     )
 
     sns.barplot(
@@ -768,7 +843,9 @@ def create_participant_median_figure(
     )
 
     axis.set_title(
-        "Median localization error by participant"
+        "Median localization error by participant\n"
+        f"{analysis_context}",
+        pad=14,
     )
     axis.set_xlabel("Participant")
     axis.set_ylabel("Median localization distance (mm)")
@@ -915,6 +992,10 @@ def main():
         input_file
     )
 
+    analysis_context = create_analysis_context(
+        table
+    )
+
     method_summary = summarize_methods(
         table
     )
@@ -975,6 +1056,7 @@ def main():
             output_directory
             / "01_distance_distribution.png"
         ),
+        analysis_context=analysis_context,
     )
 
     create_paired_difference_figure(
@@ -983,6 +1065,7 @@ def main():
             output_directory
             / "02_paired_differences.png"
         ),
+        analysis_context=analysis_context,
     )
 
     create_participant_median_figure(
@@ -991,6 +1074,7 @@ def main():
             output_directory
             / "03_participant_medians.png"
         ),
+        analysis_context=analysis_context,
     )
 
     print_terminal_summary(

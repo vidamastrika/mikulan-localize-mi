@@ -82,12 +82,115 @@ def add_run_label(axis, subject=None, run=None):
         )
 
 
+def _compact_number(value):
+    """Format a plotting parameter without unnecessary trailing zeros."""
+
+    return f"{float(value):g}"
+
+
+def _signed_milliseconds(seconds):
+    """Format seconds as signed milliseconds using a typographic minus."""
+
+    value = float(seconds) * 1000
+    if np.isclose(value, 0):
+        return "0"
+    magnitude = f"{abs(value):g}"
+    return f"+{magnitude}" if value > 0 else f"−{magnitude}"
+
+
+def add_analysis_context(
+    axis,
+    subject=None,
+    run=None,
+    stimulation_pair=None,
+    montage=None,
+    channel_count=None,
+    target_tmin=None,
+    target_tmax=None,
+    loose=None,
+    depth=None,
+    snr=None,
+    covariance_tmin=None,
+    covariance_tmax=None,
+):
+    """Add consistent run and inverse-parameter information to a plot.
+
+    The first line identifies the recording. The second line describes
+    the EEG montage and localized interval. The third line reports the
+    inverse parameters. A covariance interval is added only when both
+    covariance limits are supplied.
+    """
+
+    lines = []
+
+    identity = [
+        value
+        for value in (subject, run, stimulation_pair)
+        if value
+    ]
+    if identity:
+        lines.append(" | ".join(identity))
+
+    data_parts = []
+    if montage:
+        montage_text = str(montage)
+        if channel_count is not None:
+            montage_text += f" ({int(channel_count)} channels)"
+        data_parts.append(montage_text)
+    elif channel_count is not None:
+        data_parts.append(f"{int(channel_count)} channels")
+
+    if target_tmin is not None and target_tmax is not None:
+        data_parts.append(
+            "Target: "
+            f"{_signed_milliseconds(target_tmin)} to "
+            f"{_signed_milliseconds(target_tmax)} ms"
+        )
+    if data_parts:
+        lines.append(" | ".join(data_parts))
+
+    parameter_parts = []
+    if loose is not None:
+        parameter_parts.append(f"Loose: {_compact_number(loose)}")
+    if depth is not None:
+        parameter_parts.append(f"Depth: {_compact_number(depth)}")
+    if snr is not None:
+        parameter_parts.append(f"SNR: {_compact_number(snr)}")
+    if covariance_tmin is not None and covariance_tmax is not None:
+        parameter_parts.append(
+            "Noise covariance: "
+            f"{_signed_milliseconds(covariance_tmin)} to "
+            f"{_signed_milliseconds(covariance_tmax)} ms"
+        )
+    if parameter_parts:
+        lines.append(" | ".join(parameter_parts))
+
+    if lines:
+        axis.set_title(
+            "\n".join(lines),
+            fontsize=9.5,
+            color="#4d4d4d",
+            pad=10,
+            linespacing=1.25,
+        )
+
+
 def create_target_evoked_figure(
     evoked,
     method,
     output_file,
     subject=None,
     run=None,
+    stimulation_pair=None,
+    montage=None,
+    channel_count=None,
+    target_tmin=None,
+    target_tmax=None,
+    loose=None,
+    depth=None,
+    snr=None,
+    covariance_tmin=None,
+    covariance_tmax=None,
 ):
     """
     Plot the scalp EEG interval supplied to the inverse method.
@@ -156,11 +259,25 @@ def create_target_evoked_figure(
         alpha=0.5,
     )
 
-    axis.set_title(
+    figure.suptitle(
         f"Averaged EEG supplied to {method}",
-        pad=24,
+        fontsize=15,
     )
-    add_run_label(axis, subject, run)
+    add_analysis_context(
+        axis,
+        subject=subject,
+        run=run,
+        stimulation_pair=stimulation_pair,
+        montage=montage,
+        channel_count=channel_count,
+        target_tmin=target_tmin,
+        target_tmax=target_tmax,
+        loose=loose,
+        depth=depth,
+        snr=snr,
+        covariance_tmin=covariance_tmin,
+        covariance_tmax=covariance_tmax,
+    )
     axis.set_xlabel(
         "Time relative to stimulation (ms)"
     )
@@ -186,6 +303,14 @@ def create_peak_time_course_figure(
     output_file,
     subject=None,
     run=None,
+    stimulation_pair=None,
+    montage=None,
+    channel_count=None,
+    target_tmin=None,
+    target_tmax=None,
+    loose=None,
+    depth=None,
+    snr=None,
 ):
     """
     Plot source activity at the strongest estimated location.
@@ -259,11 +384,23 @@ def create_peak_time_course_figure(
         ),
     )
 
-    axis.set_title(
+    figure.suptitle(
         f"{method} estimate at the maximum location",
-        pad=24,
+        fontsize=15,
     )
-    add_run_label(axis, subject, run)
+    add_analysis_context(
+        axis,
+        subject=subject,
+        run=run,
+        stimulation_pair=stimulation_pair,
+        montage=montage,
+        channel_count=channel_count,
+        target_tmin=target_tmin,
+        target_tmax=target_tmax,
+        loose=loose,
+        depth=depth,
+        snr=snr,
+    )
     axis.set_xlabel(
         "Time relative to stimulation (ms)"
     )
@@ -348,6 +485,14 @@ def create_localization_figure(
     output_file,
     subject=None,
     run=None,
+    stimulation_pair=None,
+    montage=None,
+    channel_count=None,
+    target_tmin=None,
+    target_tmax=None,
+    loose=None,
+    depth=None,
+    snr=None,
 ):
     """
     Compare estimated, known, and nearest-possible source locations.
@@ -511,11 +656,23 @@ def create_localization_figure(
     axis.set_ylabel("Y (m)")
     axis.set_zlabel("Z (m)")
 
-    axis.set_title(
+    figure.suptitle(
         f"{method}: estimated and known locations",
-        pad=24,
+        fontsize=15,
     )
-    add_run_label(axis, subject, run)
+    add_analysis_context(
+        axis,
+        subject=subject,
+        run=run,
+        stimulation_pair=stimulation_pair,
+        montage=montage,
+        channel_count=channel_count,
+        target_tmin=target_tmin,
+        target_tmax=target_tmax,
+        loose=loose,
+        depth=depth,
+        snr=snr,
+    )
 
     axis.legend(loc="upper right")
 
