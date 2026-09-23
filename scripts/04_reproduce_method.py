@@ -468,12 +468,34 @@ def main():
         / "source_localization_summary.json"
     )
 
+    good_channel_count = (
+        len(loaded.epochs.ch_names)
+        - len(loaded.epochs.info["bads"])
+    )
+
+    # These values are shown consistently beneath each figure title so
+    # figures from different parameter combinations remain identifiable
+    # when viewed outside their output directories.
+    figure_context = {
+        "subject": args.subject,
+        "run": args.run,
+        "stimulation_pair": stimulation.pair,
+        "montage": "All-good montage",
+        "channel_count": good_channel_count,
+        "target_tmin": inverse_result.target_tmin,
+        "target_tmax": inverse_result.target_tmax,
+        "loose": inverse_result.loose,
+        "depth": inverse_result.depth,
+        "snr": inverse_result.snr,
+    }
+
     create_target_evoked_figure(
         evoked=inverse_result.evoked,
         method=method,
         output_file=target_figure,
-        subject=args.subject,
-        run=args.run,
+        covariance_tmin=inverse_result.covariance_tmin,
+        covariance_tmax=inverse_result.covariance_tmax,
+        **figure_context,
     )
 
     create_peak_time_course_figure(
@@ -484,8 +506,7 @@ def main():
         peak_time=metrics.peak_time,
         method=method,
         output_file=peak_figure,
-        subject=args.subject,
-        run=args.run,
+        **figure_context,
     )
 
     create_localization_figure(
@@ -506,8 +527,7 @@ def main():
         ),
         method=method,
         output_file=localization_figure,
-        subject=args.subject,
-        run=args.run,
+        **figure_context,
     )
 
     summary = {
@@ -516,10 +536,7 @@ def main():
         "task": args.task,
         "run": args.run,
         "epochs": len(loaded.epochs),
-        "good_channels": (
-            len(loaded.epochs.ch_names)
-            - len(loaded.epochs.info["bads"])
-        ),
+        "good_channels": good_channel_count,
         "bad_channels": len(
             loaded.epochs.info["bads"]
         ),
