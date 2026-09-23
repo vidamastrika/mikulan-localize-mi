@@ -112,6 +112,7 @@ def add_analysis_context(
     snr=None,
     covariance_tmin=None,
     covariance_tmax=None,
+    additional_context=None,
 ):
     """Add consistent run and inverse-parameter information to a plot.
 
@@ -162,6 +163,8 @@ def add_analysis_context(
             f"{_signed_milliseconds(covariance_tmin)} to "
             f"{_signed_milliseconds(covariance_tmax)} ms"
         )
+    if additional_context:
+        parameter_parts.append(str(additional_context))
     if parameter_parts:
         lines.append(" | ".join(parameter_parts))
 
@@ -191,6 +194,7 @@ def create_target_evoked_figure(
     snr=None,
     covariance_tmin=None,
     covariance_tmax=None,
+    additional_context=None,
 ):
     """
     Plot the scalp EEG interval supplied to the inverse method.
@@ -277,6 +281,7 @@ def create_target_evoked_figure(
         snr=snr,
         covariance_tmin=covariance_tmin,
         covariance_tmax=covariance_tmax,
+        additional_context=additional_context,
     )
     axis.set_xlabel(
         "Time relative to stimulation (ms)"
@@ -311,6 +316,7 @@ def create_peak_time_course_figure(
     loose=None,
     depth=None,
     snr=None,
+    additional_context=None,
 ):
     """
     Plot source activity at the strongest estimated location.
@@ -400,6 +406,7 @@ def create_peak_time_course_figure(
         loose=loose,
         depth=depth,
         snr=snr,
+        additional_context=additional_context,
     )
     axis.set_xlabel(
         "Time relative to stimulation (ms)"
@@ -493,6 +500,7 @@ def create_localization_figure(
     loose=None,
     depth=None,
     snr=None,
+    additional_context=None,
 ):
     """
     Compare estimated, known, and nearest-possible source locations.
@@ -672,6 +680,7 @@ def create_localization_figure(
         loose=loose,
         depth=depth,
         snr=snr,
+        additional_context=additional_context,
     )
 
     axis.legend(loc="upper right")
