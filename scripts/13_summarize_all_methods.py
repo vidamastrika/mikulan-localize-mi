@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Summarize the fixed-configuration baseline for eight inverse methods.
+"""Summarize the comparable fixed configuration for eight inverse methods.
 
 Script 13 combines the standard-method results from Script 05 with the
 additional-method results from Script 12.  It does not rerun localization and
-does not select parameters.  All outputs are explicitly labelled as baseline
-results because the additional-method parameter pilot and grid will follow in
-later scripts.
+does not rerun localization or select parameters. Shared parameters are checked
+before analysis so incompatible result tables cannot be combined silently.
 
 Methods
 -------
@@ -14,11 +13,11 @@ MNE, dSPM, sLORETA, eLORETA, ECD-grid, LCMV, MxNE, and irMxNE.
 Default inputs
 --------------
 outputs/tables/inverse_method_results.csv
-outputs/additional_methods/additional_method_results.csv
+outputs/additional_methods_comparable/additional_method_results.csv
 
 Default output
 --------------
-outputs/all_method_baseline_summary/
+outputs/all_method_comparable_summary/
 """
 
 from __future__ import annotations
@@ -68,13 +67,13 @@ def parse_args():
     )
     parser.add_argument(
         "--additional-results", type=Path,
-        default=(PROJECT / "outputs/additional_methods/"
+        default=(PROJECT / "outputs/additional_methods_comparable/"
                  "additional_method_results.csv"),
         help="Script 12 results.",
     )
     parser.add_argument(
         "--output-dir", type=Path,
-        default=PROJECT / "outputs/all_method_baseline_summary",
+        default=PROJECT / "outputs/all_method_comparable_summary",
     )
     parser.add_argument(
         "--tie-tolerance", type=float, default=1e-6,
@@ -140,6 +139,113 @@ def compare_run_sets(standard, additional):
     return sorted(standard_runs)
 
 
+def require_numeric_setting(table, methods, column, expected, label):
+    """Require one numeric value for the selected methods."""
+    if column not in table.columns:
+        raise ValueError(f"Cannot verify {label}: missing column '{column}'.")
+    selected = table.loc[table["method"].astype(str).isin(methods), column]
+    values = pd.to_numeric(selected, errors="coerce")
+    if values.isna().any() or not np.allclose(
+        values.to_numpy(), expected, atol=1e-12, rtol=0
+    ):
+        observed = sorted(pd.unique(selected.dropna().astype(str)))
+        raise ValueError(
+            f"Incomparable {label}. Expected {expected}; observed {observed}."
+        )
+
+
+def require_text_setting(table, methods, column, expected, label):
+    """Require one text value for the selected methods."""
+    if column not in table.columns:
+        raise ValueError(f"Cannot verify {label}: missing column '{column}'.")
+    selected = table.loc[table["method"].astype(str).isin(methods), column]
+    values = selected.fillna("").astype(str).str.strip().str.lower()
+    if not values.eq(str(expected).lower()).all():
+        raise ValueError(
+            f"Incomparable {label}. Expected {expected}; "
+            f"observed {sorted(values.unique())}."
+        )
+
+
+def validate_comparable_configuration(standard, additional):
+    """Verify the final shared settings before combining result tables."""
+    # Settings shared by all eight methods.
+    for table, name in ((standard, "Script 05"), (additional, "Script 12")):
+        methods = tuple(table["method"].astype(str).unique())
+        require_numeric_setting(
+            table, methods, "target_tmin_s", -0.002,
+            f"{name} target-window start",
+        )
+        require_numeric_setting(
+            table, methods, "target_tmax_s", 0.002,
+            f"{name} target-window end",
+        )
+        require_numeric_setting(
+            table, methods, "covariance_tmin_s", -0.250,
+            f"{name} noise-covariance start",
+        )
+        require_numeric_setting(
+            table, methods, "covariance_tmax_s", -0.050,
+            f"{name} noise-covariance end",
+        )
+        require_text_setting(
+            table, methods, "montage", "all_good", f"{name} montage",
+        )
+
+    # Shared orientation/depth settings for applicable inverse methods.
+    require_numeric_setting(
+        standard, STANDARD_METHODS, "loose", 1.0,
+        "standard-method loose value",
+    )
+    require_numeric_setting(
+        standard, STANDARD_METHODS, "depth", 0.1,
+        "standard-method depth value",
+    )
+    require_numeric_setting(
+        standard, STANDARD_METHODS, "snr", 1.0,
+        "standard-method SNR",
+    )
+    sparse = ("MxNE", "irMxNE")
+    require_numeric_setting(
+        additional, sparse, "loose", 1.0,
+        "sparse-method loose value",
+    )
+    require_numeric_setting(
+        additional, sparse, "depth", 0.1,
+        "sparse-method depth value",
+    )
+    require_numeric_setting(
+        additional, sparse, "mxne_alpha", 40.0,
+        "sparse-method alpha",
+    )
+    require_numeric_setting(
+        additional, ("MxNE",), "mxne_iterations", 1,
+        "MxNE iteration count",
+    )
+    require_numeric_setting(
+        additional, ("irMxNE",), "mxne_iterations", 10,
+        "irMxNE iteration count",
+    )
+
+    # LCMV-specific settings have no direct analogue in the other methods.
+    require_numeric_setting(
+        additional, ("LCMV",), "lcmv_reg", 0.10,
+        "LCMV regularization",
+    )
+    require_numeric_setting(
+        additional, ("LCMV",), "lcmv_data_tmin_s", -0.005,
+        "LCMV data-covariance start",
+    )
+    require_numeric_setting(
+        additional, ("LCMV",), "lcmv_data_tmax_s", 0.005,
+        "LCMV data-covariance end",
+    )
+    require_text_setting(
+        additional, ("LCMV",), "data_covariance_method", "shrunk",
+        "LCMV data-covariance estimator",
+    )
+
+
 def check_run_geometry(table):
     """Confirm all methods use the same known geometry within every run."""
     columns = (
@@ -169,6 +275,7 @@ def load_and_validate(args):
         args.additional_results, ADDITIONAL_METHODS, "Script 12"
     )
     runs = compare_run_sets(standard, additional)
+    validate_comparable_configuration(standard, additional)
     table = pd.concat([standard, additional], ignore_index=True, sort=False)
     table["method"] = pd.Categorical(
         table["method"], categories=METHOD_ORDER, ordered=True
@@ -426,7 +533,8 @@ def analysis_context(passed):
     return (
         f"{runs} runs | {participants} participants | all-good EEG montage | "
         "Target: −2 to +2 ms\n"
-        "Fixed baseline configurations; parameter-grid comparison follows later"
+        "Comparable configuration: loose 1.0 | depth 0.1 | "
+        "standard SNR 1 | sparse alpha 40 | LCMV reg 0.10"
     )
 
 
@@ -581,7 +689,7 @@ def accuracy_stability_figure(summary, output, dpi, context):
         )
     axis.set_xlabel("Median localization error (mm)")
     axis.set_ylabel("Interquartile range (mm)")
-    axis.set_title("Baseline accuracy and between-run stability\n" + context)
+    axis.set_title("Accuracy and between-run stability\n" + context)
     axis.grid(alpha=0.25)
     handles = [
         Line2D(
@@ -600,8 +708,27 @@ def accuracy_stability_figure(summary, output, dpi, context):
 
 def save_manifest(output_dir, table, passed, summary, winners):
     payload = {
-        "analysis_scope": "fixed baseline configurations only",
-        "parameter_optimized": False,
+        "analysis_scope": "comparable fixed configuration across eight methods",
+        "selection_policy": (
+            "Shared loose and depth match the standard-method baseline; "
+            "LCMV regularization was selected in the four-run pilot."
+        ),
+        "configuration": {
+            "montage": "all_good",
+            "target_tmin_s": -0.002,
+            "target_tmax_s": 0.002,
+            "noise_covariance_tmin_s": -0.250,
+            "noise_covariance_tmax_s": -0.050,
+            "shared_loose": 1.0,
+            "shared_depth": 0.1,
+            "standard_snr": 1.0,
+            "sparse_alpha": 40.0,
+            "irmxne_iterations": 10,
+            "lcmv_reg": 0.10,
+            "lcmv_data_covariance_method": "shrunk",
+            "lcmv_data_tmin_s": -0.005,
+            "lcmv_data_tmax_s": 0.005,
+        },
         "participants": int(table["subject"].nunique()),
         "runs": int(table[["subject", "run"]].drop_duplicates().shape[0]),
         "rows": int(len(table)),
@@ -614,7 +741,7 @@ def save_manifest(output_dir, table, passed, summary, winners):
             for _, row in summary.iterrows()
         },
     }
-    path = output_dir / "baseline_summary_manifest.json"
+    path = output_dir / "comparable_summary_manifest.json"
     with path.open("w", encoding="utf-8") as stream:
         json.dump(payload, stream, indent=2)
         stream.write("\n")
@@ -643,7 +770,7 @@ def main():
     outliers = identify_outliers(passed)
     context = analysis_context(passed)
 
-    table.to_csv(table_dir / "01_combined_baseline_results.csv", index=False)
+    table.to_csv(table_dir / "01_combined_comparable_results.csv", index=False)
     summary.to_csv(table_dir / "02_method_summary.csv", index=False)
     participants.to_csv(table_dir / "03_participant_summary.csv", index=False)
     pairs.to_csv(table_dir / "04_pairwise_differences.csv", index=False)
@@ -687,8 +814,8 @@ def main():
     )
     save_manifest(output_dir, table, passed, summary, winners)
 
-    print("EIGHT-METHOD BASELINE SUMMARY COMPLETE")
-    print("--------------------------------------")
+    print("EIGHT-METHOD COMPARABLE SUMMARY COMPLETE")
+    print("----------------------------------------")
     print(f"Participants       : {table['subject'].nunique()}")
     print(f"Runs               : {len(runs)}")
     print(f"Methods            : {len(METHOD_ORDER)}")
@@ -696,7 +823,7 @@ def main():
     print(f"Successful rows    : {len(passed)}")
     print(f"Failed rows        : {len(table) - len(passed)}")
     print(f"Tied winner runs   : {int(winners['is_tie'].sum())}")
-    print("Scope              : fixed baseline configurations only")
+    print("Scope              : comparable fixed configurations")
     print(f"Tables             : {table_dir}")
     print(f"Figures            : {figure_dir}")
     print("\nMedian localization error (mm):")

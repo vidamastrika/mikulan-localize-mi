@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
-"""Run the additional inverse-method baseline across Localize-MI.
+"""Run the pilot-selected additional inverse methods across Localize-MI.
 
 This is the all-run companion to Script 11.  It deliberately imports the
 finalized Script 11 implementation so the pilot and batch calculations use
 identical ECD-grid, LCMV, MxNE, irMxNE, metric, and figure code.
 
-Default baseline
-----------------
+Selected configuration
+----------------------
 * all released runs and all good EEG channels
 * target window: -2 to +2 ms
 * ECD-grid: maximum whitened goodness of fit
-* LCMV: regularization 0.05 and data covariance from -5 to +5 ms
-* MxNE and irMxNE: alpha 40
+* LCMV: regularization 0.10 and shrunk data covariance from -5 to +5 ms
+* MxNE and irMxNE: shared alpha 40, loose 1.0, and depth 0.1
 * irMxNE: 10 iterations
+
+Loose and depth are shared by MxNE and irMxNE to keep their comparison even.
+The loose and depth values also match the baseline used by the basic inverse
+methods. They are not parameters of ECD-grid or LCMV. LCMV regularization 0.10
+was retained from the balanced four-run parameter pilot.
 
 The CSV is atomically checkpointed after every solution.  ``--resume`` skips
 matching successful rows and retries matching failed rows.  ``--overwrite``
@@ -26,7 +31,7 @@ Run a one-run validation first::
 
     python scripts/12_batch_additional_methods.py \
         --case sub-01 run-01 \
-        --output outputs/additional_methods/test_sub01_run01.csv \
+        --output outputs/additional_methods_comparable/test_sub01_run01.csv \
         --overwrite --quiet
 
 Run all 61 released runs::
@@ -39,8 +44,8 @@ Resume an interrupted batch::
 
 Default output
 --------------
-outputs/additional_methods/additional_method_results.csv
-outputs/additional_methods/additional_method_manifest.json
+outputs/additional_methods_comparable/additional_method_results.csv
+outputs/additional_methods_comparable/additional_method_manifest.json
 """
 
 from __future__ import annotations
@@ -64,7 +69,7 @@ import pandas as pd
 PROJECT = Path(__file__).resolve().parents[1]
 SCRIPT11 = PROJECT / "scripts/11_additional_method_pilot.py"
 DEFAULT_OUTPUT = (
-    PROJECT / "outputs/additional_methods/additional_method_results.csv"
+    PROJECT / "outputs/additional_methods_comparable/additional_method_results.csv"
 )
 DEFAULT_FIGURE_CASES = (
     ("sub-01", "run-01"),
@@ -129,9 +134,13 @@ def parse_args():
     )
     parser.add_argument("--max-runs", type=int)
 
-    parser.add_argument("--loose", type=float, default=1.0)
+    parser.add_argument(
+        "--loose", type=float, default=1.0,
+        help=("Shared MxNE/irMxNE loose value, matching the basic-method "
+              "baseline. Default: 1.0."),
+    )
     parser.add_argument("--depth", type=float, default=0.1)
-    parser.add_argument("--lcmv-reg", type=float, default=0.05)
+    parser.add_argument("--lcmv-reg", type=float, default=0.10)
     parser.add_argument("--lcmv-data-tmin", type=float, default=-0.005)
     parser.add_argument("--lcmv-data-tmax", type=float, default=0.005)
     parser.add_argument(
@@ -223,6 +232,8 @@ def atomic_json(path, payload):
 
 def configuration(args, dataset, methods, cases):
     return {
+        "design": "shared sparse parameters matching basic-method baseline",
+        "selection_pilot": "Script 14 balanced four-run pilot",
         "dataset": str(dataset),
         "task": args.task,
         "methods": list(methods),
@@ -481,7 +492,11 @@ def main():
         f"{args.lcmv_data_tmin * 1000:g} to "
         f"{args.lcmv_data_tmax * 1000:g} ms"
     )
-    print(f"MxNE alpha       : {args.mxne_alpha}")
+    print(f"LCMV reg         : {args.lcmv_reg:g}")
+    print(f"Sparse alpha     : {args.mxne_alpha}")
+    print(f"Sparse loose     : {args.loose:g} (shared)")
+    print(f"Sparse depth     : {args.depth:g} (shared)")
+    print(f"irMxNE iterations: {args.irmxne_iterations}")
     print(f"Output           : {output}", flush=True)
 
     completed_count = len(successful)
