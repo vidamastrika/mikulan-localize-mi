@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""One-factor-at-a-time parameter pilot for the additional inverse methods.
+"""Balanced parameter pilot for the additional inverse methods.
 
 This script follows the fixed-configuration all-run analysis in Scripts 12–13.
-It changes one parameter at a time around the Script 12 baseline so that each
-observed localization change has a clear interpretation.  It is intentionally
-not the full interaction grid; that belongs in Script 15.
+LCMV, MxNE, and irMxNE each receive seven configurations. ECD-grid remains a
+single fixed configuration because the current implementation has no exposed
+method-specific tuning parameter.
 
 Default pilot
 -------------
@@ -12,14 +12,17 @@ Default pilot
 * all good EEG channels
 * target window: -2 to +2 ms
 * ECD-grid: one fixed reference configuration
-* LCMV: reg = 0.01, 0.05, 0.10 and covariance half-window = 2, 5, 10 ms
-* MxNE/irMxNE: alpha = 20, 40, 60; loose = 0.1, 0.5, 1.0;
+* LCMV: baseline plus two regularization values, two covariance windows, and
+  two covariance estimators
+* MxNE/irMxNE: alpha = 30, 40, 50; loose = 0.1, 0.5, 1.0;
   depth = 0.1, 0.5, 1.0
-* irMxNE only: iterations = 5, 10, 20
+* irMxNE iterations fixed at 10 because the earlier pilot found identical
+  locations with 5, 10, and 20 iterations
 
-Only one parameter differs from the baseline in each non-baseline solution.
-This produces 22 configurations per run and 88 solutions for the four default
-runs.  Results are atomically checkpointed after every solution.
+All three configurable methods use one-factor-at-a-time changes around their
+baseline. The complete pilot therefore contains 22 configurations per run and 88
+solutions for the four default runs. Results are atomically checkpointed after
+every solution.
 
 Examples
 --------
@@ -171,7 +174,7 @@ def configuration(method, identifier, varied_parameter="baseline", **updates):
 
 
 def build_configurations(methods):
-    """Create unique OFAT configurations around the fixed baseline."""
+    """Create the balanced method-specific pilot configurations."""
     configs = []
     if "ECD-grid" in methods:
         configs.append(configuration("ECD-grid", "ecd_fixed"))
@@ -191,13 +194,19 @@ def build_configurations(methods):
                 lcmv_data_tmin=-half_window_s,
                 lcmv_data_tmax=half_window_s,
             ))
+        for method in ("empirical", "diagonal_fixed"):
+            configs.append(configuration(
+                "LCMV", f"lcmv_covariance_{method}",
+                "lcmv_covariance_method",
+                lcmv_covariance_method=method,
+            ))
 
     for method in ("MxNE", "irMxNE"):
         if method not in methods:
             continue
         prefix = method.lower()
         configs.append(configuration(method, f"{prefix}_baseline"))
-        for value in (20.0, 60.0):
+        for value in (30.0, 50.0):
             configs.append(configuration(
                 method, f"{prefix}_alpha_{value:g}", "mxne_alpha",
                 mxne_alpha=value,
@@ -210,16 +219,17 @@ def build_configurations(methods):
             configs.append(configuration(
                 method, f"{prefix}_depth_{value:g}", "depth", depth=value,
             ))
-        if method == "irMxNE":
-            for value in (5, 20):
-                configs.append(configuration(
-                    method, f"irmxne_iterations_{value}",
-                    "irmxne_iterations", irmxne_iterations=value,
-                ))
-
     identifiers = [item["configuration_id"] for item in configs]
     if len(identifiers) != len(set(identifiers)):
         raise RuntimeError("Internal error: duplicate configuration IDs.")
+    expected_counts = {"ECD-grid": 1, "LCMV": 7, "MxNE": 7, "irMxNE": 7}
+    for method in methods:
+        observed = sum(item["method"] == method for item in configs)
+        if observed != expected_counts[method]:
+            raise RuntimeError(
+                f"Internal error: {method} has {observed} configurations; "
+                f"expected {expected_counts[method]}."
+            )
     return configs
 
 
@@ -284,7 +294,7 @@ def same_number(left, right):
 def manifest_payload(cases, configs, output, rows):
     return {
         "script": "14_additional_method_parameter_pilot.py",
-        "design": "one-factor-at-a-time",
+        "design": "balanced method-specific pilot",
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "output_csv": str(output),
         "cases": [list(case) for case in cases],
@@ -362,7 +372,7 @@ def main():
 
     print("LOCALIZE-MI ADDITIONAL-METHOD PARAMETER PILOT")
     print("---------------------------------------------")
-    print(f"Design          : one factor at a time")
+    print(f"Design          : balanced method-specific pilot")
     print(f"Runs            : {len(cases)}")
     print(f"Configurations  : {len(configs)} per run")
     print(f"Solutions       : {len(expected_keys)}")
