@@ -1,833 +1,883 @@
 #!/usr/bin/env python3
-"""Summarize the comparable fixed configuration for eight inverse methods.
+"""
+13_summarize_all_methods.py
 
-Script 13 combines the standard-method results from Script 05 with the
-additional-method results from Script 12.  It does not rerun localization and
-does not rerun localization or select parameters. Shared parameters are checked
-before analysis so incompatible result tables cannot be combined silently.
+Summarize the matched all-run baseline localization results for eight
+Localize-MI inverse methods.
 
-Methods
+INPUTS
+------
+Original four methods (61 runs x 4 methods):
+    outputs/tables/inverse_method_results.csv
+
+Additional methods from Script 12:
+    outputs/12_additional_methods_all_runs/12_continuous_ecd_all_runs.csv
+    outputs/12_additional_methods_all_runs/12_mxne_all_runs.csv
+    outputs/12_additional_methods_all_runs/12_rap_music_all_runs.csv
+    outputs/12_additional_methods_all_runs/12_lcmv_all_runs.csv
+
+The script accepts alternative paths through terminal arguments.
+
+METHODS
 -------
-MNE, dSPM, sLORETA, eLORETA, ECD-grid, LCMV, MxNE, and irMxNE.
+    MNE
+    dSPM
+    sLORETA
+    eLORETA
+    Continuous-ECD
+    MxNE
+    RAP-MUSIC
+    LCMV
 
-Default inputs
---------------
-outputs/tables/inverse_method_results.csv
-outputs/additional_methods_comparable/additional_method_results.csv
+IMPORTANT INTERPRETATION
+------------------------
+This script compares ONE baseline result per method per stimulation run.
+It does NOT compare the 97,600 Script-10 parameter-grid solutions against
+the 61 Script-12 baseline solutions.
 
-Default output
+All method comparisons are paired by subject + run. By default, the script
+requires a complete 8-method set for every included run.
+
+For every method the script reports BOTH:
+    * mean +/- sample SD
+    * median [Q1, Q3]
+
+The median/IQR are especially useful when localization-error distributions
+contain large outliers.
+
+"Lowest-error method" means only the method with the smallest observed
+localization error for that particular run. It is descriptive and should
+not be interpreted as a universally superior method.
+
+TERMINAL EXAMPLES
+-----------------
+
+Run with the default project paths:
+
+    python scripts/13_summarize_all_methods.py --overwrite
+
+Use explicit input files:
+
+    python scripts/13_summarize_all_methods.py \
+        --inverse-results outputs/tables/inverse_method_results.csv \
+        --ecd-results outputs/12_additional_methods_all_runs/12_continuous_ecd_all_runs.csv \
+        --mxne-results outputs/12_additional_methods_all_runs/12_mxne_all_runs.csv \
+        --rap-music-results outputs/12_additional_methods_all_runs/12_rap_music_all_runs.csv \
+        --lcmv-results outputs/12_additional_methods_all_runs/12_lcmv_all_runs.csv \
+        --overwrite
+
+Allow incomplete method/run combinations instead of requiring all eight
+methods for every run:
+
+    python scripts/13_summarize_all_methods.py \
+        --allow-incomplete --overwrite
+
+Change the output directory:
+
+    python scripts/13_summarize_all_methods.py \
+        --output-root outputs/13_my_summary --overwrite
+
+DEFAULT OUTPUT
 --------------
-outputs/all_method_comparable_summary/
+    outputs/13_additional_methods_summary/
+
+Tables:
+    01_method_summary.csv
+    02_pairwise_differences.csv
+    03_participant_summary.csv
+    04_lowest_error_method_per_run.csv
+    05_lowest_error_counts.csv
+    06_outlier_runs.csv
+    07_matched_results_long.csv
+    08_matched_results_wide.csv
+
+Figures:
+    figures/01_localization_error_distribution.png
+    figures/02_pairwise_median_differences.png
+    figures/03_median_error_by_participant.png
+    figures/04_lowest_error_counts.png
+
+Figure 1:
+    Overall localization-error distributions for all eight methods.
+
+Figure 2:
+    Median paired error difference for every method pair.
+    Difference = Method A error - Method B error.
+    Negative -> A has lower median paired error.
+    Positive -> B has lower median paired error.
+
+Figure 3:
+    Median localization error for each participant and method.
+
+Figure 4:
+    Number of runs on which each method has the lowest observed error.
 """
 
 from __future__ import annotations
 
 import argparse
-import itertools
-import json
+from itertools import combinations
 from pathlib import Path
+import shutil
 
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
 
 PROJECT = Path(__file__).resolve().parents[1]
 
-STANDARD_METHODS = ("MNE", "dSPM", "sLORETA", "eLORETA")
-ADDITIONAL_METHODS = ("ECD-grid", "LCMV", "MxNE", "irMxNE")
-METHOD_ORDER = STANDARD_METHODS + ADDITIONAL_METHODS
+DEFAULT_INVERSE = PROJECT / "outputs" / "tables" / "inverse_method_results.csv"
+DEFAULT_SCRIPT12 = PROJECT / "outputs" / "12_additional_methods_all_runs"
+DEFAULT_OUTPUT = PROJECT / "outputs" / "13_additional_methods_summary"
 
-METHOD_COLORS = {
-    "MNE": "#377eb8",
-    "dSPM": "#e41a1c",
-    "sLORETA": "#4daf4a",
-    "eLORETA": "#984ea3",
-    "ECD-grid": "#ff7f00",
-    "LCMV": "#00a6a6",
-    "MxNE": "#a65628",
-    "irMxNE": "#f781bf",
-}
+METHOD_ORDER = [
+    "MNE",
+    "dSPM",
+    "sLORETA",
+    "eLORETA",
+    "Continuous-ECD",
+    "MxNE",
+    "RAP-MUSIC",
+    "LCMV",
+]
 
-REQUIRED_COLUMNS = {
-    "subject", "run", "method", "status", "peak_time_ms",
-    "localization_distance_mm", "nearest_source_distance_mm",
-    "geometric_excess_mm", "estimated_x_m", "estimated_y_m",
-    "estimated_z_m", "known_x_m", "known_y_m", "known_z_m",
+ORIGINAL_METHODS = {"MNE", "dSPM", "sLORETA", "eLORETA"}
+
+DISPLAY_LABELS = {
+    "MNE": "MNE",
+    "dSPM": "dSPM",
+    "sLORETA": "sLORETA",
+    "eLORETA": "eLORETA",
+    "Continuous-ECD": "Continuous-ECD",
+    "MxNE": "MxNE",
+    "RAP-MUSIC": "RAP-MUSIC",
+    "LCMV": "LCMV",
 }
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
+
+    parser.add_argument("--inverse-results", type=Path, default=DEFAULT_INVERSE)
     parser.add_argument(
-        "--standard-results", type=Path,
-        default=PROJECT / "outputs/tables/inverse_method_results.csv",
-        help="Script 05 results.",
+        "--ecd-results",
+        type=Path,
+        default=DEFAULT_SCRIPT12 / "12_continuous_ecd_all_runs.csv",
     )
     parser.add_argument(
-        "--additional-results", type=Path,
-        default=(PROJECT / "outputs/additional_methods_comparable/"
-                 "additional_method_results.csv"),
-        help="Script 12 results.",
+        "--mxne-results",
+        type=Path,
+        default=DEFAULT_SCRIPT12 / "12_mxne_all_runs.csv",
     )
     parser.add_argument(
-        "--output-dir", type=Path,
-        default=PROJECT / "outputs/all_method_comparable_summary",
+        "--rap-music-results",
+        type=Path,
+        default=DEFAULT_SCRIPT12 / "12_rap_music_all_runs.csv",
     )
     parser.add_argument(
-        "--tie-tolerance", type=float, default=1e-6,
-        help="Distances within this many millimetres are tied.",
+        "--lcmv-results",
+        type=Path,
+        default=DEFAULT_SCRIPT12 / "12_lcmv_all_runs.csv",
     )
-    parser.add_argument("--dpi", type=int, default=220)
+    parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT)
+
+    parser.add_argument(
+        "--allow-incomplete",
+        action="store_true",
+        help="Keep runs lacking one or more of the eight methods.",
+    )
+    parser.add_argument(
+        "--outlier-iqr-multiplier",
+        type=float,
+        default=1.5,
+        help="Per-method upper outlier threshold: Q3 + k*IQR. Default: 1.5.",
+    )
+    parser.add_argument("--dpi", type=int, default=180)
+    parser.add_argument("--overwrite", action="store_true")
+
     return parser.parse_args()
 
 
-def validate_args(args):
-    if args.tie_tolerance < 0:
-        raise ValueError("--tie-tolerance must be non-negative.")
-    if args.dpi < 72:
-        raise ValueError("--dpi must be at least 72.")
-
-
-def read_result_table(path, expected_methods, source_name):
-    path = path.expanduser().resolve()
-    if not path.is_file():
-        raise FileNotFoundError(f"{source_name} results not found: {path}")
-    table = pd.read_csv(path)
-    missing = REQUIRED_COLUMNS - set(table.columns)
+def require_columns(table, columns, path):
+    missing = [column for column in columns if column not in table.columns]
     if missing:
         raise ValueError(
-            f"{source_name} results lack required columns: {sorted(missing)}"
+            f"{path} is missing required columns: {', '.join(missing)}"
         )
-    duplicates = table.duplicated(["subject", "run", "method"])
-    if duplicates.any():
-        rows = table.loc[duplicates, ["subject", "run", "method"]]
+
+
+def first_existing(columns, candidates, description, path):
+    for candidate in candidates:
+        if candidate in columns:
+            return candidate
+    raise ValueError(
+        f"Could not identify {description} in {path}. "
+        f"Tried: {', '.join(candidates)}"
+    )
+
+
+def clean_status(table):
+    if "status" not in table.columns:
+        return table.copy(), 0
+
+    status = table["status"].astype(str).str.upper()
+    failed = int((status != "PASS").sum())
+    return table.loc[status == "PASS"].copy(), failed
+
+
+def standardize_original(path):
+    table = pd.read_csv(path)
+    require_columns(table, ["subject", "run", "method"], path)
+
+    error_column = first_existing(
+        table.columns,
+        [
+            "localization_distance_mm",
+            "selected_localization_error_mm",
+            "localization_error_mm",
+            "distance_mm",
+        ],
+        "localization-error column",
+        path,
+    )
+
+    table, failed = clean_status(table)
+    table = table.loc[table["method"].isin(ORIGINAL_METHODS)].copy()
+
+    result = pd.DataFrame(
+        {
+            "subject": table["subject"].astype(str),
+            "run": table["run"].astype(str),
+            "method": table["method"].astype(str),
+            "localization_error_mm": pd.to_numeric(
+                table[error_column], errors="coerce"
+            ),
+            "source_file": str(path),
+        }
+    )
+
+    return result, failed
+
+
+def standardize_additional(path, expected_method):
+    table = pd.read_csv(path)
+    require_columns(table, ["subject", "run"], path)
+
+    error_column = first_existing(
+        table.columns,
+        [
+            "selected_localization_error_mm",
+            "localization_distance_mm",
+            "localization_error_mm",
+            "distance_mm",
+        ],
+        "localization-error column",
+        path,
+    )
+
+    table, failed = clean_status(table)
+
+    if "method" in table.columns:
+        observed = set(table["method"].dropna().astype(str))
+        if observed and observed != {expected_method}:
+            raise ValueError(
+                f"{path} was expected to contain only {expected_method}, "
+                f"but contains: {sorted(observed)}"
+            )
+
+    result = pd.DataFrame(
+        {
+            "subject": table["subject"].astype(str),
+            "run": table["run"].astype(str),
+            "method": expected_method,
+            "localization_error_mm": pd.to_numeric(
+                table[error_column], errors="coerce"
+            ),
+            "source_file": str(path),
+        }
+    )
+
+    return result, failed
+
+
+def validate_long_table(table, allow_incomplete):
+    if table["localization_error_mm"].isna().any():
+        bad = table.loc[
+            table["localization_error_mm"].isna(),
+            ["subject", "run", "method"],
+        ]
         raise ValueError(
-            f"{source_name} results contain duplicate solutions:\n"
-            f"{rows.to_string(index=False)}"
+            "Missing/non-numeric localization errors were found:\n"
+            + bad.to_string(index=False)
         )
-    observed = set(table["method"].astype(str))
-    missing_methods = set(expected_methods) - observed
-    unexpected = observed - set(expected_methods)
-    if missing_methods or unexpected:
+
+    if (table["localization_error_mm"] < 0).any():
+        raise ValueError("Localization error cannot be negative.")
+
+    duplicated = table.duplicated(["subject", "run", "method"], keep=False)
+    if duplicated.any():
+        bad = table.loc[
+            duplicated,
+            ["subject", "run", "method", "localization_error_mm"],
+        ].sort_values(["subject", "run", "method"])
         raise ValueError(
-            f"{source_name} method mismatch. Missing: "
-            f"{sorted(missing_methods)}; unexpected: {sorted(unexpected)}"
+            "Duplicate subject/run/method results were found:\n"
+            + bad.to_string(index=False)
         )
-    table = table.loc[table["method"].isin(expected_methods)].copy()
-    table["result_source"] = source_name
-    if "montage" not in table:
-        table["montage"] = "all_good"
-    else:
-        table["montage"] = table["montage"].fillna("all_good")
-    if "n_good_channels" not in table and "good_channels" in table:
-        table["n_good_channels"] = table["good_channels"]
-    return table
 
+    counts = (
+        table.groupby(["subject", "run"])["method"]
+        .nunique()
+        .sort_values()
+    )
 
-def compare_run_sets(standard, additional):
-    standard_runs = set(map(tuple, standard[["subject", "run"]].drop_duplicates().values))
-    additional_runs = set(map(tuple, additional[["subject", "run"]].drop_duplicates().values))
-    if standard_runs != additional_runs:
-        only_standard = sorted(standard_runs - additional_runs)
-        only_additional = sorted(additional_runs - standard_runs)
+    if not allow_incomplete and not (counts == len(METHOD_ORDER)).all():
+        bad = counts.loc[counts != len(METHOD_ORDER)]
         raise ValueError(
-            "The two inputs do not contain the same runs. "
-            f"Only standard: {only_standard}; only additional: {only_additional}"
-        )
-    return sorted(standard_runs)
-
-
-def require_numeric_setting(table, methods, column, expected, label):
-    """Require one numeric value for the selected methods."""
-    if column not in table.columns:
-        raise ValueError(f"Cannot verify {label}: missing column '{column}'.")
-    selected = table.loc[table["method"].astype(str).isin(methods), column]
-    values = pd.to_numeric(selected, errors="coerce")
-    if values.isna().any() or not np.allclose(
-        values.to_numpy(), expected, atol=1e-12, rtol=0
-    ):
-        observed = sorted(pd.unique(selected.dropna().astype(str)))
-        raise ValueError(
-            f"Incomparable {label}. Expected {expected}; observed {observed}."
+            "The comparison is not fully matched. These runs do not contain "
+            f"all {len(METHOD_ORDER)} methods:\n{bad.to_string()}\n"
+            "Use --allow-incomplete only if this is intentional."
         )
 
+    if not allow_incomplete:
+        observed_methods = set(table["method"])
+        expected_methods = set(METHOD_ORDER)
+        if observed_methods != expected_methods:
+            raise ValueError(
+                "Method set mismatch. "
+                f"Expected {sorted(expected_methods)}, "
+                f"found {sorted(observed_methods)}."
+            )
 
-def require_text_setting(table, methods, column, expected, label):
-    """Require one text value for the selected methods."""
-    if column not in table.columns:
-        raise ValueError(f"Cannot verify {label}: missing column '{column}'.")
-    selected = table.loc[table["method"].astype(str).isin(methods), column]
-    values = selected.fillna("").astype(str).str.strip().str.lower()
-    if not values.eq(str(expected).lower()).all():
-        raise ValueError(
-            f"Incomparable {label}. Expected {expected}; "
-            f"observed {sorted(values.unique())}."
-        )
-
-
-def validate_comparable_configuration(standard, additional):
-    """Verify the final shared settings before combining result tables."""
-    # Settings shared by all eight methods.
-    for table, name in ((standard, "Script 05"), (additional, "Script 12")):
-        methods = tuple(table["method"].astype(str).unique())
-        require_numeric_setting(
-            table, methods, "target_tmin_s", -0.002,
-            f"{name} target-window start",
-        )
-        require_numeric_setting(
-            table, methods, "target_tmax_s", 0.002,
-            f"{name} target-window end",
-        )
-        require_numeric_setting(
-            table, methods, "covariance_tmin_s", -0.250,
-            f"{name} noise-covariance start",
-        )
-        require_numeric_setting(
-            table, methods, "covariance_tmax_s", -0.050,
-            f"{name} noise-covariance end",
-        )
-        require_text_setting(
-            table, methods, "montage", "all_good", f"{name} montage",
-        )
-
-    # Shared orientation/depth settings for applicable inverse methods.
-    require_numeric_setting(
-        standard, STANDARD_METHODS, "loose", 1.0,
-        "standard-method loose value",
-    )
-    require_numeric_setting(
-        standard, STANDARD_METHODS, "depth", 0.1,
-        "standard-method depth value",
-    )
-    require_numeric_setting(
-        standard, STANDARD_METHODS, "snr", 1.0,
-        "standard-method SNR",
-    )
-    sparse = ("MxNE", "irMxNE")
-    require_numeric_setting(
-        additional, sparse, "loose", 1.0,
-        "sparse-method loose value",
-    )
-    require_numeric_setting(
-        additional, sparse, "depth", 0.1,
-        "sparse-method depth value",
-    )
-    require_numeric_setting(
-        additional, sparse, "mxne_alpha", 40.0,
-        "sparse-method alpha",
-    )
-    require_numeric_setting(
-        additional, ("MxNE",), "mxne_iterations", 1,
-        "MxNE iteration count",
-    )
-    require_numeric_setting(
-        additional, ("irMxNE",), "mxne_iterations", 10,
-        "irMxNE iteration count",
-    )
-
-    # LCMV-specific settings have no direct analogue in the other methods.
-    require_numeric_setting(
-        additional, ("LCMV",), "lcmv_reg", 0.10,
-        "LCMV regularization",
-    )
-    require_numeric_setting(
-        additional, ("LCMV",), "lcmv_data_tmin_s", -0.005,
-        "LCMV data-covariance start",
-    )
-    require_numeric_setting(
-        additional, ("LCMV",), "lcmv_data_tmax_s", 0.005,
-        "LCMV data-covariance end",
-    )
-    require_text_setting(
-        additional, ("LCMV",), "data_covariance_method", "shrunk",
-        "LCMV data-covariance estimator",
-    )
-
-
-def check_run_geometry(table):
-    """Confirm all methods use the same known geometry within every run."""
-    columns = (
-        "known_x_m", "known_y_m", "known_z_m",
-        "nearest_source_distance_mm",
-    )
-    problems = []
-    for (subject, run), group in table.groupby(["subject", "run"], sort=True):
-        for column in columns:
-            values = pd.to_numeric(group[column], errors="coerce").dropna().to_numpy()
-            if len(values) != len(group) or not np.allclose(
-                values, values[0], atol=1e-9, rtol=0
-            ):
-                problems.append((subject, run, column))
-    if problems:
-        raise ValueError(
-            "Known-source geometry differs between methods: "
-            + ", ".join("/".join(problem) for problem in problems[:20])
-        )
-
-
-def load_and_validate(args):
-    standard = read_result_table(
-        args.standard_results, STANDARD_METHODS, "Script 05"
-    )
-    additional = read_result_table(
-        args.additional_results, ADDITIONAL_METHODS, "Script 12"
-    )
-    runs = compare_run_sets(standard, additional)
-    validate_comparable_configuration(standard, additional)
-    table = pd.concat([standard, additional], ignore_index=True, sort=False)
-    table["method"] = pd.Categorical(
-        table["method"], categories=METHOD_ORDER, ordered=True
-    )
-    table = table.sort_values(["subject", "run", "method"]).reset_index(drop=True)
-    if table.duplicated(["subject", "run", "method"]).any():
-        raise ValueError("Combined results contain duplicate run-method rows.")
-    check_run_geometry(table)
-    return table, runs
-
-
-def successful(table):
-    result = table.loc[table["status"].astype(str).eq("PASS")].copy()
-    result["localization_distance_mm"] = pd.to_numeric(
-        result["localization_distance_mm"], errors="coerce"
-    )
-    result["peak_time_ms"] = pd.to_numeric(
-        result["peak_time_ms"], errors="coerce"
-    )
-    if result[["localization_distance_mm", "peak_time_ms"]].isna().any().any():
-        raise ValueError("Successful rows contain missing error or peak-time values.")
-    return result
+    return counts
 
 
 def method_summary(table):
     rows = []
+
     for method in METHOD_ORDER:
-        all_rows = table.loc[table["method"].astype(str).eq(method)]
-        passed = all_rows.loc[all_rows["status"].astype(str).eq("PASS")]
-        values = pd.to_numeric(passed["localization_distance_mm"], errors="coerce")
-        q1 = float(values.quantile(0.25)) if len(values) else np.nan
-        q3 = float(values.quantile(0.75)) if len(values) else np.nan
-        rows.append({
-            "method": method,
-            "method_group": (
-                "standard" if method in STANDARD_METHODS else "additional"
-            ),
-            "attempted_runs": len(all_rows),
-            "successful_runs": len(passed),
-            "failed_runs": int(len(all_rows) - len(passed)),
-            "success_rate_percent": 100 * len(passed) / len(all_rows),
-            "mean_mm": values.mean(),
-            "standard_deviation_mm": values.std(),
-            "median_mm": values.median(),
-            "first_quartile_mm": q1,
-            "third_quartile_mm": q3,
-            "interquartile_range_mm": q3 - q1,
-            "minimum_mm": values.min(),
-            "maximum_mm": values.max(),
-        })
-    return pd.DataFrame(rows)
-
-
-def participant_summary(passed):
-    return (
-        passed.groupby(["subject", "method"], observed=True)
-        ["localization_distance_mm"]
-        .agg(
-            runs="count", mean_mm="mean", median_mm="median",
-            standard_deviation_mm="std", minimum_mm="min", maximum_mm="max",
+        values = (
+            table.loc[
+                table["method"] == method,
+                "localization_error_mm",
+            ]
+            .dropna()
+            .to_numpy(dtype=float)
         )
-        .reset_index()
-    )
 
+        if len(values) == 0:
+            continue
 
-def peak_timing_summary(passed):
-    rows = []
-    for method in METHOD_ORDER:
-        group = passed.loc[passed["method"].astype(str).eq(method)]
-        peak = group["peak_time_ms"].astype(float)
-        rows.append({
-            "method": method,
-            "runs": len(group),
-            "mean_peak_time_ms": peak.mean(),
-            "median_peak_time_ms": peak.median(),
-            "minimum_peak_time_ms": peak.min(),
-            "maximum_peak_time_ms": peak.max(),
-            "pre_zero_runs": int((peak < 0).sum()),
-            "at_zero_runs": int(np.isclose(peak, 0, atol=1e-12).sum()),
-            "post_zero_runs": int((peak > 0).sum()),
-            "pre_zero_percent": 100 * (peak < 0).mean(),
-            "at_zero_percent": 100 * np.isclose(peak, 0, atol=1e-12).mean(),
-            "post_zero_percent": 100 * (peak > 0).mean(),
-        })
-    return pd.DataFrame(rows)
+        q25, median, q75 = np.quantile(values, [0.25, 0.50, 0.75])
 
-
-def paired_table(passed, tolerance):
-    wide = passed.pivot(
-        index=["subject", "run"], columns="method",
-        values="localization_distance_mm",
-    ).reindex(columns=METHOD_ORDER)
-    rows = []
-    for method_a, method_b in itertools.combinations(METHOD_ORDER, 2):
-        pair = wide[[method_a, method_b]].dropna()
-        difference = pair[method_a] - pair[method_b]
-        ties = np.isclose(difference, 0, atol=tolerance, rtol=0)
-        rows.append({
-            "method_a": method_a,
-            "method_b": method_b,
-            "paired_runs": len(pair),
-            "mean_a_minus_b_mm": difference.mean(),
-            "median_a_minus_b_mm": difference.median(),
-            "standard_deviation_mm": difference.std(),
-            "first_quartile_mm": difference.quantile(0.25),
-            "third_quartile_mm": difference.quantile(0.75),
-            "method_a_better_runs": int((difference < -tolerance).sum()),
-            "tied_runs": int(ties.sum()),
-            "method_b_better_runs": int((difference > tolerance).sum()),
-        })
-    return pd.DataFrame(rows)
-
-
-def run_winners(passed, tolerance):
-    rows = []
-    for (subject, run), group in passed.groupby(["subject", "run"], sort=True):
-        minimum = float(group["localization_distance_mm"].min())
-        mask = np.isclose(
-            group["localization_distance_mm"], minimum,
-            atol=tolerance, rtol=0,
-        )
-        winners = group.loc[mask, "method"].astype(str).tolist()
-        row = {
-            "subject": subject,
-            "run": run,
-            "minimum_distance_mm": minimum,
-            "number_of_winners": len(winners),
-            "is_tie": len(winners) > 1,
-            "winning_methods": ", ".join(winners),
-        }
-        row.update({f"{method}_winner": method in winners for method in METHOD_ORDER})
-        rows.append(row)
-    return pd.DataFrame(rows)
-
-
-def weighted_winner_summary(winners):
-    rows = []
-    for method in METHOD_ORDER:
-        flag = winners[f"{method}_winner"].astype(bool)
-        weighted = (flag / winners["number_of_winners"]).sum()
-        rows.append({
-            "method": method,
-            "runs_including_ties": int(flag.sum()),
-            "weighted_wins": float(weighted),
-            "weighted_win_percent": 100 * float(weighted) / len(winners),
-        })
-    return pd.DataFrame(rows)
-
-
-def additional_vs_best_standard(passed, tolerance):
-    standard = passed.loc[
-        passed["method"].astype(str).isin(STANDARD_METHODS)
-    ].copy()
-    standard_best = (
-        standard.sort_values("localization_distance_mm")
-        .groupby(["subject", "run"], as_index=False, sort=True)
-        .first()[["subject", "run", "method", "localization_distance_mm"]]
-        .rename(columns={
-            "method": "best_standard_method",
-            "localization_distance_mm": "best_standard_distance_mm",
-        })
-    )
-    additional = passed.loc[
-        passed["method"].astype(str).isin(ADDITIONAL_METHODS)
-    ].merge(standard_best, on=["subject", "run"], how="left")
-    additional["change_from_best_standard_mm"] = (
-        additional["localization_distance_mm"]
-        - additional["best_standard_distance_mm"]
-    )
-    change = additional["change_from_best_standard_mm"]
-    additional["comparison"] = np.select(
-        [change < -tolerance, change > tolerance],
-        ["better", "worse"], default="tied",
-    )
-    return additional[[
-        "subject", "run", "method", "localization_distance_mm",
-        "best_standard_method", "best_standard_distance_mm",
-        "change_from_best_standard_mm", "comparison",
-    ]]
-
-
-def additional_comparison_summary(comparison):
-    rows = []
-    for method in ADDITIONAL_METHODS:
-        group = comparison.loc[comparison["method"].astype(str).eq(method)]
-        change = group["change_from_best_standard_mm"]
-        rows.append({
-            "method": method,
-            "runs": len(group),
-            "mean_change_mm": change.mean(),
-            "median_change_mm": change.median(),
-            "standard_deviation_mm": change.std(),
-            "first_quartile_mm": change.quantile(0.25),
-            "third_quartile_mm": change.quantile(0.75),
-            "better_runs": int(group["comparison"].eq("better").sum()),
-            "tied_runs": int(group["comparison"].eq("tied").sum()),
-            "worse_runs": int(group["comparison"].eq("worse").sum()),
-        })
-    return pd.DataFrame(rows)
-
-
-def diagnostic_summary(passed):
-    rows = []
-    metrics = (
-        "active_sources", "ecd_goodness_of_fit_percent",
-        "explained_variance_percent", "runtime_seconds",
-    )
-    for method in METHOD_ORDER:
-        group = passed.loc[passed["method"].astype(str).eq(method)]
-        for metric in metrics:
-            if metric not in group:
-                continue
-            values = pd.to_numeric(group[metric], errors="coerce").dropna()
-            if values.empty:
-                continue
-            rows.append({
+        rows.append(
+            {
                 "method": method,
-                "metric": metric,
-                "observations": len(values),
-                "mean": values.mean(),
-                "standard_deviation": values.std(),
-                "median": values.median(),
-                "minimum": values.min(),
-                "maximum": values.max(),
-            })
+                "runs": len(values),
+                "mean_mm": float(np.mean(values)),
+                "standard_deviation_mm": (
+                    float(np.std(values, ddof=1))
+                    if len(values) > 1
+                    else np.nan
+                ),
+                "median_mm": float(median),
+                "q25_mm": float(q25),
+                "q75_mm": float(q75),
+                "iqr_mm": float(q75 - q25),
+                "minimum_mm": float(np.min(values)),
+                "maximum_mm": float(np.max(values)),
+            }
+        )
+
     return pd.DataFrame(rows)
 
 
-def identify_outliers(passed):
-    pieces = []
+def pairwise_summary(wide):
+    rows = []
+
+    for method_a, method_b in combinations(METHOD_ORDER, 2):
+        pair = wide[[method_a, method_b]].dropna()
+
+        if pair.empty:
+            continue
+
+        differences = (
+            pair[method_a].to_numpy(dtype=float)
+            - pair[method_b].to_numpy(dtype=float)
+        )
+
+        q25, median, q75 = np.quantile(
+            differences,
+            [0.25, 0.50, 0.75],
+        )
+
+        lower_a = int(np.sum(differences < 0))
+        lower_b = int(np.sum(differences > 0))
+        ties = int(np.sum(np.isclose(differences, 0.0)))
+
+        rows.append(
+            {
+                "method_a": method_a,
+                "method_b": method_b,
+                "paired_runs": len(differences),
+                "mean_a_minus_b_mm": float(np.mean(differences)),
+                "standard_deviation_a_minus_b_mm": (
+                    float(np.std(differences, ddof=1))
+                    if len(differences) > 1
+                    else np.nan
+                ),
+                "median_a_minus_b_mm": float(median),
+                "q25_a_minus_b_mm": float(q25),
+                "q75_a_minus_b_mm": float(q75),
+                "method_a_lower_error_runs": lower_a,
+                "method_b_lower_error_runs": lower_b,
+                "ties": ties,
+            }
+        )
+
+    return pd.DataFrame(rows)
+
+
+def participant_summary(table):
+    grouped = (
+        table.groupby(["subject", "method"], as_index=False)
+        .agg(
+            runs=("localization_error_mm", "size"),
+            mean_mm=("localization_error_mm", "mean"),
+            standard_deviation_mm=("localization_error_mm", "std"),
+            median_mm=("localization_error_mm", "median"),
+            minimum_mm=("localization_error_mm", "min"),
+            maximum_mm=("localization_error_mm", "max"),
+        )
+    )
+
+    grouped["method"] = pd.Categorical(
+        grouped["method"],
+        categories=METHOD_ORDER,
+        ordered=True,
+    )
+
+    return grouped.sort_values(["subject", "method"]).reset_index(drop=True)
+
+
+def lowest_error_tables(wide):
+    rows = []
+
+    for (subject, run), values in wide.iterrows():
+        available = values.dropna()
+
+        if available.empty:
+            continue
+
+        minimum = float(available.min())
+        methods = [
+            method
+            for method, value in available.items()
+            if np.isclose(float(value), minimum)
+        ]
+
+        rows.append(
+            {
+                "subject": subject,
+                "run": run,
+                "lowest_error_mm": minimum,
+                "lowest_error_method": ";".join(methods),
+                "tie": len(methods) > 1,
+                "methods_available": len(available),
+            }
+        )
+
+    per_run = pd.DataFrame(rows)
+
+    count_rows = []
     for method in METHOD_ORDER:
-        group = passed.loc[passed["method"].astype(str).eq(method)].copy()
-        values = group["localization_distance_mm"]
-        q1, q3 = values.quantile([0.25, 0.75])
-        limit = q3 + 1.5 * (q3 - q1)
-        selected = group.loc[values > limit].copy()
-        selected["method_outlier_upper_limit_mm"] = limit
-        pieces.append(selected)
-    if not pieces:
-        return passed.iloc[0:0].copy()
-    result = pd.concat(pieces, ignore_index=True)
-    columns = [
-        "subject", "run", "method", "peak_time_ms",
-        "localization_distance_mm", "method_outlier_upper_limit_mm",
-        "nearest_source_distance_mm", "geometric_excess_mm",
+        sole = 0
+        tied = 0
+
+        for methods_text in per_run["lowest_error_method"]:
+            methods = methods_text.split(";")
+            if method not in methods:
+                continue
+            if len(methods) == 1:
+                sole += 1
+            else:
+                tied += 1
+
+        count_rows.append(
+            {
+                "method": method,
+                "sole_lowest_error_runs": sole,
+                "tied_lowest_error_runs": tied,
+                "total_lowest_error_appearances": sole + tied,
+            }
+        )
+
+    counts = pd.DataFrame(count_rows)
+
+    return per_run, counts
+
+
+def outlier_table(table, multiplier):
+    rows = []
+
+    for method in METHOD_ORDER:
+        subset = table.loc[table["method"] == method].copy()
+
+        if subset.empty:
+            continue
+
+        q25 = float(subset["localization_error_mm"].quantile(0.25))
+        q75 = float(subset["localization_error_mm"].quantile(0.75))
+        iqr = q75 - q25
+        threshold = q75 + multiplier * iqr
+
+        flagged = subset.loc[
+            subset["localization_error_mm"] > threshold
+        ].copy()
+
+        for record in flagged.itertuples(index=False):
+            rows.append(
+                {
+                    "subject": record.subject,
+                    "run": record.run,
+                    "method": method,
+                    "localization_error_mm": float(
+                        record.localization_error_mm
+                    ),
+                    "q25_mm": q25,
+                    "q75_mm": q75,
+                    "iqr_mm": iqr,
+                    "upper_outlier_threshold_mm": threshold,
+                    "iqr_multiplier": multiplier,
+                }
+            )
+
+    return pd.DataFrame(rows)
+
+
+def prepare_output(output_root, overwrite):
+    if output_root.exists():
+        if not overwrite:
+            raise FileExistsError(
+                f"Output directory exists: {output_root}\n"
+                "Use --overwrite to replace Script 13 outputs."
+            )
+        shutil.rmtree(output_root)
+
+    (output_root / "figures").mkdir(parents=True, exist_ok=True)
+
+
+def save_figure_1(table, path, dpi):
+    data = [
+        table.loc[
+            table["method"] == method,
+            "localization_error_mm",
+        ].to_numpy(dtype=float)
+        for method in METHOD_ORDER
     ]
-    return result[columns].sort_values(
-        "localization_distance_mm", ascending=False
+
+    figure, axis = plt.subplots(figsize=(12, 6))
+
+    axis.violinplot(
+        data,
+        positions=np.arange(1, len(METHOD_ORDER) + 1),
+        showmeans=False,
+        showmedians=False,
+        showextrema=False,
     )
 
-
-def analysis_context(passed):
-    runs = passed[["subject", "run"]].drop_duplicates().shape[0]
-    participants = passed["subject"].nunique()
-    return (
-        f"{runs} runs | {participants} participants | all-good EEG montage | "
-        "Target: −2 to +2 ms\n"
-        "Comparable configuration: loose 1.0 | depth 0.1 | "
-        "standard SNR 1 | sparse alpha 40 | LCMV reg 0.10"
+    axis.boxplot(
+        data,
+        positions=np.arange(1, len(METHOD_ORDER) + 1),
+        widths=0.18,
+        showfliers=True,
     )
 
-
-def finish_figure(figure, output, dpi, bottom=0.12, top=0.86):
-    figure.subplots_adjust(left=0.08, right=0.98, bottom=bottom, top=top)
-    figure.savefig(output, dpi=dpi, bbox_inches="tight", facecolor="white")
+    axis.set_xticks(
+        np.arange(1, len(METHOD_ORDER) + 1),
+        [DISPLAY_LABELS[m] for m in METHOD_ORDER],
+        rotation=25,
+        ha="right",
+    )
+    axis.set_ylabel("Localization error (mm)")
+    axis.set_title("Localization error across matched Localize-MI runs")
+    axis.grid(axis="y", alpha=0.25)
+    figure.tight_layout()
+    figure.savefig(path, dpi=dpi, bbox_inches="tight")
     plt.close(figure)
 
 
-def deterministic_strip(axis, values, position, color, seed):
-    rng = np.random.default_rng(seed)
-    jitter = rng.uniform(-0.12, 0.12, len(values))
-    axis.scatter(
-        position + jitter, values, s=18, color="black", alpha=0.55,
-        linewidths=0, zorder=3,
+def save_figure_2(pairwise, path, dpi):
+    plot = pairwise.copy()
+
+    labels = (
+        plot["method_a"].astype(str)
+        + " − "
+        + plot["method_b"].astype(str)
     )
 
+    values = plot["median_a_minus_b_mm"].to_numpy(dtype=float)
 
-def error_distribution_figure(passed, output, dpi, context):
-    figure, axis = plt.subplots(figsize=(13.5, 7.5))
-    data = [
-        passed.loc[passed["method"].astype(str).eq(method),
-                   "localization_distance_mm"].to_numpy()
-        for method in METHOD_ORDER
-    ]
-    boxes = axis.boxplot(
-        data, positions=np.arange(len(METHOD_ORDER)), widths=0.58,
-        patch_artist=True, showfliers=False,
-        medianprops={"color": "black", "linewidth": 1.8},
-        whiskerprops={"color": "#555555"},
-        capprops={"color": "#555555"},
-    )
-    for box, method in zip(boxes["boxes"], METHOD_ORDER):
-        box.set_facecolor(METHOD_COLORS[method])
-        box.set_alpha(0.72)
-    for index, (values, method) in enumerate(zip(data, METHOD_ORDER)):
-        deterministic_strip(axis, values, index, METHOD_COLORS[method], 100 + index)
-    axis.set_xticks(range(len(METHOD_ORDER)), METHOD_ORDER, rotation=20, ha="right")
-    axis.set_ylabel("Localization error (mm)")
-    axis.set_title("Localization error across eight inverse methods\n" + context)
-    axis.grid(axis="y", alpha=0.25)
-    finish_figure(figure, output, dpi, bottom=0.18, top=0.80)
+    height = max(7, 0.30 * len(plot))
+    figure, axis = plt.subplots(figsize=(10, height))
+
+    y = np.arange(len(plot))
+    axis.barh(y, values)
+    axis.axvline(0, linewidth=1)
+    axis.set_yticks(y, labels)
+    axis.set_xlabel("Median paired difference (mm): Method A − Method B")
+    axis.set_title("Pairwise median localization-error differences")
+    axis.grid(axis="x", alpha=0.25)
+    axis.invert_yaxis()
+    figure.tight_layout()
+    figure.savefig(path, dpi=dpi, bbox_inches="tight")
+    plt.close(figure)
 
 
-def participant_heatmap_figure(participants, output, dpi, context):
-    matrix = participants.pivot(
-        index="subject", columns="method", values="median_mm"
+def save_figure_3(participant, path, dpi):
+    pivot = participant.pivot(
+        index="subject",
+        columns="method",
+        values="median_mm",
     ).reindex(columns=METHOD_ORDER)
-    figure, axis = plt.subplots(figsize=(13.5, 6.8))
-    image = axis.imshow(matrix.to_numpy(), cmap="YlOrRd", aspect="auto")
-    axis.set_xticks(range(len(METHOD_ORDER)), METHOD_ORDER, rotation=20, ha="right")
-    axis.set_yticks(range(len(matrix.index)), matrix.index)
-    for row in range(matrix.shape[0]):
-        for column in range(matrix.shape[1]):
-            value = matrix.iat[row, column]
-            axis.text(
-                column, row, f"{value:.1f}", ha="center", va="center",
-                fontsize=9, color=("white" if value > 0.65 * np.nanmax(matrix) else "black"),
+
+    figure, axis = plt.subplots(figsize=(12, 6))
+
+    x = np.arange(len(pivot.index))
+
+    for method in METHOD_ORDER:
+        if method in pivot.columns:
+            axis.plot(
+                x,
+                pivot[method].to_numpy(dtype=float),
+                marker="o",
+                label=DISPLAY_LABELS[method],
             )
-    colorbar = figure.colorbar(image, ax=axis, pad=0.02)
-    colorbar.set_label("Median localization error (mm)")
-    axis.set_title("Participant median localization error\n" + context)
-    axis.set_xlabel("Inverse method")
-    axis.set_ylabel("Participant")
-    finish_figure(figure, output, dpi, bottom=0.18, top=0.78)
 
-
-def additional_change_figure(comparison, output, dpi, context):
-    figure, axis = plt.subplots(figsize=(11.5, 7.5))
-    data = [
-        comparison.loc[comparison["method"].astype(str).eq(method),
-                       "change_from_best_standard_mm"].to_numpy()
-        for method in ADDITIONAL_METHODS
-    ]
-    boxes = axis.boxplot(
-        data, positions=range(len(ADDITIONAL_METHODS)), widths=0.58,
-        patch_artist=True, showfliers=False,
-        medianprops={"color": "black", "linewidth": 1.8},
-    )
-    for index, (box, method, values) in enumerate(
-        zip(boxes["boxes"], ADDITIONAL_METHODS, data)
-    ):
-        box.set_facecolor(METHOD_COLORS[method])
-        box.set_alpha(0.72)
-        deterministic_strip(axis, values, index, METHOD_COLORS[method], 200 + index)
-    axis.axhline(0, color="#333333", linestyle="--", linewidth=1.3)
-    axis.set_xticks(range(len(ADDITIONAL_METHODS)), ADDITIONAL_METHODS)
-    axis.set_ylabel("Additional method − best standard method (mm)")
-    axis.set_title(
-        "Paired change from the best standard method in each run\n" + context
-    )
-    axis.text(
-        0.01, 0.02, "Negative values favour the additional method",
-        transform=axis.transAxes, fontsize=9, color="#444444",
-    )
+    axis.set_xticks(x, pivot.index)
+    axis.set_ylabel("Median localization error (mm)")
+    axis.set_xlabel("Participant")
+    axis.set_title("Median localization error by participant")
     axis.grid(axis="y", alpha=0.25)
-    finish_figure(figure, output, dpi, bottom=0.14, top=0.80)
+    axis.legend(ncol=4, fontsize=8)
+    figure.tight_layout()
+    figure.savefig(path, dpi=dpi, bbox_inches="tight")
+    plt.close(figure)
 
 
-def peak_timing_figure(passed, output, dpi, context):
-    figure, axis = plt.subplots(figsize=(13.5, 7.5))
-    data = [
-        passed.loc[passed["method"].astype(str).eq(method),
-                   "peak_time_ms"].to_numpy()
-        for method in METHOD_ORDER
-    ]
-    boxes = axis.boxplot(
-        data, positions=range(len(METHOD_ORDER)), widths=0.58,
-        patch_artist=True, showfliers=False,
-        medianprops={"color": "black", "linewidth": 1.8},
-    )
-    for index, (box, method, values) in enumerate(
-        zip(boxes["boxes"], METHOD_ORDER, data)
-    ):
-        box.set_facecolor(METHOD_COLORS[method])
-        box.set_alpha(0.72)
-        deterministic_strip(axis, values, index, METHOD_COLORS[method], 300 + index)
-    axis.axhline(0, color="#b2182b", linestyle="--", linewidth=1.4,
-                 label="Stimulation")
-    axis.set_xticks(range(len(METHOD_ORDER)), METHOD_ORDER, rotation=20, ha="right")
-    axis.set_ylabel("Peak time relative to stimulation (ms)")
-    axis.set_title("Selected peak timing\n" + context)
-    axis.legend(loc="upper center", bbox_to_anchor=(0.5, -0.20), frameon=False)
-    axis.grid(axis="y", alpha=0.25)
-    finish_figure(figure, output, dpi, bottom=0.26, top=0.80)
+def save_figure_4(counts, path, dpi):
+    plot = counts.set_index("method").reindex(METHOD_ORDER)
 
+    figure, axis = plt.subplots(figsize=(10, 5.5))
 
-def winner_figure(weighted, output, dpi, context):
-    figure, axis = plt.subplots(figsize=(12.5, 7.2))
     x = np.arange(len(METHOD_ORDER))
-    values = weighted.set_index("method").reindex(METHOD_ORDER)[
-        "weighted_wins"
-    ].to_numpy()
-    bars = axis.bar(
-        x, values, color=[METHOD_COLORS[m] for m in METHOD_ORDER], alpha=0.82
+    values = plot["sole_lowest_error_runs"].to_numpy(dtype=float)
+
+    axis.bar(x, values)
+    axis.set_xticks(
+        x,
+        [DISPLAY_LABELS[m] for m in METHOD_ORDER],
+        rotation=25,
+        ha="right",
     )
-    axis.bar_label(bars, labels=[f"{value:.1f}" for value in values], padding=3)
-    axis.set_xticks(x, METHOD_ORDER, rotation=20, ha="right")
-    axis.set_ylabel("Tie-weighted run wins")
-    axis.set_title("Best method frequency across runs\n" + context)
+    axis.set_ylabel("Runs")
+    axis.set_title("Method with the lowest observed localization error per run")
     axis.grid(axis="y", alpha=0.25)
-    finish_figure(figure, output, dpi, bottom=0.18, top=0.80)
-
-
-def accuracy_stability_figure(summary, output, dpi, context):
-    figure, axis = plt.subplots(figsize=(11.5, 7.5))
-    for _, row in summary.iterrows():
-        method = row["method"]
-        axis.scatter(
-            row["median_mm"], row["interquartile_range_mm"],
-            s=115, color=METHOD_COLORS[method], edgecolor="black", linewidth=0.7,
-        )
-    axis.set_xlabel("Median localization error (mm)")
-    axis.set_ylabel("Interquartile range (mm)")
-    axis.set_title("Accuracy and between-run stability\n" + context)
-    axis.grid(alpha=0.25)
-    handles = [
-        Line2D(
-            [0], [0], marker="o", linestyle="none", markersize=8,
-            markerfacecolor=METHOD_COLORS[method], markeredgecolor="black",
-            label=method,
-        )
-        for method in METHOD_ORDER
-    ]
-    axis.legend(
-        handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.16),
-        ncol=4, frameon=False,
-    )
-    finish_figure(figure, output, dpi, bottom=0.24, top=0.80)
-
-
-def save_manifest(output_dir, table, passed, summary, winners):
-    payload = {
-        "analysis_scope": "comparable fixed configuration across eight methods",
-        "selection_policy": (
-            "Shared loose and depth match the standard-method baseline; "
-            "LCMV regularization was selected in the four-run pilot."
-        ),
-        "configuration": {
-            "montage": "all_good",
-            "target_tmin_s": -0.002,
-            "target_tmax_s": 0.002,
-            "noise_covariance_tmin_s": -0.250,
-            "noise_covariance_tmax_s": -0.050,
-            "shared_loose": 1.0,
-            "shared_depth": 0.1,
-            "standard_snr": 1.0,
-            "sparse_alpha": 40.0,
-            "irmxne_iterations": 10,
-            "lcmv_reg": 0.10,
-            "lcmv_data_covariance_method": "shrunk",
-            "lcmv_data_tmin_s": -0.005,
-            "lcmv_data_tmax_s": 0.005,
-        },
-        "participants": int(table["subject"].nunique()),
-        "runs": int(table[["subject", "run"]].drop_duplicates().shape[0]),
-        "rows": int(len(table)),
-        "successful_rows": int(len(passed)),
-        "failed_rows": int(len(table) - len(passed)),
-        "methods": list(METHOD_ORDER),
-        "runs_with_tied_winners": int(winners["is_tie"].sum()),
-        "median_error_mm": {
-            str(row["method"]): float(row["median_mm"])
-            for _, row in summary.iterrows()
-        },
-    }
-    path = output_dir / "comparable_summary_manifest.json"
-    with path.open("w", encoding="utf-8") as stream:
-        json.dump(payload, stream, indent=2)
-        stream.write("\n")
+    figure.tight_layout()
+    figure.savefig(path, dpi=dpi, bbox_inches="tight")
+    plt.close(figure)
 
 
 def main():
     args = parse_args()
-    validate_args(args)
-    output_dir = args.output_dir.expanduser().resolve()
-    table_dir = output_dir / "tables"
-    figure_dir = output_dir / "figures"
-    table_dir.mkdir(parents=True, exist_ok=True)
-    figure_dir.mkdir(parents=True, exist_ok=True)
 
-    table, runs = load_and_validate(args)
-    passed = successful(table)
-    summary = method_summary(table)
-    participants = participant_summary(passed)
-    timing = peak_timing_summary(passed)
-    pairs = paired_table(passed, args.tie_tolerance)
-    winners = run_winners(passed, args.tie_tolerance)
-    weighted = weighted_winner_summary(winners)
-    comparison = additional_vs_best_standard(passed, args.tie_tolerance)
-    comparison_summary = additional_comparison_summary(comparison)
-    diagnostics = diagnostic_summary(passed)
-    outliers = identify_outliers(passed)
-    context = analysis_context(passed)
+    if args.outlier_iqr_multiplier < 0:
+        raise ValueError("--outlier-iqr-multiplier must be non-negative.")
 
-    table.to_csv(table_dir / "01_combined_comparable_results.csv", index=False)
-    summary.to_csv(table_dir / "02_method_summary.csv", index=False)
-    participants.to_csv(table_dir / "03_participant_summary.csv", index=False)
-    pairs.to_csv(table_dir / "04_pairwise_differences.csv", index=False)
-    winners.to_csv(table_dir / "05_run_winners.csv", index=False)
-    weighted.to_csv(table_dir / "06_weighted_winner_summary.csv", index=False)
-    timing.to_csv(table_dir / "07_peak_timing_summary.csv", index=False)
-    comparison.to_csv(
-        table_dir / "08_additional_vs_best_standard.csv", index=False
-    )
-    comparison_summary.to_csv(
-        table_dir / "09_additional_vs_standard_summary.csv", index=False
-    )
-    diagnostics.to_csv(
-        table_dir / "10_method_diagnostics_summary.csv", index=False
-    )
-    outliers.to_csv(table_dir / "11_outlier_runs.csv", index=False)
+    inputs = {
+        "inverse": args.inverse_results.expanduser().resolve(),
+        "ecd": args.ecd_results.expanduser().resolve(),
+        "mxne": args.mxne_results.expanduser().resolve(),
+        "rap_music": args.rap_music_results.expanduser().resolve(),
+        "lcmv": args.lcmv_results.expanduser().resolve(),
+    }
 
-    error_distribution_figure(
-        passed, figure_dir / "01_localization_error_distributions.png",
-        args.dpi, context,
-    )
-    participant_heatmap_figure(
-        participants, figure_dir / "02_participant_median_heatmap.png",
-        args.dpi, context,
-    )
-    additional_change_figure(
-        comparison, figure_dir / "03_additional_vs_best_standard.png",
-        args.dpi, context,
-    )
-    peak_timing_figure(
-        passed, figure_dir / "04_peak_time_distributions.png",
-        args.dpi, context,
-    )
-    winner_figure(
-        weighted, figure_dir / "05_weighted_winner_frequency.png",
-        args.dpi, context,
-    )
-    accuracy_stability_figure(
-        summary, figure_dir / "06_accuracy_stability.png",
-        args.dpi, context,
-    )
-    save_manifest(output_dir, table, passed, summary, winners)
+    for path in inputs.values():
+        if not path.is_file():
+            raise FileNotFoundError(path)
 
-    print("EIGHT-METHOD COMPARABLE SUMMARY COMPLETE")
-    print("----------------------------------------")
-    print(f"Participants       : {table['subject'].nunique()}")
-    print(f"Runs               : {len(runs)}")
-    print(f"Methods            : {len(METHOD_ORDER)}")
-    print(f"Rows               : {len(table)}")
-    print(f"Successful rows    : {len(passed)}")
-    print(f"Failed rows        : {len(table) - len(passed)}")
-    print(f"Tied winner runs   : {int(winners['is_tie'].sum())}")
-    print("Scope              : comparable fixed configurations")
-    print(f"Tables             : {table_dir}")
-    print(f"Figures            : {figure_dir}")
-    print("\nMedian localization error (mm):")
-    print(summary[["method", "median_mm"]].to_string(index=False))
+    output_root = args.output_root.expanduser().resolve()
+    prepare_output(output_root, args.overwrite)
+
+    original, original_failed = standardize_original(inputs["inverse"])
+    ecd, ecd_failed = standardize_additional(
+        inputs["ecd"], "Continuous-ECD"
+    )
+    mxne, mxne_failed = standardize_additional(inputs["mxne"], "MxNE")
+    rap_music, rap_failed = standardize_additional(
+        inputs["rap_music"], "RAP-MUSIC"
+    )
+    lcmv, lcmv_failed = standardize_additional(inputs["lcmv"], "LCMV")
+
+    long = pd.concat(
+        [original, ecd, mxne, rap_music, lcmv],
+        ignore_index=True,
+    )
+
+    long["method"] = pd.Categorical(
+        long["method"],
+        categories=METHOD_ORDER,
+        ordered=True,
+    )
+
+    long = long.sort_values(
+        ["subject", "run", "method"]
+    ).reset_index(drop=True)
+
+    counts = validate_long_table(long, args.allow_incomplete)
+
+    if args.allow_incomplete:
+        complete_keys = counts.loc[
+            counts == len(METHOD_ORDER)
+        ].index
+        complete_index = pd.MultiIndex.from_tuples(
+            complete_keys,
+            names=["subject", "run"],
+        )
+        long_index = pd.MultiIndex.from_frame(long[["subject", "run"]])
+        paired_long = long.loc[long_index.isin(complete_index)].copy()
+    else:
+        paired_long = long.copy()
+
+    wide = (
+        paired_long.pivot(
+            index=["subject", "run"],
+            columns="method",
+            values="localization_error_mm",
+        )
+        .reindex(columns=METHOD_ORDER)
+        .sort_index()
+    )
+
+    summary = method_summary(paired_long)
+    pairwise = pairwise_summary(wide)
+    participants = participant_summary(paired_long)
+    per_run, lowest_counts = lowest_error_tables(wide)
+    outliers = outlier_table(
+        paired_long,
+        args.outlier_iqr_multiplier,
+    )
+
+    long.to_csv(
+        output_root / "07_matched_results_long.csv",
+        index=False,
+    )
+
+    wide.reset_index().to_csv(
+        output_root / "08_matched_results_wide.csv",
+        index=False,
+    )
+
+    summary.to_csv(
+        output_root / "01_method_summary.csv",
+        index=False,
+    )
+
+    pairwise.to_csv(
+        output_root / "02_pairwise_differences.csv",
+        index=False,
+    )
+
+    participants.to_csv(
+        output_root / "03_participant_summary.csv",
+        index=False,
+    )
+
+    per_run.to_csv(
+        output_root / "04_lowest_error_method_per_run.csv",
+        index=False,
+    )
+
+    lowest_counts.to_csv(
+        output_root / "05_lowest_error_counts.csv",
+        index=False,
+    )
+
+    outliers.to_csv(
+        output_root / "06_outlier_runs.csv",
+        index=False,
+    )
+
+    figures = output_root / "figures"
+
+    save_figure_1(
+        paired_long,
+        figures / "01_localization_error_distribution.png",
+        args.dpi,
+    )
+
+    save_figure_2(
+        pairwise,
+        figures / "02_pairwise_median_differences.png",
+        args.dpi,
+    )
+
+    save_figure_3(
+        participants,
+        figures / "03_median_error_by_participant.png",
+        args.dpi,
+    )
+
+    save_figure_4(
+        lowest_counts,
+        figures / "04_lowest_error_counts.png",
+        args.dpi,
+    )
+
+    print("=" * 78)
+    print("SCRIPT 13 — ALL-METHOD BASELINE SUMMARY")
+    print("=" * 78)
+    print(f"Methods                 : {len(METHOD_ORDER)}")
+    print(f"Rows loaded             : {len(long)}")
+    print(f"Unique runs             : {counts.size}")
+    print(
+        "Complete 8-method runs : "
+        f"{int((counts == len(METHOD_ORDER)).sum())}"
+    )
+    print(f"Paired rows analyzed    : {len(paired_long)}")
+    print(
+        "Filtered FAIL rows     : "
+        f"{original_failed + ecd_failed + mxne_failed + rap_failed + lcmv_failed}"
+    )
+    print(f"Output                  : {output_root}")
+
+    print("\nMETHOD SUMMARY")
+    print(
+        summary[
+            [
+                "method",
+                "runs",
+                "mean_mm",
+                "standard_deviation_mm",
+                "median_mm",
+                "q25_mm",
+                "q75_mm",
+                "minimum_mm",
+                "maximum_mm",
+            ]
+        ].to_string(
+            index=False,
+            float_format=lambda value: f"{value:.2f}",
+        )
+    )
+
+    print("\nLOWEST-ERROR COUNTS")
+    print(lowest_counts.to_string(index=False))
+
+    print("\nFigures:")
+    for path in sorted(figures.glob("*.png")):
+        print(f"  {path}")
 
 
 if __name__ == "__main__":
