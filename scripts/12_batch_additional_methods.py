@@ -1,193 +1,161 @@
 #!/usr/bin/env python3
-"""Run the pilot-selected additional inverse methods across Localize-MI.
+"""
+12_batch_additional_methods.py
 
-This is the all-run companion to Script 11.  It deliberately imports the
-finalized Script 11 implementation so the pilot and batch calculations use
-identical ECD-grid, LCMV, MxNE, irMxNE, metric, and figure code.
+Run the FINAL BASELINE configuration of one or more additional EEG source-
+localization methods across all released Localize-MI runs.
 
-Selected configuration
-----------------------
-* all released runs and all good EEG channels
-* target window: -2 to +2 ms
-* ECD-grid: maximum whitened goodness of fit
-* LCMV: regularization 0.10 and shrunk data covariance from -5 to +5 ms
-* MxNE and irMxNE: shared alpha 40, loose 1.0, and depth 0.1
-* irMxNE: 10 iterations
+This is the all-run companion to:
+    scripts/11_additional_method_pilot.py
 
-Loose and depth are shared by MxNE and irMxNE to keep their comparison even.
-The loose and depth values also match the baseline used by the basic inverse
-methods. They are not parameters of ECD-grid or LCMV. LCMV regularization 0.10
-was retained from the balanced four-run parameter pilot.
+IMPORTANT DESIGN CHOICE
+-----------------------
+Script 12 does NOT re-implement the inverse methods. It imports Script 11 so
+that the pilot and all-run experiments use exactly the same scientific code.
+Only the run discovery, checkpointing, batch output, and QC figures are added.
 
-The CSV is atomically checkpointed after every solution.  ``--resume`` skips
-matching successful rows and retries matching failed rows.  ``--overwrite``
-starts the selected output again.  Diagnostic figures are disabled by default
-and, when requested, are limited to four representative runs unless explicit
-``--figure-case`` selections are supplied.
+BASELINE PARAMETERS
+-------------------
+Shared:
+    montage                  = all good EEG channels
+    noise covariance window  = -250 to -50 ms
+    noise covariance method  = auto (MNE chooses estimator by CV)
+    target window            = -2 to +2 ms
 
-Examples
---------
-Run a one-run validation first::
+Continuous-ECD:
+    position/orientation     = unconstrained continuous dipole fitting
+    ecd_min_dist             = 5 mm
+    primary selection        = maximum GOF in target window
+    BEM                      = subject-specific 3-layer, ico=4
+    conductivity             = brain 0.3 / skull 0.006 / scalp 0.3 S/m
 
+MxNE:
+    alpha                    = 40
+    loose                    = 1.0
+    depth                    = 0.1
+    n_mxne_iter              = 1
+    primary selection        = maximum source amplitude
+
+RAP-MUSIC:
+    n_dipoles                = 1
+    primary selection        = maximum GOF in target window
+
+LCMV:
+    reg                      = 0.05
+    data covariance          = shrunk, -5 to +5 ms
+    pick_ori                 = max-power
+    weight_norm              = unit-noise-gain-invariant
+    primary selection        = maximum source amplitude
+
+These are BASELINE values, not optimized values. Parameter exploration belongs
+in Script 14.
+
+TERMINAL EXAMPLES
+-----------------
+Recommended: run ONE METHOD AT A TIME.
+
+Continuous ECD, all released runs:
     python scripts/12_batch_additional_methods.py \
-        --case sub-01 run-01 \
-        --output outputs/additional_methods_comparable/test_sub01_run01.csv \
-        --overwrite --quiet
+        --method ecd --overwrite
 
-Run all 61 released runs::
+MxNE, all released runs:
+    python scripts/12_batch_additional_methods.py \
+        --method mxne --overwrite
 
-    python scripts/12_batch_additional_methods.py --quiet
+RAP-MUSIC, all released runs:
+    python scripts/12_batch_additional_methods.py \
+        --method rap_music --overwrite
 
-Resume an interrupted batch::
+LCMV, all released runs:
+    python scripts/12_batch_additional_methods.py \
+        --method lcmv --overwrite
 
-    python scripts/12_batch_additional_methods.py --resume --quiet
+Resume an interrupted MxNE batch:
+    python scripts/12_batch_additional_methods.py \
+        --method mxne --resume
 
-Default output
---------------
-outputs/additional_methods_comparable/additional_method_results.csv
-outputs/additional_methods_comparable/additional_method_manifest.json
+Quick one-run validation before a full batch:
+    python scripts/12_batch_additional_methods.py \
+        --method mxne --case sub-01 run-01 --overwrite
+
+Run only one participant:
+    python scripts/12_batch_additional_methods.py \
+        --method lcmv --subject sub-07 --overwrite
+
+Run all four methods together (supported, but one-by-one is easier to manage):
+    python scripts/12_batch_additional_methods.py \
+        --method all --overwrite
+
+Quiet MNE logging:
+    python scripts/12_batch_additional_methods.py \
+        --method mxne --overwrite --quiet
+
+Disable automatic QC figures:
+    python scripts/12_batch_additional_methods.py \
+        --method mxne --overwrite --no-figures
+
+DEFAULT OUTPUT ROOT
+-------------------
+    outputs/12_additional_methods_all_runs/
+
+When one method is selected, the main CSV is method-specific, e.g.:
+    12_continuous_ecd_all_runs.csv
+    12_mxne_all_runs.csv
+    12_rap_music_all_runs.csv
+    12_lcmv_all_runs.csv
+
+This prevents one method from overwriting another when methods are run
+separately.
+
+QC figures are saved to:
+    outputs/12_additional_methods_all_runs/figures/
+
+The two QC figures are intentionally simple:
+    1. localization-error distribution (histogram)
+    2. localization error sorted across runs
+
+Detailed comparative/statistical figures belong in Script 13 (summary), not
+here.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
-from datetime import datetime, timezone
 import importlib.util
-import json
-import os
-from pathlib import Path
 import re
 import sys
 import time
+from pathlib import Path
 
-import mne
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 
 PROJECT = Path(__file__).resolve().parents[1]
-SCRIPT11 = PROJECT / "scripts/11_additional_method_pilot.py"
-DEFAULT_OUTPUT = (
-    PROJECT / "outputs/additional_methods_comparable/additional_method_results.csv"
-)
-DEFAULT_FIGURE_CASES = (
-    ("sub-01", "run-01"),
-    ("sub-07", "run-07"),
-    ("sub-05", "run-06"),
-    ("sub-07", "run-05"),
-)
+SCRIPT11 = PROJECT / "scripts" / "11_additional_method_pilot.py"
+DEFAULT_DATASET = PROJECT / "data" / "Localize-MI"
+DEFAULT_OUTPUT_ROOT = PROJECT / "outputs" / "12_additional_methods_all_runs"
 
 
 def load_script11():
-    """Load Script 11 without duplicating its scientific implementation."""
+    """Import the finalized Script 11 implementation."""
     if not SCRIPT11.is_file():
         raise FileNotFoundError(
-            f"Finalized Script 11 was not found: {SCRIPT11}"
+            f"Required Script 11 was not found: {SCRIPT11}\n"
+            "Keep the revised Script 11 in scripts/."
         )
-    specification = importlib.util.spec_from_file_location(
-        "localize_mi_script11", SCRIPT11
-    )
-    if specification is None or specification.loader is None:
-        raise ImportError(f"Could not load Script 11: {SCRIPT11}")
-    module = importlib.util.module_from_spec(specification)
-    sys.modules[specification.name] = module
-    specification.loader.exec_module(module)
+    spec = importlib.util.spec_from_file_location("localize_mi_script11", SCRIPT11)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Could not import {SCRIPT11}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
     return module
 
 
 pilot = load_script11()
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--dataset", type=Path, default=PROJECT / "data/Localize-MI",
-        help="Localize-MI BIDS root.",
-    )
-    parser.add_argument("--task", default="seegstim")
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument(
-        "--manifest", type=Path,
-        help="Default: additional_method_manifest.json beside the CSV.",
-    )
-    parser.add_argument(
-        "--baseline-results", type=Path,
-        default=PROJECT / "outputs/tables/inverse_method_results.csv",
-        help="Script 05 table used for descriptive reference comparisons.",
-    )
-    parser.add_argument(
-        "--case", nargs=2, metavar=("SUBJECT", "RUN"), action="append",
-        help="Repeat to process explicit cases instead of discovering all runs.",
-    )
-    parser.add_argument(
-        "--subject", action="append",
-        help="Repeat to restrict automatically discovered runs by participant.",
-    )
-    parser.add_argument(
-        "--run", action="append",
-        help="Repeat to restrict automatically discovered runs by run label.",
-    )
-    parser.add_argument(
-        "--method", type=pilot.normalize_method, action="append",
-        help="Repeat to select methods; default: all four additional methods.",
-    )
-    parser.add_argument("--max-runs", type=int)
-
-    parser.add_argument(
-        "--loose", type=float, default=1.0,
-        help=("Shared MxNE/irMxNE loose value, matching the basic-method "
-              "baseline. Default: 1.0."),
-    )
-    parser.add_argument("--depth", type=float, default=0.1)
-    parser.add_argument("--lcmv-reg", type=float, default=0.10)
-    parser.add_argument("--lcmv-data-tmin", type=float, default=-0.005)
-    parser.add_argument("--lcmv-data-tmax", type=float, default=0.005)
-    parser.add_argument(
-        "--lcmv-data-covariance-method", default="shrunk",
-        choices=("empirical", "shrunk", "diagonal_fixed", "auto"),
-    )
-    parser.add_argument(
-        "--mxne-alpha", type=pilot.parse_alpha, default=40.0,
-        help="Sparse regularization in [0, 100), or 'sure'. Default: 40.",
-    )
-    parser.add_argument("--irmxne-iterations", type=int, default=10)
-
-    parser.add_argument("--resume", action="store_true")
-    parser.add_argument("--overwrite", action="store_true")
-    parser.add_argument("--quiet", action="store_true")
-    parser.add_argument(
-        "--save-figures", action="store_true",
-        help="Save figures only for representative or --figure-case runs.",
-    )
-    parser.add_argument(
-        "--figure-case", nargs=2, metavar=("SUBJECT", "RUN"), action="append",
-        help="Repeat to choose runs receiving figures.",
-    )
-    parser.add_argument(
-        "--figures-dir", type=Path,
-        help="Default: selected_run_figures beside the CSV.",
-    )
-    return parser.parse_args()
-
-
-def validate_args(args):
-    if args.resume and args.overwrite:
-        raise ValueError("Choose --resume or --overwrite, not both.")
-    if args.max_runs is not None and args.max_runs < 1:
-        raise ValueError("--max-runs must be at least 1.")
-    if not 0 <= args.loose <= 1:
-        raise ValueError("--loose must be between 0 and 1.")
-    if not 0 <= args.depth <= 1:
-        raise ValueError("--depth must be between 0 and 1.")
-    if args.lcmv_reg < 0:
-        raise ValueError("--lcmv-reg must be non-negative.")
-    if args.lcmv_data_tmin >= args.lcmv_data_tmax:
-        raise ValueError(
-            "--lcmv-data-tmin must be earlier than --lcmv-data-tmax."
-        )
-    if args.irmxne_iterations <= 1:
-        raise ValueError("--irmxne-iterations must be greater than 1.")
 
 
 def natural_key(text):
@@ -197,17 +165,19 @@ def natural_key(text):
     )
 
 
-def discover_runs(dataset, task, subjects=None, runs=None):
-    """Find released EEG epoch arrays and return natural-sorted cases."""
-    root = dataset / "derivatives/epochs"
+def discover_runs(dataset, task="seegstim", subjects=None, runs=None):
+    """Discover released Localize-MI EEG epoch arrays."""
+    root = dataset / "derivatives" / "epochs"
     if not root.is_dir():
         raise NotADirectoryError(f"Epoch derivatives not found: {root}")
+
     pattern = re.compile(
         rf"^(sub-\d+)_task-{re.escape(task)}_(run-\d+)_epochs\.npy$"
     )
     selected_subjects = set(subjects or ())
     selected_runs = set(runs or ())
     cases = set()
+
     for path in root.glob("sub-*/eeg/*_epochs.npy"):
         match = pattern.match(path.name)
         if match is None:
@@ -218,224 +188,217 @@ def discover_runs(dataset, task, subjects=None, runs=None):
         if selected_runs and run not in selected_runs:
             continue
         cases.add((subject, run))
-    return sorted(cases, key=lambda item: (natural_key(item[0]), natural_key(item[1])))
+
+    return sorted(
+        cases,
+        key=lambda item: (natural_key(item[0]), natural_key(item[1])),
+    )
 
 
-def atomic_json(path, payload):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(path.name + ".tmp")
-    with temporary.open("w", encoding="utf-8") as stream:
-        json.dump(payload, stream, indent=2, sort_keys=True)
-        stream.write("\n")
-    os.replace(temporary, path)
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
+    parser.add_argument("--task", default="seegstim")
+    parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
+
+    parser.add_argument(
+        "--method",
+        type=pilot.normalize_method,
+        action="append",
+        help="Repeat if needed. Choices: ecd, mxne, rap_music, lcmv, all.",
+    )
+    parser.add_argument(
+        "--case", nargs=2, metavar=("SUBJECT", "RUN"), action="append"
+    )
+    parser.add_argument("--subject", action="append")
+    parser.add_argument("--run", action="append")
+    parser.add_argument("--max-runs", type=int)
+
+    # Baseline parameters: intentionally identical to revised Script 11.
+    parser.add_argument("--ecd-min-dist", type=float, default=5.0)
+    parser.add_argument("--mxne-alpha", type=pilot.parse_alpha, default=40.0)
+    parser.add_argument("--mxne-loose", type=float, default=1.0)
+    parser.add_argument("--mxne-depth", type=float, default=0.1)
+    parser.add_argument("--rap-music-n-dipoles", type=int, default=1)
+    parser.add_argument("--lcmv-reg", type=float, default=0.05)
+    parser.add_argument("--lcmv-data-tmin", type=float, default=-0.005)
+    parser.add_argument("--lcmv-data-tmax", type=float, default=0.005)
+    parser.add_argument(
+        "--lcmv-data-covariance-method",
+        default="shrunk",
+        choices=("empirical", "shrunk", "diagonal_fixed", "auto"),
+    )
+
+    parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--no-figures", action="store_true")
+    return parser.parse_args()
 
 
-def configuration(args, dataset, methods, cases):
+def validate_args(args):
+    if args.resume and args.overwrite:
+        raise ValueError("Choose --resume or --overwrite, not both.")
+    if args.case and (args.subject or args.run):
+        raise ValueError("Do not combine --case with --subject or --run.")
+    if args.max_runs is not None and args.max_runs < 1:
+        raise ValueError("--max-runs must be at least 1.")
+    if args.ecd_min_dist < 0:
+        raise ValueError("--ecd-min-dist must be non-negative.")
+    if not 0 <= args.mxne_loose <= 1:
+        raise ValueError("--mxne-loose must be between 0 and 1.")
+    if not 0 <= args.mxne_depth <= 1:
+        raise ValueError("--mxne-depth must be between 0 and 1.")
+    if args.rap_music_n_dipoles < 1:
+        raise ValueError("--rap-music-n-dipoles must be at least 1.")
+    if args.lcmv_reg < 0:
+        raise ValueError("--lcmv-reg must be non-negative.")
+    if args.lcmv_data_tmin >= args.lcmv_data_tmax:
+        raise ValueError("LCMV data covariance tmin must be earlier than tmax.")
+
+
+def method_slug(method):
     return {
-        "design": "shared sparse parameters matching basic-method baseline",
-        "selection_pilot": "Script 14 balanced four-run pilot",
-        "dataset": str(dataset),
-        "task": args.task,
-        "methods": list(methods),
-        "cases": [list(case) for case in cases],
-        "montage": "all_good",
-        "target_tmin_s": pilot.TARGET_TMIN,
-        "target_tmax_s": pilot.TARGET_TMAX,
-        "noise_covariance_tmin_s": pilot.COVARIANCE_TMIN,
-        "noise_covariance_tmax_s": pilot.COVARIANCE_TMAX,
-        "loose": args.loose,
-        "depth": args.depth,
-        "lcmv_reg": args.lcmv_reg,
-        "lcmv_data_tmin_s": args.lcmv_data_tmin,
-        "lcmv_data_tmax_s": args.lcmv_data_tmax,
-        "lcmv_data_covariance_method": args.lcmv_data_covariance_method,
-        "lcmv_pick_ori": "max-power",
-        "lcmv_weight_norm": "unit-noise-gain-invariant",
-        "mxne_alpha": args.mxne_alpha,
-        "irmxne_iterations": args.irmxne_iterations,
-    }
+        "Continuous-ECD": "continuous_ecd",
+        "MxNE": "mxne",
+        "RAP-MUSIC": "rap_music",
+        "LCMV": "lcmv",
+    }[method]
 
 
-def manifest_payload(config, output, rows):
-    return {
-        "script": Path(__file__).name,
-        "scientific_implementation": SCRIPT11.name,
-        "generated_utc": datetime.now(timezone.utc).isoformat(),
-        "output_csv": str(output),
-        "configuration": config,
-        "software": {
-            "python": sys.version.split()[0],
-            "mne": mne.__version__,
-            "numpy": np.__version__,
-            "pandas": pd.__version__,
-        },
-        "rows": len(rows),
-        "passes": sum(str(row.get("status")) == "PASS" for row in rows),
-        "failures": sum(str(row.get("status")) == "FAIL" for row in rows),
-    }
+def output_file_for(output_root, methods):
+    if len(methods) == 1:
+        name = f"12_{method_slug(methods[0])}_all_runs.csv"
+    else:
+        name = "12_all_methods_all_runs.csv"
+    return output_root / name
 
 
-def load_rows(output, resume, overwrite):
-    if not output.exists() or overwrite:
+def read_existing_rows(output_file, resume, overwrite, expected_keys):
+    if overwrite or not output_file.exists():
         return []
     if not resume:
         raise FileExistsError(
-            f"Output exists: {output}. Use --resume or --overwrite."
+            f"Output already exists: {output_file}\n"
+            "Use --resume or --overwrite."
         )
-    with output.open(encoding="utf-8", newline="") as stream:
+
+    with output_file.open(encoding="utf-8", newline="") as stream:
         reader = csv.DictReader(stream)
         if reader.fieldnames != list(pilot.FIELDNAMES):
             raise ValueError(
-                "Existing CSV columns do not match the finalized Script 11."
+                "Existing CSV columns do not match revised Script 11."
             )
-        return list(reader)
+        rows = list(reader)
 
-
-def same_number(observed, expected):
-    try:
-        return bool(np.isclose(float(observed), float(expected)))
-    except (TypeError, ValueError):
-        return False
-
-
-def row_matches(row, subject, run, method, args):
-    """Only skip a PASS produced with this exact baseline configuration."""
-    if (
-        str(row.get("status")) != "PASS"
-        or str(row.get("subject")) != subject
-        or str(row.get("run")) != run
-        or str(row.get("method")) != method
-        or str(row.get("montage")) != "all_good"
-    ):
-        return False
-    common = {
-        "target_tmin_s": pilot.TARGET_TMIN,
-        "target_tmax_s": pilot.TARGET_TMAX,
-        "covariance_tmin_s": pilot.COVARIANCE_TMIN,
-        "covariance_tmax_s": pilot.COVARIANCE_TMAX,
-    }
-    if method in ("MxNE", "irMxNE"):
-        common.update(
-            loose=args.loose,
-            depth=args.depth,
-            mxne_alpha=args.mxne_alpha,
-            mxne_iterations=(1 if method == "MxNE" else args.irmxne_iterations),
+    keys = [pilot.row_key(row) for row in rows]
+    if len(keys) != len(set(keys)):
+        raise ValueError("Existing CSV contains duplicate method-run rows.")
+    unexpected = set(keys) - set(expected_keys)
+    if unexpected:
+        raise ValueError(
+            "Existing CSV contains rows outside the current selection. "
+            "Use --overwrite or a different selection."
         )
-    elif method == "LCMV":
-        common.update(
-            lcmv_reg=args.lcmv_reg,
-            lcmv_data_tmin_s=args.lcmv_data_tmin,
-            lcmv_data_tmax_s=args.lcmv_data_tmax,
-        )
-        if str(row.get("data_covariance_method")) != args.lcmv_data_covariance_method:
-            return False
-    return all(same_number(row.get(column), value) for column, value in common.items())
+
+    # PASS rows are complete; failed rows are retried on resume.
+    return [row for row in rows if str(row.get("status")) == "PASS"]
 
 
-def remove_solution(rows, subject, run, method):
-    """Remove a prior matching solution before retrying or replacing it."""
-    return [
-        row for row in rows
-        if pilot.row_key(row) != (subject, run, method)
-    ]
-
-
-def base_row(subject, run, method, args, loaded=None, stimulation=None,
-             noise_covariance=None, reference=None):
+def base_row(subject, run, method, loaded, epochs, noise_covariance, evoked,
+             stimulation, ground_truth_mri):
     row = dict.fromkeys(pilot.FIELDNAMES, "")
     row.update(
         subject=subject,
         run=run,
         method=method,
         montage="all_good",
-        target_tmin_s=pilot.TARGET_TMIN,
-        target_tmax_s=pilot.TARGET_TMAX,
+        epochs=len(loaded.epochs),
+        all_channels=len(loaded.epochs.ch_names),
+        bad_channels=len(loaded.epochs.info["bads"]),
+        good_channels=len(epochs.ch_names),
+        sampling_frequency_hz=float(epochs.info["sfreq"]),
+        covariance_method=str(noise_covariance.get("method", "auto")),
         covariance_tmin_s=pilot.COVARIANCE_TMIN,
         covariance_tmax_s=pilot.COVARIANCE_TMAX,
+        target_tmin_s=pilot.TARGET_TMIN,
+        target_tmax_s=pilot.TARGET_TMAX,
+        target_samples=len(evoked.times),
+        stimulation_pair=stimulation.pair,
+        hemisphere=stimulation.hemisphere,
+        ground_truth_x_mm=float(ground_truth_mri[0] * 1000),
+        ground_truth_y_mm=float(ground_truth_mri[1] * 1000),
+        ground_truth_z_mm=float(ground_truth_mri[2] * 1000),
     )
-    if loaded is not None:
-        row.update(
-            n_good_channels=(
-                len(loaded.epochs.ch_names) - len(loaded.epochs.info["bads"])
-            ),
-            epochs=len(loaded.epochs),
-            sampling_frequency_hz=float(loaded.epochs.info["sfreq"]),
-            evaluated_sources=pilot.count_forward_sources(loaded.forward),
-        )
-    if stimulation is not None:
-        row.update(
-            stimulation_pair=stimulation.pair,
-            hemisphere=stimulation.hemisphere,
-        )
-    if noise_covariance is not None:
-        row["covariance_method_selected"] = str(
-            noise_covariance.get("method", "auto")
-        )
-    if reference is not None:
-        row.update(
-            reference_method=reference[0],
-            reference_distance_mm=reference[1],
-        )
-    if method == "LCMV":
-        row.update(
-            data_covariance_method=args.lcmv_data_covariance_method,
-            lcmv_data_tmin_s=args.lcmv_data_tmin,
-            lcmv_data_tmax_s=args.lcmv_data_tmax,
-            lcmv_reg=args.lcmv_reg,
-            lcmv_pick_ori="max-power",
-            lcmv_weight_norm="unit-noise-gain-invariant",
-        )
-    elif method in ("MxNE", "irMxNE"):
-        row.update(
-            loose=args.loose,
-            depth=args.depth,
-            mxne_alpha=args.mxne_alpha,
-            mxne_iterations=(1 if method == "MxNE" else args.irmxne_iterations),
-        )
-    elif method == "ECD-grid":
-        row["ecd_selection_criterion"] = "maximum whitened GOF"
     return row
 
 
-def record_failure(rows, output, manifest, config, row, exc, started):
-    row.update(
-        status="FAIL",
-        error_type=type(exc).__name__,
-        error_message=str(exc),
-        runtime_seconds=round(time.monotonic() - started, 3),
+def make_qc_figures(output_file, figure_dir):
+    """Create lightweight QC figures; comparative analysis stays in Script 13."""
+    table = pd.read_csv(output_file)
+    table = table.loc[table["status"] == "PASS"].copy()
+    table["selected_localization_error_mm"] = pd.to_numeric(
+        table["selected_localization_error_mm"], errors="coerce"
     )
-    rows = remove_solution(rows, row["subject"], row["run"], row["method"])
-    rows.append(row)
-    pilot.save_rows(output, rows)
-    atomic_json(manifest, manifest_payload(config, output, rows))
-    return rows
+    table = table.dropna(subset=["selected_localization_error_mm"])
+    if table.empty:
+        return []
+
+    figure_dir.mkdir(parents=True, exist_ok=True)
+    saved = []
+
+    # Figure 1: error distribution.
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for method, group in table.groupby("method", sort=False):
+        ax.hist(
+            group["selected_localization_error_mm"].to_numpy(),
+            bins="auto",
+            alpha=0.45,
+            label=method,
+        )
+    ax.set_xlabel("Localization error (mm)")
+    ax.set_ylabel("Number of runs")
+    ax.set_title("Baseline localization-error distribution")
+    if table["method"].nunique() > 1:
+        ax.legend(frameon=False)
+    fig.tight_layout()
+    path = figure_dir / f"{output_file.stem}_error_distribution.png"
+    fig.savefig(path, dpi=180, bbox_inches="tight")
+    plt.close(fig)
+    saved.append(path)
+
+    # Figure 2: sorted run errors, useful for spotting outliers.
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for method, group in table.groupby("method", sort=False):
+        values = np.sort(group["selected_localization_error_mm"].to_numpy())
+        ax.plot(np.arange(1, len(values) + 1), values, marker="o",
+                markersize=3, linewidth=1, label=method)
+    ax.set_xlabel("Runs sorted by localization error")
+    ax.set_ylabel("Localization error (mm)")
+    ax.set_title("Baseline localization error across runs")
+    if table["method"].nunique() > 1:
+        ax.legend(frameon=False)
+    fig.tight_layout()
+    path = figure_dir / f"{output_file.stem}_sorted_errors.png"
+    fig.savefig(path, dpi=180, bbox_inches="tight")
+    plt.close(fig)
+    saved.append(path)
+
+    return saved
 
 
 def main():
     args = parse_args()
     validate_args(args)
-    dataset = args.dataset.expanduser().resolve()
-    output = args.output.expanduser().resolve()
-    manifest = (
-        args.manifest.expanduser().resolve()
-        if args.manifest else output.with_name(
-            "additional_method_manifest.json"
-            if output == DEFAULT_OUTPUT.resolve()
-            else f"{output.stem}_manifest.json"
-        )
-    )
-    figure_root = (
-        args.figures_dir.expanduser().resolve()
-        if args.figures_dir else output.parent / "selected_run_figures"
-    )
-    methods = list(dict.fromkeys(args.method or pilot.METHODS))
 
-    if not dataset.is_dir():
-        raise NotADirectoryError(f"Dataset directory not found: {dataset}")
+    dataset = args.dataset.expanduser().resolve()
+    output_root = args.output_root.expanduser().resolve()
+    output_root.mkdir(parents=True, exist_ok=True)
+
+    methods = pilot.resolve_methods(args.method)
+
     if args.case:
         cases = list(dict.fromkeys(tuple(case) for case in args.case))
-        if args.subject or args.run:
-            raise ValueError("Do not combine --case with --subject or --run.")
     else:
         cases = discover_runs(dataset, args.task, args.subject, args.run)
     if args.max_runs is not None:
@@ -443,247 +406,313 @@ def main():
     if not cases:
         raise FileNotFoundError("No matching Localize-MI runs were found.")
 
-    figure_cases = set(
-        tuple(case) for case in (args.figure_case or DEFAULT_FIGURE_CASES)
-    )
     combinations = [
         (subject, run, method)
-        for subject, run in cases for method in methods
+        for subject, run in cases
+        for method in methods
     ]
-    selected_keys = set(combinations)
-    rows = load_rows(output, args.resume, args.overwrite)
-    outside = {
-        pilot.row_key(row) for row in rows
-        if pilot.row_key(row) not in selected_keys
-    }
-    if outside:
-        raise ValueError(
-            "Existing CSV contains rows outside the current selection; "
-            "use the same selection or a different --output path."
-        )
-    keys = [pilot.row_key(row) for row in rows]
-    if len(keys) != len(set(keys)):
-        raise ValueError("Existing CSV contains duplicate method solutions.")
-
-    config = configuration(args, dataset, methods, cases)
-    references = pilot.load_references(
-        args.baseline_results.expanduser().resolve(), cases
+    output_file = output_file_for(output_root, methods)
+    rows = read_existing_rows(
+        output_file, args.resume, args.overwrite, combinations
     )
-    atomic_json(manifest, manifest_payload(config, output, rows))
-    total = len(combinations)
-    successful = {
-        (subject, run, method)
-        for subject, run, method in combinations
-        if any(
-            row_matches(row, subject, run, method, args) for row in rows
+    completed = {pilot.row_key(row) for row in rows}
+
+    ecd_timepoint_dir = output_root / "ecd_timepoints"
+    bem_dir = output_root / "bem"
+    figure_dir = output_root / "figures"
+
+    print("=" * 78)
+    print("SCRIPT 12 — ADDITIONAL METHODS: ALL-RUN BASELINE")
+    print("=" * 78)
+    print(f"Runs     : {len(cases)}")
+    print(f"Methods  : {', '.join(methods)}")
+    print(f"Solutions: {len(combinations)}")
+    print("Montage  : all good EEG channels")
+    print("Target   : -2 to +2 ms")
+    print(f"Output   : {output_file}")
+    print("Baseline parameters:")
+    if "Continuous-ECD" in methods:
+        print(f"  Continuous-ECD: min_dist={args.ecd_min_dist:g} mm; max GOF")
+    if "MxNE" in methods:
+        print(
+            f"  MxNE: alpha={args.mxne_alpha}; loose={args.mxne_loose:g}; "
+            f"depth={args.mxne_depth:g}; n_mxne_iter=1"
         )
-    }
+    if "RAP-MUSIC" in methods:
+        print(f"  RAP-MUSIC: n_dipoles={args.rap_music_n_dipoles}; max GOF")
+    if "LCMV" in methods:
+        print(
+            f"  LCMV: reg={args.lcmv_reg:g}; data_cov="
+            f"{args.lcmv_data_covariance_method} "
+            f"[{args.lcmv_data_tmin*1000:g}, {args.lcmv_data_tmax*1000:g}] ms; "
+            "max-power; unit-noise-gain-invariant"
+        )
 
-    print("LOCALIZE-MI ADDITIONAL-METHOD BATCH")
-    print("-----------------------------------")
-    print(f"Runs             : {len(cases)}")
-    print(f"Methods          : {', '.join(methods)}")
-    print(f"Solutions        : {total}")
-    print(f"Already complete : {len(successful)}")
-    print("Montage          : all good EEG channels")
-    print("Target           : -2 to +2 ms")
-    print(
-        "LCMV covariance  : "
-        f"{args.lcmv_data_tmin * 1000:g} to "
-        f"{args.lcmv_data_tmax * 1000:g} ms"
-    )
-    print(f"LCMV reg         : {args.lcmv_reg:g}")
-    print(f"Sparse alpha     : {args.mxne_alpha}")
-    print(f"Sparse loose     : {args.loose:g} (shared)")
-    print(f"Sparse depth     : {args.depth:g} (shared)")
-    print(f"irMxNE iterations: {args.irmxne_iterations}")
-    print(f"Output           : {output}", flush=True)
-
-    completed_count = len(successful)
-    new_failures = 0
     for run_index, (subject, run) in enumerate(cases, start=1):
         pending = [
             method for method in methods
-            if (subject, run, method) not in successful
+            if (subject, run, method) not in completed
         ]
         if not pending:
             print(
-                f"[{run_index:02d}/{len(cases):02d}] "
-                f"{subject} {run}: already complete",
+                f"[{run_index:02d}/{len(cases):02d}] {subject} {run}: already complete",
                 flush=True,
             )
             continue
+
         print(
-            f"[{run_index:02d}/{len(cases):02d}] {subject} {run}",
+            f"\n[{run_index:02d}/{len(cases):02d}] {subject} {run}",
             flush=True,
         )
 
-        preparation_start = time.monotonic()
+        # If common preparation fails, record a failure for each pending method.
         try:
             loaded = pilot.load_run(
-                dataset=dataset, subject=subject, run=run, task=args.task
+                dataset=dataset,
+                subject=subject,
+                run=run,
+                task=args.task,
             )
-            electrodes = (
-                dataset / "derivatives/epochs" / subject / "ieeg"
-                / f"{subject}_task-{args.task}_space-surface_electrodes.tsv"
+            epochs = loaded.epochs.copy()
+            epochs.pick("eeg", exclude="bads")
+
+            stimulation, ground_truth_mri = pilot.get_stimulation_and_ground_truth(
+                dataset, subject, loaded
             )
             transform_file = (
-                dataset / "derivatives/sourcemodelling" / subject / "xfm"
+                dataset / "derivatives" / "sourcemodelling" / subject / "xfm"
                 / f"{subject}_from-head_to-surface.h5"
             )
-            stimulation = pilot.load_stimulation_info(
-                loaded.metadata["Description"], electrodes
-            )
-            transform = pilot.load_surface_transform(transform_file)
+            surface_transform = pilot.load_surface_transform(transform_file)
             referenced, noise_covariance, evoked = pilot.common_preprocessing(
-                loaded.epochs, args.quiet
+                epochs, args.quiet
             )
+
             data_covariance = None
             if "LCMV" in pending:
-                data_covariance = pilot.compute_data_covariance(
+                data_covariance = pilot.compute_lcmv_data_covariance(
                     referenced,
                     args.lcmv_data_covariance_method,
                     args.lcmv_data_tmin,
                     args.lcmv_data_tmax,
                     args.quiet,
                 )
+
+            bem = None
+            bem_file = None
+            head_to_mri = None
+            if "Continuous-ECD" in pending:
+                bem, bem_file = pilot.get_or_build_bem(dataset, subject, bem_dir)
+                head_to_mri = pilot.load_head_to_mri_transform(dataset, subject)
+
         except Exception as exc:
             for method in pending:
-                row = base_row(subject, run, method, args)
-                rows = record_failure(
-                    rows, output, manifest, config, row, exc, preparation_start
+                row = dict.fromkeys(pilot.FIELDNAMES, "")
+                row.update(
+                    subject=subject,
+                    run=run,
+                    method=method,
+                    montage="all_good",
+                    status="FAIL",
+                    error_type=type(exc).__name__,
+                    error_message=f"Preparation failed: {exc}",
                 )
-                completed_count += 1
-                new_failures += 1
-                print(f"  {method:8} FAIL during preparation: {exc}", flush=True)
+                rows.append(row)
+            pilot.save_rows(output_file, rows)
+            print(f"  PREPARATION FAIL: {type(exc).__name__}: {exc}", flush=True)
             continue
 
-        channel_count = len(loaded.epochs.ch_names) - len(
-            loaded.epochs.info["bads"]
+        print(
+            f"  epochs={len(loaded.epochs)}; "
+            f"good channels={len(epochs.ch_names)}/{len(loaded.epochs.ch_names)}; "
+            f"covariance={noise_covariance.get('method', 'auto')}",
+            flush=True,
         )
-        reference = references.get((subject, run))
+
         for method in pending:
             started = time.monotonic()
             row = base_row(
-                subject, run, method, args, loaded, stimulation,
-                noise_covariance, reference,
+                subject, run, method, loaded, epochs, noise_covariance,
+                evoked, stimulation, ground_truth_mri
             )
+
             try:
-                residual = None
-                if method == "ECD-grid":
-                    source_estimate, diagnostics = pilot.run_ecd_grid(
-                        evoked, loaded.forward, noise_covariance,
-                        stimulation.hemisphere,
+                if method == "Continuous-ECD":
+                    diagnostics = pilot.run_continuous_ecd(
+                        evoked,
+                        noise_covariance,
+                        bem,
+                        head_to_mri,
+                        ground_truth_mri,
+                        args.ecd_min_dist,
+                        args.quiet,
                     )
+                    selected = diagnostics["selected"]
+                    minimum_error = diagnostics["minimum_error"]
                     row.update(
-                        active_sources=1,
-                        ecd_goodness_of_fit_percent=diagnostics["gof_percent"],
+                        selection_criterion="maximum_GOF",
+                        selected_time_ms=float(selected["time_ms"]),
+                        selected_gof_percent=float(selected["gof_percent"]),
+                        selected_x_mm=float(selected["x_mm"]),
+                        selected_y_mm=float(selected["y_mm"]),
+                        selected_z_mm=float(selected["z_mm"]),
+                        selected_localization_error_mm=float(
+                            selected["localization_distance_mm"]
+                        ),
+                        minimum_observed_error_mm=float(
+                            minimum_error["localization_distance_mm"]
+                        ),
+                        minimum_error_time_ms=float(minimum_error["time_ms"]),
+                        gof_at_minimum_error_percent=float(
+                            minimum_error["gof_percent"]
+                        ),
+                        ecd_min_dist_mm=args.ecd_min_dist,
+                        bem_layers=3,
+                        bem_ico=pilot.BEM_ICO,
+                        conductivity_brain=pilot.BEM_CONDUCTIVITY[0],
+                        conductivity_skull=pilot.BEM_CONDUCTIVITY[1],
+                        conductivity_scalp=pilot.BEM_CONDUCTIVITY[2],
+                        bem_file=str(bem_file),
                     )
-                elif method == "LCMV":
-                    source_estimate = pilot.run_lcmv(
-                        evoked, loaded.forward, noise_covariance,
-                        data_covariance, args.lcmv_reg, args.quiet,
+                    ecd_timepoint_dir.mkdir(parents=True, exist_ok=True)
+                    diagnostics["timepoint_table"].to_csv(
+                        ecd_timepoint_dir
+                        / f"{subject}_{run}_continuous_ecd_timepoints.csv",
+                        index=False,
                     )
-                    row["lcmv_data_covariance_samples"] = (
-                        data_covariance.get("nfree", "")
-                    )
-                else:
-                    iterations = (
-                        1 if method == "MxNE" else args.irmxne_iterations
-                    )
+
+                elif method == "MxNE":
                     source_estimate, residual = pilot.run_mxne(
-                        evoked, loaded.forward, noise_covariance,
-                        args.mxne_alpha, args.loose, args.depth,
-                        iterations, args.quiet,
+                        evoked,
+                        loaded.forward,
+                        noise_covariance,
+                        args.mxne_alpha,
+                        args.mxne_loose,
+                        args.mxne_depth,
+                        args.quiet,
                     )
+                    active_sources = pilot.count_active_sources(source_estimate)
+                    if active_sources == 0:
+                        raise RuntimeError("MxNE returned no active cortical sources.")
+                    metric = pilot.calculate_localization_metrics(
+                        source_estimate,
+                        loaded.forward,
+                        surface_transform,
+                        stimulation,
+                    )
+                    pilot.fill_grid_metric_fields(row, metric)
                     row.update(
-                        active_sources=pilot.count_active_sources(source_estimate),
-                        explained_variance_percent=pilot.explained_variance(
+                        mxne_alpha=args.mxne_alpha,
+                        mxne_loose=args.mxne_loose,
+                        mxne_depth=args.mxne_depth,
+                        mxne_iterations=1,
+                        mxne_active_sources=active_sources,
+                        mxne_explained_variance_percent=pilot.explained_variance(
                             evoked, residual
                         ),
                     )
-                    if int(row["active_sources"]) == 0:
-                        raise RuntimeError(
-                            f"{method} returned no active cortical sources "
-                            f"with alpha={args.mxne_alpha}."
-                        )
 
-                metric = pilot.calculate_localization_metrics(
-                    source_estimate, loaded.forward, transform, stimulation
-                )
-                distance = float(metric.localization_distance_mm)
-                row.update(
-                    peak_vertex=int(metric.peak_vertex),
-                    peak_time_s=float(metric.peak_time),
-                    peak_time_ms=float(metric.peak_time * 1000),
-                    localization_distance_mm=distance,
-                    nearest_source_distance_mm=float(
-                        metric.nearest_source_distance_mm
-                    ),
-                    geometric_excess_mm=(
-                        distance - float(metric.nearest_source_distance_mm)
-                    ),
-                    estimated_x_m=float(metric.peak_coordinate[0]),
-                    estimated_y_m=float(metric.peak_coordinate[1]),
-                    estimated_z_m=float(metric.peak_coordinate[2]),
-                    known_x_m=float(metric.stimulation_midpoint[0]),
-                    known_y_m=float(metric.stimulation_midpoint[1]),
-                    known_z_m=float(metric.stimulation_midpoint[2]),
-                    status="PASS",
-                    runtime_seconds=round(time.monotonic() - started, 3),
-                )
-                if row["reference_distance_mm"] != "":
-                    row["change_from_reference_mm"] = (
-                        distance - float(row["reference_distance_mm"])
+                elif method == "RAP-MUSIC":
+                    dipoles, residual = pilot.run_rap_music(
+                        evoked,
+                        loaded.forward,
+                        noise_covariance,
+                        args.rap_music_n_dipoles,
+                        args.quiet,
                     )
-                if args.save_figures and (subject, run) in figure_cases:
-                    pilot.save_figures(
-                        figure_root, subject, run, method, evoked,
-                        source_estimate, metric, loaded.forward, transform,
-                        stimulation, channel_count, args.loose, args.depth,
-                        pilot.figure_parameter_context(method, args),
+                    selected = pilot.select_rap_music_dipole(
+                        dipoles, ground_truth_mri
                     )
-                rows = remove_solution(rows, subject, run, method)
-                rows.append(row)
-                pilot.save_rows(output, rows)
-                atomic_json(
-                    manifest, manifest_payload(config, output, rows)
-                )
-                reference_text = ""
-                if row["change_from_reference_mm"] != "":
-                    reference_text = (
-                        f"; vs {row['reference_method']} "
-                        f"{float(row['change_from_reference_mm']):+.2f} mm"
+                    coordinate = selected["coordinate_m"]
+                    row.update(
+                        selection_criterion="maximum_GOF",
+                        selected_time_ms=selected["time_ms"],
+                        selected_gof_percent=selected["gof_percent"],
+                        selected_x_mm=float(coordinate[0] * 1000),
+                        selected_y_mm=float(coordinate[1] * 1000),
+                        selected_z_mm=float(coordinate[2] * 1000),
+                        selected_localization_error_mm=selected["distance_mm"],
+                        rap_music_n_dipoles=args.rap_music_n_dipoles,
+                        rap_music_gof_percent=selected["gof_percent"],
                     )
-                print(
-                    f"  {method:8}: {distance:.2f} mm{reference_text}",
-                    flush=True,
-                )
+
+                elif method == "LCMV":
+                    source_estimate = pilot.run_lcmv(
+                        evoked,
+                        loaded.forward,
+                        noise_covariance,
+                        data_covariance,
+                        args.lcmv_reg,
+                        args.quiet,
+                    )
+                    metric = pilot.calculate_localization_metrics(
+                        source_estimate,
+                        loaded.forward,
+                        surface_transform,
+                        stimulation,
+                    )
+                    pilot.fill_grid_metric_fields(row, metric)
+                    row.update(
+                        lcmv_reg=args.lcmv_reg,
+                        lcmv_data_covariance_method=args.lcmv_data_covariance_method,
+                        lcmv_data_tmin_s=args.lcmv_data_tmin,
+                        lcmv_data_tmax_s=args.lcmv_data_tmax,
+                        lcmv_data_covariance_samples=data_covariance.get("nfree", ""),
+                        lcmv_pick_ori="max-power",
+                        lcmv_weight_norm="unit-noise-gain-invariant",
+                    )
+                else:
+                    raise RuntimeError(f"Unhandled method: {method}")
+
+                row["status"] = "PASS"
+
             except Exception as exc:
-                rows = record_failure(
-                    rows, output, manifest, config, row, exc, started
+                row.update(
+                    status="FAIL",
+                    error_type=type(exc).__name__,
+                    error_message=str(exc),
                 )
-                new_failures += 1
-                print(f"  {method:8} FAIL: {exc}", flush=True)
-            completed_count += 1
-            if completed_count % 20 == 0 or completed_count == total:
+
+            row["runtime_seconds"] = round(time.monotonic() - started, 3)
+            # Remove an old failed row for the same key if this is a resume retry.
+            rows = [r for r in rows if pilot.row_key(r) != (subject, run, method)]
+            rows.append(row)
+            pilot.save_rows(output_file, rows)
+
+            if row["status"] == "PASS":
                 print(
-                    f"Checkpoint: {completed_count}/{total}; "
-                    f"new failures: {new_failures}",
+                    f"  {method:14s} PASS | "
+                    f"error={float(row['selected_localization_error_mm']):.2f} mm | "
+                    f"time={float(row['selected_time_ms']):+.3f} ms",
+                    flush=True,
+                )
+                completed.add((subject, run, method))
+            else:
+                print(
+                    f"  {method:14s} FAIL | {row['error_type']}: "
+                    f"{row['error_message']}",
                     flush=True,
                 )
 
-    failures = sum(str(row.get("status")) == "FAIL" for row in rows)
+    failures = sum(str(row.get("status")) != "PASS" for row in rows)
     passes = sum(str(row.get("status")) == "PASS" for row in rows)
-    print("\nADDITIONAL-METHOD BATCH COMPLETE")
-    print("--------------------------------")
-    print(f"Rows      : {len(rows)}")
-    print(f"Passes    : {passes}")
-    print(f"Failures  : {failures}")
-    print(f"CSV       : {output}")
-    print(f"Manifest  : {manifest}")
-    if args.save_figures:
-        print(f"Figures   : {figure_root}")
+
+    figure_paths = []
+    if not args.no_figures and output_file.exists():
+        figure_paths = make_qc_figures(output_file, figure_dir)
+
+    print("\n" + "=" * 78)
+    print("SCRIPT 12 COMPLETE")
+    print("=" * 78)
+    print(f"Rows     : {len(rows)}")
+    print(f"Passes   : {passes}")
+    print(f"Failures : {failures}")
+    print(f"CSV      : {output_file}")
+    if figure_paths:
+        print("QC figures:")
+        for path in figure_paths:
+            print(f"  {path}")
+
     if failures:
         raise SystemExit(1)
 
