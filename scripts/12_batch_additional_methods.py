@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-12_batch_additional_methods.py
+12_additional_methods_all_runs_REVISED.py
 
 Run the FINAL BASELINE configuration of one or more additional EEG source-
 localization methods across all released Localize-MI runs.
 
 This is the all-run companion to:
-    scripts/11_additional_method_pilot.py
+    scripts/11_additional_method_pilot_REVISED.py
 
 IMPORTANT DESIGN CHOICE
 -----------------------
@@ -55,43 +55,43 @@ TERMINAL EXAMPLES
 Recommended: run ONE METHOD AT A TIME.
 
 Continuous ECD, all released runs:
-    python scripts/12_batch_additional_methods.py \
+    python scripts/12_additional_methods_all_runs_REVISED.py \
         --method ecd --overwrite
 
 MxNE, all released runs:
-    python scripts/12_batch_additional_methods.py \
+    python scripts/12_additional_methods_all_runs_REVISED.py \
         --method mxne --overwrite
 
 RAP-MUSIC, all released runs:
-    python scripts/12_batch_additional_methods.py \
+    python scripts/12_additional_methods_all_runs_REVISED.py \
         --method rap_music --overwrite
 
 LCMV, all released runs:
-    python scripts/12_batch_additional_methods.py \
+    python scripts/12_additional_methods_all_runs_REVISED.py \
         --method lcmv --overwrite
 
 Resume an interrupted MxNE batch:
-    python scripts/12_batch_additional_methods.py \
+    python scripts/12_additional_methods_all_runs_REVISED.py \
         --method mxne --resume
 
 Quick one-run validation before a full batch:
-    python scripts/12_batch_additional_methods.py \
+    python scripts/12_additional_methods_all_runs_REVISED.py \
         --method mxne --case sub-01 run-01 --overwrite
 
 Run only one participant:
-    python scripts/12_batch_additional_methods.py \
+    python scripts/12_additional_methods_all_runs_REVISED.py \
         --method lcmv --subject sub-07 --overwrite
 
 Run all four methods together (supported, but one-by-one is easier to manage):
-    python scripts/12_batch_additional_methods.py \
+    python scripts/12_additional_methods_all_runs_REVISED.py \
         --method all --overwrite
 
 Quiet MNE logging:
-    python scripts/12_batch_additional_methods.py \
+    python scripts/12_additional_methods_all_runs_REVISED.py \
         --method mxne --overwrite --quiet
 
 Disable automatic QC figures:
-    python scripts/12_batch_additional_methods.py \
+    python scripts/12_additional_methods_all_runs_REVISED.py \
         --method mxne --overwrite --no-figures
 
 DEFAULT OUTPUT ROOT
@@ -316,7 +316,7 @@ def base_row(subject, run, method, loaded, epochs, noise_covariance, evoked,
         epochs=len(loaded.epochs),
         all_channels=len(loaded.epochs.ch_names),
         bad_channels=len(loaded.epochs.info["bads"]),
-        good_channels=len(epochs.ch_names),
+        good_channels=len(evoked.ch_names),
         sampling_frequency_hz=float(epochs.info["sfreq"]),
         covariance_method=str(noise_covariance.get("method", "auto")),
         covariance_tmin_s=pilot.COVARIANCE_TMIN,
@@ -473,8 +473,10 @@ def main():
                 run=run,
                 task=args.task,
             )
+            # Keep the original Epochs object for bookkeeping.  Script 11's
+            # common_preprocessing() now selects good EEG channels explicitly,
+            # so the actual inverse input matches Scripts 14 and 15.
             epochs = loaded.epochs.copy()
-            epochs.pick("eeg", exclude="bads")
 
             stimulation, ground_truth_mri = pilot.get_stimulation_and_ground_truth(
                 dataset, subject, loaded
@@ -503,6 +505,8 @@ def main():
             head_to_mri = None
             if "Continuous-ECD" in pending:
                 bem, bem_file = pilot.get_or_build_bem(dataset, subject, bem_dir)
+
+            if "Continuous-ECD" in pending or "RAP-MUSIC" in pending:
                 head_to_mri = pilot.load_head_to_mri_transform(dataset, subject)
 
         except Exception as exc:
@@ -524,7 +528,7 @@ def main():
 
         print(
             f"  epochs={len(loaded.epochs)}; "
-            f"good channels={len(epochs.ch_names)}/{len(loaded.epochs.ch_names)}; "
+            f"good channels={len(evoked.ch_names)}/{len(loaded.epochs.ch_names)}; "
             f"covariance={noise_covariance.get('method', 'auto')}",
             flush=True,
         )
@@ -621,7 +625,7 @@ def main():
                         args.quiet,
                     )
                     selected = pilot.select_rap_music_dipole(
-                        dipoles, ground_truth_mri
+                        dipoles, ground_truth_mri, head_to_mri
                     )
                     coordinate = selected["coordinate_m"]
                     row.update(

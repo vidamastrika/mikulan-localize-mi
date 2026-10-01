@@ -39,6 +39,14 @@ IMPORTANT
 This is a BASELINE PILOT, not the parameter-grid experiment. Method-specific
 parameter exploration belongs in Script 14.
 
+COORDINATE FRAME
+----------------
+MNE Dipole positions from Continuous-ECD and RAP-MUSIC are stored in HEAD
+coordinates. Before localization error is computed, this script transforms
+those positions with the released participant HEAD -> surface/MRI transform
+so they are compared with the Localize-MI stimulation midpoint in the same
+coordinate frame.
+
 Run from the repository root.
 
 TERMINAL EXAMPLES
@@ -118,7 +126,7 @@ import pandas as pd
 
 from mne.bem import _surfaces_to_bem
 from mne.io.constants import FIFF
-from mne.transforms import Transform
+from mne.transforms import Transform, apply_trans
 
 
 PROJECT = Path(__file__).resolve().parents[1]
@@ -409,7 +417,13 @@ def row_key(row):
 
 
 def common_preprocessing(epochs, quiet):
-    """Shared average reference, noise covariance and target Evoked."""
+    """Shared good-channel selection, average reference, covariance and Evoked."""
+    # Canonical preprocessing for the additional-method pipeline:
+    # physically keep good EEG channels only before constructing the
+    # average reference, covariance, and inverse-method input.  This keeps
+    # Scripts 11/12/14/15 on the same numerical path.
+    epochs = epochs.copy()
+    epochs.pick("eeg", exclude="bads")
     referenced = apply_average_reference(epochs)
 
     noise_covariance = estimate_noise_covariance(
@@ -683,14 +697,21 @@ def run_continuous_ecd(
     rows = []
 
     for index in range(len(dipole.times)):
-        coordinate = np.asarray(
+        # MNE Dipole positions are stored in HEAD coordinates. Localize-MI
+        # stimulation coordinates are in released surface/MRI coordinates,
+        # so transform the fitted position before computing localization error.
+        coordinate_head = np.asarray(
             dipole.pos[index],
+            dtype=float,
+        )
+        coordinate_mri = np.asarray(
+            apply_trans(trans, coordinate_head),
             dtype=float,
         )
 
         distance_mm = float(
             np.linalg.norm(
-                coordinate - ground_truth_mri
+                coordinate_mri - ground_truth_mri
             )
             * 1000.0
         )
@@ -700,12 +721,15 @@ def run_continuous_ecd(
                 "time_s": float(dipole.times[index]),
                 "time_ms": float(dipole.times[index] * 1000),
                 "gof_percent": float(dipole.gof[index]),
-                "x_m": float(coordinate[0]),
-                "y_m": float(coordinate[1]),
-                "z_m": float(coordinate[2]),
-                "x_mm": float(coordinate[0] * 1000),
-                "y_mm": float(coordinate[1] * 1000),
-                "z_mm": float(coordinate[2] * 1000),
+                "head_x_m": float(coordinate_head[0]),
+                "head_y_m": float(coordinate_head[1]),
+                "head_z_m": float(coordinate_head[2]),
+                "x_m": float(coordinate_mri[0]),
+                "y_m": float(coordinate_mri[1]),
+                "z_m": float(coordinate_mri[2]),
+                "x_mm": float(coordinate_mri[0] * 1000),
+                "y_mm": float(coordinate_mri[1] * 1000),
+                "z_mm": float(coordinate_mri[2] * 1000),
                 "amplitude_Am": float(dipole.amplitude[index]),
                 "orientation_x": float(dipole.ori[index, 0]),
                 "orientation_y": float(dipole.ori[index, 1]),
@@ -781,6 +805,7 @@ def run_rap_music(
 def select_rap_music_dipole(
     dipoles,
     ground_truth_mri,
+    head_to_mri,
 ):
     """
     Select the RAP-MUSIC dipole for the one-source baseline.
@@ -807,14 +832,18 @@ def select_rap_music_dipole(
 
     index = int(np.argmax(dipole.gof))
 
-    coordinate = np.asarray(
+    coordinate_head = np.asarray(
         dipole.pos[index],
+        dtype=float,
+    )
+    coordinate_mri = np.asarray(
+        apply_trans(head_to_mri, coordinate_head),
         dtype=float,
     )
 
     distance_mm = float(
         np.linalg.norm(
-            coordinate - ground_truth_mri
+            coordinate_mri - ground_truth_mri
         )
         * 1000.0
     )
@@ -822,7 +851,8 @@ def select_rap_music_dipole(
     return {
         "time_ms": float(dipole.times[index] * 1000),
         "gof_percent": float(dipole.gof[index]),
-        "coordinate_m": coordinate,
+        "coordinate_head_m": coordinate_head,
+        "coordinate_m": coordinate_mri,
         "distance_mm": distance_mm,
     }
 
@@ -1035,10 +1065,11 @@ def main():
         n_epochs = len(epochs)
         n_all_channels = len(epochs.ch_names)
         n_bad_channels = len(epochs.info["bads"])
+        n_good_channels = n_all_channels - n_bad_channels
 
-        # Keep only good EEG channels so every method sees the same sensors.
-        epochs.pick("eeg", exclude="bads")
-        n_good_channels = len(epochs.ch_names)
+        # Keep this original copy for bookkeeping.  common_preprocessing()
+        # explicitly selects good EEG channels before average referencing so
+        # the inverse input is numerically aligned with Scripts 12/14/15.
 
         stimulation, ground_truth_mri = (
             get_stimulation_and_ground_truth(
@@ -1098,6 +1129,7 @@ def main():
                 bem_dir,
             )
 
+        if "Continuous-ECD" in pending or "RAP-MUSIC" in pending:
             head_to_mri = load_head_to_mri_transform(
                 dataset,
                 subject,
@@ -1278,6 +1310,7 @@ def main():
                     selected = select_rap_music_dipole(
                         dipoles,
                         ground_truth_mri,
+                        head_to_mri,
                     )
 
                     coordinate = selected[
