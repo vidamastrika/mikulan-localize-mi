@@ -83,10 +83,20 @@ Figures
     06_selected_configuration_lowest_error_counts.png
     07_overall_grid_by_participant.png
     08_selected_run_difficulty.png
+    09_selected_configuration_by_run.png
+    10_overall_grid_by_run.png
+
+Run-level figures (09 and 10) share identical subject/run positions. Figure 09
+plots the single fixed selected configuration's error per run; Figure 10 plots
+the median error of all PASS parameter-grid solutions within each run. Each
+method can therefore have up to 61 observations per plot (not a line per
+parameter combination). Subject groups are marked along the horizontal axis.
 
 Example
 -------
     python scripts/17_compare_all_methods_selected_and_overall.py --overwrite
+
+    python scripts/17_compare_all_methods_selected_and_overall.py --run-figures-only
 """
 
 from __future__ import annotations
@@ -193,6 +203,14 @@ def parse_args():
         ),
     )
     parser.add_argument("--no-figures", action="store_true")
+    parser.add_argument(
+        "--run-figures-only",
+        action="store_true",
+        help=(
+            "Do not recompute Script-17 tables. Instead, read the existing wide CSV tables "
+            "in <output-root>/tables and generate figures 09 and 10 only."
+        ),
+    )
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
 
@@ -228,6 +246,86 @@ def prepare_output(path: Path, overwrite: bool):
     (path / "tables").mkdir(parents=True, exist_ok=True)
     (path / "figures").mkdir(parents=True, exist_ok=True)
     return path
+
+
+def ensure_output_dirs(path: Path):
+    path = path.expanduser().resolve()
+    (path / "tables").mkdir(parents=True, exist_ok=True)
+    (path / "figures").mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def run_sort_key(value):
+    text = str(value)
+    suffix = text.split("-")[-1]
+    if suffix.isdigit():
+        return (0, int(suffix))
+    return (1, text)
+
+
+def load_existing_wide_table(path: Path) -> pd.DataFrame:
+    path = require_file(path, "Existing Script-17 wide table")
+    table = pd.read_csv(path)
+    require_columns(table, ["subject", "run"], str(path))
+    table["subject"] = table["subject"].astype(str)
+    table["run"] = table["run"].astype(str)
+    if table.duplicated(["subject", "run"]).any():
+        raise ValueError(f"Existing wide table has duplicate subject/run rows: {path}")
+    for method in METHOD_ORDER:
+        if method in table.columns:
+            table[method] = pd.to_numeric(table[method], errors="coerce")
+    wide = table.set_index(["subject", "run"])
+    return wide.reindex(columns=METHOD_ORDER).sort_index()
+
+
+def run_figure_context_from_dataset_csv(path: Path):
+    if not path.is_file():
+        return None
+    data = pd.read_csv(path)
+    if data.empty:
+        return None
+    row = data.iloc[0]
+    try:
+        return f"{int(row['matched_runs'])} runs | {int(row['participants'])} participants | 8 methods"
+    except Exception:
+        return None
+
+
+def generate_run_figures_from_existing_tables(output_root: Path, dpi: int):
+    output_root = ensure_output_dirs(output_root)
+    tables = output_root / "tables"
+    figures = output_root / "figures"
+    selected_wide = load_existing_wide_table(tables / "14_selected_configuration_results_wide.csv")
+    overall_wide = load_existing_wide_table(tables / "16_overall_grid_run_values_wide.csv")
+    context = run_figure_context_from_dataset_csv(tables / "19_dataset_summary.csv")
+    if context is None:
+        context = (
+            f"{len(selected_wide)} runs | "
+            f"{selected_wide.index.get_level_values('subject').nunique()} participants | 8 methods"
+        )
+    setup_plot_style()
+    save_methods_by_run(
+        selected_wide,
+        figures / "09_selected_configuration_by_run.png",
+        "Selected fixed configurations: localization error by run",
+        context + " | one error per method and run",
+        "Localization error (mm)",
+        dpi,
+    )
+    save_methods_by_run(
+        overall_wide,
+        figures / "10_overall_grid_by_run.png",
+        "Overall parameter grids: within-run median localization error",
+        context + " | median over all PASS grid solutions per method and run",
+        "Within-run median localization error (mm)",
+        dpi,
+    )
+    print("=" * 78)
+    print("SCRIPT 17 — GENERATED RUN-LEVEL FIGURES FROM EXISTING TABLES")
+    print("=" * 78)
+    print(f"Selected run rows         : {len(selected_wide)}")
+    print(f"Overall-grid run rows     : {len(overall_wide)}")
+    print(f"Saved figures             : {figures}")
 
 
 def normalize_status(table: pd.DataFrame) -> pd.DataFrame:
@@ -813,7 +911,7 @@ def save_distribution(long_table, path, title, subtitle, ylabel, dpi):
             legend=False,
             ax=ax,
         )
-        sns.stripplot(
+        '''sns.stripplot(
             data=long_table,
             x="method",
             y="localization_error_mm",
@@ -823,7 +921,7 @@ def save_distribution(long_table, path, title, subtitle, ylabel, dpi):
             size=3.6,
             jitter=0.18,
             ax=ax,
-        )
+        )'''
     else:
         data = [
             long_table.loc[long_table["method"].eq(m), "localization_error_mm"].to_numpy()
@@ -930,6 +1028,73 @@ def save_participant(participant, path, title, dpi):
     plt.close(fig)
 
 
+
+def save_methods_by_run(wide, path, title, subtitle, ylabel, dpi):
+    """Plot eight method series on the same chronologically ordered run axis.
+
+    ``wide`` has one row per (subject, run) and one column per method. Never
+    compress or reorder an individual method's x-axis when data are missing.
+    """
+    if wide.empty:
+        raise ValueError("Cannot plot run-level series: no runs available.")
+
+    ordered = wide.reindex(columns=METHOD_ORDER).sort_index(level=[0, 1])
+    # Sorting labels by numeric run suffix is safer if run IDs are not padded.
+    ordered = ordered.iloc[
+        sorted(range(len(ordered)), key=lambda i: (str(ordered.index[i][0]), run_sort_key(ordered.index[i][1])))
+    ]
+    x = np.arange(1, len(ordered) + 1)
+    subjects = ordered.index.get_level_values("subject").astype(str).to_numpy()
+
+    # Wider than the participant plots so 61 run markers remain distinguishable.
+    fig, ax = plt.subplots(figsize=(19, 8.5))
+    positions = []
+    for subject in dict.fromkeys(subjects):
+        indices = np.flatnonzero(subjects == subject)
+        if len(indices):
+            positions.append((subject, x[indices[0]], x[indices[-1]]))
+    for k, (subject, first, last) in enumerate(positions):
+        if k % 2 == 1:
+            ax.axvspan(first - 0.5, last + 0.5, color="#D7DDE6", alpha=0.20, zorder=0)
+        if k:
+            ax.axvline(first - 0.5, linewidth=0.9, color="#9CA3AF", alpha=0.7)
+
+    for method in METHOD_ORDER:
+        values = ordered[method].to_numpy(dtype=float)
+        if not np.isfinite(values).any():
+            continue
+        ax.plot(
+            x, values, label=method, color=METHOD_COLORS[method],
+            marker="o", markersize=3.3, linewidth=1.45, alpha=0.87,
+        )
+
+    ax.set_xlim(0.5, len(x) + 0.5)
+    ax.set_ylim(bottom=0)
+    ax.set_ylabel(ylabel)
+    ax.set_xlabel("Run index (within participants, ordered by run number)", labelpad=12)
+    ax.set_xticks(x)
+    ax.set_xticklabels([str(v) for v in x], fontsize=7)
+    ax.tick_params(axis="x", length=3)
+    ax.grid(axis="y", alpha=0.25)
+    ax.set_axisbelow(True)
+    ax.set_title(f"{title}\n{subtitle}", pad=14)
+
+    # Separate participant labels from the numbered run labels.
+    for subject, first, last in positions:
+        ax.text(
+            (first + last) / 2, -0.16, f"{subject} ({last - first + 1})",
+            transform=ax.get_xaxis_transform(), ha="center", va="top",
+            fontsize=9, fontweight="bold", clip_on=False,
+        )
+    ax.legend(
+        loc="upper center", bbox_to_anchor=(0.5, -0.25),
+        ncol=4, frameon=False, fontsize=10,
+    )
+    fig.subplots_adjust(bottom=0.29, top=0.88, left=0.07, right=0.99)
+    fig.savefig(path, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+
 def save_lowest_counts(counts, path, dpi):
     plot = counts.set_index("method").reindex(METHOD_ORDER)
     fig, ax = plt.subplots(figsize=(12, 6))
@@ -1021,6 +1186,10 @@ def main():
         raise ValueError("--outlier-iqr-multiplier must be non-negative.")
     if args.dpi < 50:
         raise ValueError("--dpi must be at least 50.")
+
+    if args.run_figures_only:
+        generate_run_figures_from_existing_tables(args.output_root, args.dpi)
+        return
 
     original_grid_path = require_file(args.original_grid, "Original Script-09 grid")
     script10_top_path = require_file(args.script10_top, "Script-10 top configurations")
@@ -1183,6 +1352,22 @@ def main():
         save_run_difficulty(
             selected_runs,
             figures / "08_selected_run_difficulty.png",
+            args.dpi,
+        )
+        save_methods_by_run(
+            selected_wide,
+            figures / "09_selected_configuration_by_run.png",
+            "Selected fixed configurations: localization error by run",
+            context + " | one error per method and run",
+            "Localization error (mm)",
+            args.dpi,
+        )
+        save_methods_by_run(
+            overall_wide,
+            figures / "10_overall_grid_by_run.png",
+            "Overall parameter grids: within-run median localization error",
+            context + " | median over all PASS grid solutions per method and run",
+            "Within-run median localization error (mm)",
             args.dpi,
         )
 
