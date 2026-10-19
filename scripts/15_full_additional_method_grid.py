@@ -171,6 +171,34 @@ No large summary figures are made here. Script 15 is the computation script.
 Script 16 should create the marginal-effect, interaction, participant, montage,
 and lowest-median-observed-configuration summaries and figures.
 
+
+MxNE ALPHA EXTENSION (NEW, preserves original grid)
+--------------------------------------------------
+This version accepts alpha=25 and alpha=35 in addition to the original
+30, 40, 50. Without --mxne-alpha, the default stays 30, 40, 50.
+
+Dry run of just the 48,800 new solutions (2 x 10 x 10 x 4 x 61):
+    python scripts/15_full_additional_method_grid.py \
+        --method mxne --all-runs \
+        --mxne-alpha 25 --mxne-alpha 35 \
+        --output-root outputs/15_mxne_alpha_extension --dry-run
+
+Full extension (a separate output folder; original results untouched):
+    python scripts/15_full_additional_method_grid.py \
+        --method mxne --all-runs \
+        --mxne-alpha 25 --mxne-alpha 35 \
+        --output-root outputs/15_mxne_alpha_extension --quiet
+
+Resume the identical extension after interruption:
+    python scripts/15_full_additional_method_grid.py \
+        --method mxne --all-runs \
+        --mxne-alpha 25 --mxne-alpha 35 \
+        --output-root outputs/15_mxne_alpha_extension --resume --quiet
+
+IMPORTANT: Do not use --overwrite on the original output directory.
+The existing Script 16/17 analysis must be updated to combine the original
+and extension grids if you want five-alpha combined comparisons.
+
 TERMINAL EXAMPLES
 -----------------
 
@@ -318,7 +346,8 @@ MONTAGES = ("all_good", "128", "64", "32")
 
 ECD_MIN_DISTANCES = (1.0, 2.5, 5.0, 7.5, 10.0, 15.0)
 
-MXNE_ALPHAS = (30.0, 40.0, 50.0)
+MXNE_ALPHAS = (30.0, 40.0, 50.0)  # Original grid default
+MXNE_ALLOWED_ALPHAS = (25.0, 30.0, 35.0, 40.0, 50.0)
 MXNE_LOOSE = tuple(round(i / 10, 1) for i in range(1, 11))
 MXNE_DEPTH = tuple(round(i / 10, 1) for i in range(1, 11))
 
@@ -675,8 +704,8 @@ def configuration_grid(method, args):
 
     if method == "MxNE":
         alphas = choose_numeric(
-            args.mxne_alpha,
-            MXNE_ALPHAS,
+            args.mxne_alpha if args.mxne_alpha is not None else MXNE_ALPHAS,
+            MXNE_ALLOWED_ALPHAS,
             "MxNE alpha",
         )
         loose_values = choose_numeric(

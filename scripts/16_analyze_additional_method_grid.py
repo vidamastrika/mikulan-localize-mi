@@ -110,6 +110,22 @@ selected descriptive configuration:
 
     python scripts/16_analyze_additional_method_grid.py \
         --min-selection-success-rate 0.99 --overwrite
+
+MxNE input modes (choose matching output directory for Script 17):
+
+    # Original Script-15 MxNE grid only
+    python scripts/16_analyze_additional_method_grid.py --mxne-mode old \
+        --output-root outputs/16_mxne_old --overwrite
+
+    # Original + extension (all alpha levels)
+    python scripts/16_analyze_additional_method_grid.py --mxne-mode all \
+        --mxne-extra-results outputs/15_mxne_alpha_extension/mxne/grid_results.csv \
+        --output-root outputs/16_mxne_all --overwrite
+
+    # Only alpha 25, 30 and 35 from original + extension
+    python scripts/16_analyze_additional_method_grid.py --mxne-mode selected \
+        --mxne-extra-results outputs/15_mxne_alpha_extension/mxne/grid_results.csv \
+        --output-root outputs/16_mxne_selected --overwrite
 """
 
 from __future__ import annotations
@@ -253,6 +269,10 @@ def parse_args():
 
     parser.add_argument("--ecd-results", type=Path)
     parser.add_argument("--mxne-results", type=Path)
+    parser.add_argument("--mxne-extra-results", type=Path, action="append", default=[],
+                        help="Additional MxNE CSV (repeatable); used for all/selected modes.")
+    parser.add_argument("--mxne-mode", choices=("old", "all", "selected"), default="old",
+                        help="old=original only; all=original plus new; selected=alpha 25/30/35 only from both.")
     parser.add_argument("--rap-music-results", type=Path)
     parser.add_argument("--lcmv-results", type=Path)
 
@@ -531,11 +551,33 @@ def load_method_grid(path, expected_method, allow_incomplete_grid):
     return table.sort_values(GRID_KEY).reset_index(drop=True), metadata
 
 
-def load_all_grids(paths, allow_incomplete_grid):
+def load_all_grids(paths, allow_incomplete_grid, mxne_extra_results=(), mxne_mode="old"):
     tables = []
     metadata = {}
     for method, path in paths.items():
         table, info = load_method_grid(path, method, allow_incomplete_grid)
+        if method == "MxNE":
+            extras = []
+            if mxne_mode != "old":
+                for extra_path in mxne_extra_results:
+                    extra, _ = load_method_grid(extra_path.expanduser().resolve(), method, allow_incomplete_grid)
+                    extras.append(extra)
+            if extras:
+                table = pd.concat([table, *extras], ignore_index=True, sort=False)
+            key = GRID_KEY
+            duplicate_count = int(table.duplicated(key, keep="first").sum())
+            if duplicate_count:
+                print(f"MxNE: skipped {duplicate_count:,} overlapping rows (original data take priority).")
+                table = table.drop_duplicates(key, keep="first")
+            if mxne_mode == "selected":
+                table = table.loc[table["mxne_alpha"].isin([25.0, 30.0, 35.0])].copy()
+            if table.empty:
+                raise ValueError(f"No MxNE rows for mode '{mxne_mode}'. Check the input CSV files.")
+            # The input manifest describes its original file, not a merged or filtered grid.
+            info["expected_rows"] = len(table)
+            info["missing_expected_rows"] = 0
+            levels = sorted(table["mxne_alpha"].dropna().unique().tolist())
+            print(f"MxNE mode={mxne_mode}: {len(table):,} rows; alpha values={levels}")
         tables.append(table)
         metadata[method] = info
     combined = pd.concat(tables, ignore_index=True, sort=False)
@@ -1914,7 +1956,7 @@ def main():
     output_root = args.output_root.expanduser().resolve()
     prepare_output(output_root, args.overwrite)
 
-    table, metadata = load_all_grids(paths, args.allow_incomplete_grid)
+    table, metadata = load_all_grids(paths, args.allow_incomplete_grid, args.mxne_extra_results, args.mxne_mode)
 
     quality = create_quality_summary(table, metadata)
     method_summary = create_method_grid_summary(table)

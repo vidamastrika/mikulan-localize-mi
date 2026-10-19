@@ -97,6 +97,25 @@ Example
     python scripts/17_compare_all_methods_selected_and_overall.py --overwrite
 
     python scripts/17_compare_all_methods_selected_and_overall.py --run-figures-only
+
+MxNE modes (run Script 16 FIRST in the same mode):
+
+    # Original grid only
+    python scripts/17_compare_all_methods_selected_and_overall.py --mxne-mode old \
+        --script16-selected outputs/16_mxne_old/tables/10_selected_configurations.csv \
+        --output-root outputs/17_mxne_old --overwrite
+
+    # Original + new MxNE grid, all alpha levels
+    python scripts/17_compare_all_methods_selected_and_overall.py --mxne-mode all \
+        --mxne-extra-results outputs/15_mxne_alpha_extension/mxne/grid_results.csv \
+        --script16-selected outputs/16_mxne_all/tables/10_selected_configurations.csv \
+        --output-root outputs/17_mxne_all --overwrite
+
+    # Only alpha 25, 30, 35; match Script 16 selected mode
+    python scripts/17_compare_all_methods_selected_and_overall.py --mxne-mode selected \
+        --mxne-extra-results outputs/15_mxne_alpha_extension/mxne/grid_results.csv \
+        --script16-selected outputs/16_mxne_selected/tables/10_selected_configurations.csv \
+        --output-root outputs/17_mxne_selected --overwrite
 """
 
 from __future__ import annotations
@@ -183,6 +202,10 @@ def parse_args():
     parser.add_argument("--original-grid", type=Path, default=DEFAULT_ORIGINAL_GRID)
     parser.add_argument("--script10-top", type=Path, default=DEFAULT_SCRIPT10_TOP)
     parser.add_argument("--script15-root", type=Path, default=DEFAULT_SCRIPT15_ROOT)
+    parser.add_argument("--mxne-extra-results", type=Path, action="append", default=[],
+                        help="Additional MxNE CSV (repeatable); used for all/selected modes.")
+    parser.add_argument("--mxne-mode", choices=("old", "all", "selected"), default="old",
+                        help="old=original only; all=original plus new; selected=alpha 25/30/35 only.")
     parser.add_argument(
         "--script16-selected", type=Path, default=DEFAULT_SCRIPT16_SELECTED
     )
@@ -384,29 +407,45 @@ def additional_grid_paths(root: Path):
     }
 
 
-def load_additional_grids(root: Path) -> pd.DataFrame:
+def load_additional_grids(root: Path, mxne_extra_results=(), mxne_mode="old") -> pd.DataFrame:
     tables = []
     for method, path in additional_grid_paths(root).items():
-        path = require_file(path, f"{method} Script-15 grid")
-        table = pd.read_csv(path, low_memory=False)
-        require_columns(
-            table,
-            ["subject", "run", "method", "montage", "configuration_id"],
-            str(path),
-        )
-        table = standardize_grid_error_column(table, str(path))
-        table = normalize_status(table)
-        observed = set(table["method"].dropna().astype(str))
-        if observed != {method}:
-            raise ValueError(f"Expected only {method} in {path}, found {observed}")
-        table["subject"] = table["subject"].astype(str)
-        table["run"] = table["run"].astype(str)
-        table["method"] = table["method"].astype(str)
-        table["montage"] = table["montage"].astype(str)
-        table["configuration_id"] = table["configuration_id"].astype(str)
-        pass_mask = table["status"].eq("PASS")
-        if table.loc[pass_mask, "localization_distance_mm"].isna().any():
-            raise ValueError(f"{method} grid has PASS rows with missing localization errors.")
+        paths = [require_file(path, f"{method} Script-15 grid")]
+        if method == "MxNE" and mxne_mode != "old":
+            paths.extend(require_file(extra, "Extra MxNE grid") for extra in mxne_extra_results)
+        pieces = []
+        for source in paths:
+            part = pd.read_csv(source, low_memory=False)
+            require_columns(part, ["subject", "run", "method", "montage", "configuration_id"], str(source))
+            part = standardize_grid_error_column(part, str(source))
+            part = normalize_status(part)
+            if set(part["method"].dropna().astype(str)) != {method}:
+                raise ValueError(f"Expected only {method} in {source}")
+            for col in ["subject", "run", "method", "montage", "configuration_id"]:
+                part[col] = part[col].astype(str)
+            if part.loc[part["status"].eq("PASS"), "localization_distance_mm"].isna().any():
+                raise ValueError(f"PASS rows missing localization errors in {source}")
+            if method == "MxNE":
+                parsed = pd.to_numeric(part["configuration_id"].str.extract(
+                    r"^mxne_a([-+0-9.eE]+)_l", expand=False), errors="coerce")
+                if "mxne_alpha" in part:
+                    part["mxne_alpha"] = pd.to_numeric(part["mxne_alpha"], errors="coerce").fillna(parsed)
+                else:
+                    part["mxne_alpha"] = parsed
+            pieces.append(part)
+        table = pd.concat(pieces, ignore_index=True, sort=False)
+        if method == "MxNE":
+            key = ["subject", "run", "method", "montage", "configuration_id"]
+            duplicate_count = int(table.duplicated(key, keep="first").sum())
+            if duplicate_count:
+                print(f"MxNE: skipped {duplicate_count:,} overlapping rows (original data take priority).")
+                table = table.drop_duplicates(key, keep="first")
+            if mxne_mode == "selected":
+                table = table.loc[table["mxne_alpha"].isin([25.0, 30.0, 35.0])].copy()
+            if table.empty:
+                raise ValueError(f"No MxNE rows for mode '{mxne_mode}'. Check input CSV files.")
+            levels = sorted(table["mxne_alpha"].dropna().unique().tolist())
+            print(f"MxNE mode={mxne_mode}: {len(table):,} rows; alpha values={levels}")
         tables.append(table)
     return pd.concat(tables, ignore_index=True, sort=False)
 
@@ -1199,9 +1238,15 @@ def main():
     output_root = prepare_output(args.output_root, args.overwrite)
 
     original_grid = load_original_grid(original_grid_path)
-    additional_grid = load_additional_grids(script15_root)
+    additional_grid = load_additional_grids(script15_root, args.mxne_extra_results, args.mxne_mode)
     script10_selected = choose_script10_selected(script10_top_path)
     script16_selected = choose_script16_selected(script16_selected_path)
+    chosen_mxne = script16_selected.loc[script16_selected["method"].eq("MxNE")].iloc[0]
+    mxne_grid = additional_grid.loc[additional_grid["method"].eq("MxNE")]
+    if not ((mxne_grid["montage"].eq(str(chosen_mxne["montage"]))) &
+            (mxne_grid["configuration_id"].eq(str(chosen_mxne["configuration_id"])))).any():
+        raise ValueError("Script-16 selected MxNE configuration is absent from the "
+                         "chosen Script-17 MxNE grid. Check --mxne-mode and --script16-selected.")
 
     selected_original, definitions_original = extract_original_selected_rows(
         original_grid, script10_selected
