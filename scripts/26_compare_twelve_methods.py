@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 """Script 26: 12-method Localize-MI comparison, using Script 17 plotting style.
 
-Two independent reporting cohorts:
- A complete_any_status: one observation for every one of 61 runs, FAIL allowed.
- B complete_all_pass: the same 61 observations must all be PASS.
+Single reporting cohort: complete_all_pass. Every eligible configuration must
+have successful localization on all 61 reference runs.
 
-For each cohort, select a single fixed configuration per method by the LOWEST
+Select a single fixed configuration per method by the LOWEST
 median localization error among successful observations, breaking ties by more
-successful runs, then lower mean error, then stable configuration ID. Report A
-medians condition on successful observations and must be interpreted with PASS
-coverage. Overall-grid values are within-run medians across eligible PASS
-solutions, as in Script 17 (not pooled solution medians).
+successful runs, then lower mean error, then stable configuration ID.
+Overall-grid values are within-run medians across eligible PASS solutions,
+as in Script 17 (not pooled solution medians).
 
 This is an in-sample descriptive comparison, not unseen-subject validation.
-Script 25's 06/07 CSVs must first be validated as per its audit output.
+Script 25's 07_complete_all_pass.csv must first be validated.
 """
 from __future__ import annotations
 import argparse
@@ -73,7 +71,6 @@ def arguments():
     a.add_argument('--original-grid', type=Path, default=ROOT/'outputs/grid_all_runs/grid_results.csv')
     a.add_argument('--script15-root', type=Path, default=ROOT/'outputs/15_full_additional_method_grid')
     a.add_argument('--mxne-extra-results', type=Path, action='append', default=[])
-    a.add_argument('--new-any', type=Path, default=ROOT/'outputs/25_next_method_audit/06_complete_any_status.csv')
     a.add_argument('--new-pass', type=Path, default=ROOT/'outputs/25_next_method_audit/07_complete_all_pass.csv')
     a.add_argument('--output-root', type=Path, default=ROOT/'outputs/26_twelve_methods_comparison')
     a.add_argument('--expected-runs', type=int, default=61)
@@ -215,6 +212,64 @@ def select_and_overall(grid, methods, ref, mode):
     return chosen,pd.DataFrame(defs)
 
 
+# Presentation-only ordering; original analysis order and statistics are unchanged.
+PLOT_GROUPS = [
+    ('Distributed / minimum-norm', ['MNE', 'dSPM', 'sLORETA', 'eLORETA']),
+    ('Sparse', ['MxNE', 'irMxNE']),
+    ('Dipole-based', ['Continuous-ECD', 'RAP-MUSIC']),
+    ('Beamformer', ['LCMV']),
+    ('Bayesian / hierarchical', ['Gamma-MAP', 'Champagne', 'SESAME']),
+]
+
+
+def save_grouped_distribution(data, output_path, title, ylabel, mod, dpi):
+    """Draw original-colored method boxes in families; change visualization only."""
+    import matplotlib.pyplot as plt
+
+    positions, samples, names, boundaries, centers = [], [], [], [], []
+    x = 1.0
+    for group_name, methods in PLOT_GROUPS:
+        start = x
+        for method in methods:
+            values = pd.to_numeric(
+                data.loc[data['method'].eq(method), 'localization_error_mm'],
+                errors='coerce'
+            ).dropna().to_numpy(dtype=float)
+            if not len(values):
+                raise ValueError(f'No distribution values for {method}')
+            positions.append(x)
+            samples.append(values)
+            names.append(method)
+            x += 1.0
+        centers.append((group_name, (start + x - 1.0) / 2.0))
+        boundaries.append(x - 0.5)
+        x += 0.9
+
+    fig, ax = plt.subplots(figsize=(19, 8))
+    bp = ax.boxplot(samples, positions=positions, widths=0.65,
+                    patch_artist=True, showfliers=True,
+                    medianprops={'color': 'black', 'linewidth': 1.7})
+    for artist, method in zip(bp['boxes'], names):
+        artist.set_facecolor(mod.METHOD_COLORS[method])
+        artist.set_alpha(0.75)
+
+    ax.set_xticks(positions)
+    ax.set_xticklabels([f'{m}\n({METHOD_YEARS[m]})' for m in names],
+                       rotation=35, ha='right')
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    ax.grid(axis='y', alpha=0.25)
+    for boundary in boundaries[:-1]:
+        ax.axvline(boundary, color='gray', linestyle=':', alpha=0.35)
+    for group_name, center in centers:
+        ax.text(center, -0.34, group_name, transform=ax.get_xaxis_transform(),
+                ha='center', va='top', fontsize=10, fontweight='bold',
+                clip_on=False)
+    fig.subplots_adjust(left=0.08, right=0.99, top=0.92, bottom=0.40)
+    fig.savefig(output_path, dpi=dpi, bbox_inches='tight')
+    plt.close(fig)
+
+
 def make_report(mod, grid, audit, ref, root, args, mode):
     import matplotlib.pyplot as plt
     destination=root/mode
@@ -290,12 +345,14 @@ def make_report(mod, grid, audit, ref, root, args, mode):
         Figure.savefig = savefig_with_years
         mod.setup_plot_style()
         context=f'{len(ref)} runs | {len({x[0] for x in ref})} participants | 12 methods | {mode}'
-        mod.save_distribution(selected_pass,figures/'01_selected_configuration_distribution.png',
-            'Localization error for selected lowest-median observed configurations',context,
-            'Localization error (mm)',args.dpi)
-        mod.save_distribution(overall_pass,figures/'02_overall_grid_run_distribution.png',
-            'Typical localization error across tested parameter grids',context,
-            'Within-run median localization error (mm)',args.dpi)
+        save_grouped_distribution(
+            selected_pass, figures/'01_selected_configuration_distribution.png',
+            'Localization error for selected lowest-median observed configurations',
+            'Localization error (mm)', mod, args.dpi)
+        save_grouped_distribution(
+            overall_pass, figures/'02_overall_grid_run_distribution.png',
+            'Typical localization error across tested parameter grids',
+            'Within-run median localization error (mm)', mod, args.dpi)
         mod.save_selected_vs_overall(compare,figures/'03_selected_vs_overall_method_medians.png',args.dpi)
         mod.save_pairwise_heatmap(pair,figures/'04_selected_pairwise_median_differences.png',args.dpi)
         mod.save_participant(participant,figures/'05_selected_configuration_by_participant.png',
@@ -326,7 +383,7 @@ def main():
     ref=reference_keys(old.loc[old.method.eq('MNE')])
     if len(ref)!=args.expected_runs:
         raise ValueError(f'Original MNE reference contains {len(ref)} runs, expected {args.expected_runs}')
-    for mode,path,all_pass in [('complete_any_status',args.new_any,False),('complete_all_pass',args.new_pass,True)]:
+    for mode,path,all_pass in [('complete_all_pass',args.new_pass,True)]:
         accepted_old,audit_old=eligibility(old,ref,all_pass)
         incoming=load_new(path,NEW,ref,mod)
         if all_pass and not incoming.status.eq('PASS').all():

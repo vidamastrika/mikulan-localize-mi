@@ -43,7 +43,7 @@ Evaluation:
 1) irMxNE
 --------
 EXPERIMENTAL:
-    alpha = 25, 30, 35
+    alpha = 15, 20, 25, 30, 35
     loose = 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
     depth = 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
 
@@ -66,15 +66,15 @@ Note:
 2) Gamma-MAP
 ------------
 EXPERIMENTAL:
-    alpha = 0.1, 0.2, 0.3, 0.4, 0.5
-    loose = 0.4, 0.7, 1.0
+    alpha = 0.20–0.70 (8 values)
+    loose = 0.3, 0.5, 0.7
     xyz_same_gamma = True, False
 
 FIXED:
-    depth = 0.1
+    depth = 0.5
     update_mode = 1
-    maxit = 10000
-    tol = 1e-6
+    maxit = 2000
+    tol = 1e-4
 
 Grid:
     5 x 3 x 2 = 30 method configurations per montage
@@ -87,7 +87,7 @@ Note:
 3) SESAME
 ---------
 EXPERIMENTAL:
-    fs = 0.06, 0.09, 0.12, 0.15, 0.18, 0.21, 0.24, 0.27, 0.30, 0.33
+    fs = 0.03, 0.06, 0.09, 0.12, 0.15, 0.18, 0.21, 0.24, 0.27, 0.30, 0.33
 
     step = 0.03
 
@@ -107,7 +107,7 @@ Grid:
 4) Champagne
 ------------
 EXPERIMENTAL:
-    pruning_thresh = 0.0001, 0.001, 0.01
+    pruning_thresh = 0.0001, 0.001, 0.005, 0.01, 0.05
 
 FIXED:
     alpha = "auto"
@@ -129,11 +129,11 @@ Note:
 
 TOTAL DEFAULT FULL GRID
 -----------------------
-    irMxNE     = 73,200
-    Gamma-MAP  =  7,320
-    SESAME     =  2,440
-    Champagne  =    732
-    TOTAL      = 83,692 solutions
+    irMxNE     = 122,000
+    Gamma-MAP  =  11,712
+    SESAME     =   2,684
+    Champagne  =   1,220
+    TOTAL      = 137,616 solutions
 
 ===============================================================================
 TERMINAL EXAMPLES

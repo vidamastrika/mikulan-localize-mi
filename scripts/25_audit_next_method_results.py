@@ -210,9 +210,10 @@ def main():
     print(f'\nDuplicate rows: {len(duplicates):,}; conflicting duplicated run groups: '
           f'{sum(x["conflicting_result"] for x in collisions)}')
 
-    # For consistent downstream results, choose a single row from equivalent
-    # duplicates (prefer PASS, then stable source path); unresolved conflicts are
-    # excluded by eligibility anyway. Do not overwrite raw results.
+    # For consistent downstream results, retain one canonical row
+# from equivalent duplicates, ordered by source file and source row.
+# Configurations with unresolved duplicate conflicts are excluded
+# from eligible datasets. Original input records are preserved.
     eligible = audit.set_index(['method','configuration_key'])
     included['_all_any'] = [bool(eligible.loc[(m,c),'eligible_complete_any_status'])
                             for m,c in zip(included.method,included.configuration_key)]
