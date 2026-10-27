@@ -58,7 +58,7 @@ EXTRA=['irmxne_alpha','irmxne_loose','irmxne_depth','irmxne_iterations',
 
 def parser():
  p=argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter)
- p.add_argument('--phase',choices=['plan','parameter-audit','reconstruct','audit-within','evaluate','analyze','all'],default='plan')
+ p.add_argument('--phase',choices=['plan','parameter-audit','reconstruct','audit-within','evaluate','analyze','config-check','all'],default='plan')
  p.add_argument('--method',choices=METHODS,action='append')
  p.add_argument('--resume',action='store_true')
  p.add_argument('--limit',type=int,default=0,help='Maximum NEW fits this run')
@@ -77,6 +77,8 @@ def parser():
  p.add_argument('--registration-status',type=Path,default=Path('cross_subject/outputs/31_all_reference_registration/registration_status.csv'))
  p.add_argument('--selected-configs',type=Path,default=Path('outputs/26_twelve_methods_comparison/complete_all_pass/tables/01_selected_configuration_definitions.csv'),help='Script 26 final configuration definitions CSV')
  p.add_argument('--grid-root',type=Path,default=Path('outputs/23_full_next_method_grid'))
+ p.add_argument('--existing-root',type=Path,action='append',default=[],help='Existing Script 36 output folder(s), repeat this flag for multiple roots')
+ p.add_argument('--comparison-output',type=Path,default=Path('cross_subject/outputs/36_configuration_check'),help='Separate read-only comparison report output folder')
 
  return p.parse_args()
 
@@ -107,6 +109,9 @@ def load_selected_configs(path, methods):
   if len(g)!=1:
    raise ValueError(f'{path}: expected exactly one final selection for {method}, got {len(g)}')
   r=g.iloc[0].to_dict()
+  if 'selected_pass' in r and 'selected_fail' in r:
+   if int(r['selected_pass']) != 61 or int(r['selected_fail']) != 0:
+    raise ValueError(f'{method} not 61/61 ALL-PASS: {r["selected_pass"]}/{r["selected_fail"]}')
   if pd.notna(r.get('configuration_parameters')):
    raw=r['configuration_parameters']
    obj=json.loads(raw) if isinstance(raw,str) else raw
@@ -239,7 +244,7 @@ def audit_within(a, methods):
  """
  import h5py
  original=Path('outputs/25_next_method_audit/07_complete_all_pass.csv')
- definitions=Path('outputs/26_twelve_methods_comparison/complete_all_pass/tables/01_selected_configuration_definitions.csv')
+ definitions=a.selected_configs
  status=a.output_root/'01_execution_status.csv'
  for path in (original,definitions,status):
   if not path.is_file():raise FileNotFoundError(path)
@@ -329,6 +334,70 @@ def audit_within(a, methods):
  print('WITHIN-SUBJECT REPRODUCTION AUDIT PASSED for available metrics')
 
 
+def config_check(a, selected):
+ """Compare CURRENT Script 26 all-pass selection with previous Script 36 folders.
+
+ No reconstructions, past CSVs, or frozen manifests are edited.
+ Different settings => never mix old rows with the new configuration.
+ """
+ roots=a.existing_root or [
+  Path('cross_subject/outputs/36_cross_subject_irmxne_gammamap_champagne'),
+  Path('cross_subject/outputs/36_complete_all_pass'),
+  Path('cross_subject/outputs/36_cross_subject_irmxne_gamma_champagne'),
+ ]
+ defs=pd.read_csv(a.selected_configs)
+ rows=[]
+ for method in METHODS:
+  dr=defs[defs.method.astype(str).str.casefold()==method.casefold()]
+  if len(dr)!=1:raise ValueError(f'Expected one Script26 row for {method}')
+  n_pass=int(dr.iloc[0]['selected_pass']);n_fail=int(dr.iloc[0]['selected_fail'])
+  if n_pass!=61 or n_fail!=0:
+   raise ValueError(f'{method} selection is not 61/61 all-pass: {n_pass} PASS, {n_fail} FAIL')
+  new=selected[method]
+  print(f'\n{method} -- NEW Script26 all-pass: {json.dumps(new,sort_keys=True)}')
+  found=False
+  for root in roots:
+   mp=root/'frozen_configuration.json'
+   status=root/'01_execution_status.csv'
+   if not mp.exists() and not status.exists():continue
+   if not mp.is_file():
+    print(f'  {root}: STATUS WITHOUT FROZEN MANIFEST; cannot safely reuse')
+    rows.append(dict(method=method,root=str(root),same_config=False,completed=0,within=0,cross=0,pass_count=0,fail_count=0,action='INSPECT: missing frozen manifest'))
+    continue
+   document=json.loads(mp.read_text())
+   prior=document.get('methods',{}).get(method)
+   if not isinstance(prior,dict):continue
+   found=True
+   # Compare just the effective method inputs, NOT entire CSV file hash or other methods.
+   old={k:prior.get(k) for k in new}
+   same=all((str(old[k]).lower()==str(new[k]).lower()) if isinstance(new[k],(str,bool))
+            else np.isclose(float(old[k]),float(new[k]),rtol=0,atol=1e-12)
+            for k in new if old.get(k) is not None) and all(k in prior for k in new)
+   if status.is_file():
+    frame=pd.read_csv(status,low_memory=False)
+    frame=frame.loc[frame.method.astype(str).eq(method)].copy()
+    if frame.duplicated(['method','test_subject','reference_subject','run']).any():
+     raise ValueError(f'{root} has duplicate {method} results')
+    mask=frame.is_within.astype(str).str.lower().eq('true') if 'is_within' in frame else pd.Series(False,index=frame.index)
+    inside=int(mask.sum());outside=int((~mask).sum());passed=int(frame.status.eq('PASS').sum());failed=int(frame.status.eq('FAIL').sum())
+   else:inside=outside=passed=failed=0
+   count=inside+outside
+   action=('REUSE existing fits; run only uncompleted cases in this original root' if same else
+           f'RERUN {count} completed fits with NEW config in a NEW output root (and complete remaining scheduled jobs)')
+   rows.append(dict(method=method,root=str(root),same_config=same,completed=count,within=inside,cross=outside,pass_count=passed,fail_count=failed,action=action))
+   print(f'  {root}: same_settings={same}, within={inside}, cross={outside}, PASS={passed}, FAIL={failed}')
+   if not same:
+    print('    Changed keys:',{k:(old.get(k),new.get(k)) for k in new if str(old.get(k)).lower()!=str(new.get(k)).lower()})
+  if not found:print('  No prior matching method manifests found; schedule 61 within + 366 cross fits')
+ dest=a.comparison_output;dest.mkdir(parents=True,exist_ok=True)
+ report=pd.DataFrame(rows,columns=['method','root','same_config','completed','within','cross','pass_count','fail_count','action'])
+ report.to_csv(dest/'01_method_config_reuse_plan.csv',index=False)
+ print('\nComparison report:',dest/'01_method_config_reuse_plan.csv')
+ print('IMPORTANT: A configuration change requires a fresh method-specific output root.')
+ print('Unchanged configuration + different whole-CSV hash may still be rejected by the old manifest check; do not bypass it or manually overwrite old results.')
+ print('Existing FAIL runs are never retried by --resume; investigate failures separately.')
+
+
 def main():
  a=parser();a.dataset=a.dataset.expanduser()
  if a.limit<0:raise ValueError('--limit must be non-negative')
@@ -354,6 +423,7 @@ def main():
            'selected_config_sha256':sha,'dataset':str(a.dataset),
            'implementation':'Script23 solvers; Script34 evaluation; within reproduction gate'}
  print(f'{len(methods)} methods; {len(methods)*61} within, {len(methods)*366} cross, {len(methods)*len(jobs)} fits')
+ if a.phase=='config-check':return config_check(a,selections)
  if a.phase=='plan':
   print(json.dumps(manifest,indent=2))
   print('Final Script 25/26 fixed settings loaded; no reselection performed.')
@@ -364,9 +434,26 @@ def main():
  a.output_root.mkdir(parents=True,exist_ok=True)
  mp=a.output_root/'frozen_configuration.json'
  if mp.exists():
-  if json.loads(mp.read_text())!=manifest:raise ValueError('Frozen manifest mismatch: use original arguments or a NEW output root')
+  previous=json.loads(mp.read_text())
+  if previous!=manifest:
+   # An updated Script 26 file may change OTHER methods while the selected
+   # method remains identical.  Permit method-filtered continuation only.
+   # Never replace the historical manifest, or silently mix changed settings.
+   if not a.method or a.phase=='all':
+    raise ValueError('Frozen manifest differs. Specify --method for unchanged settings, or use a NEW output root.')
+   for k in ('schedule_sha256','dataset','implementation','n_jobs'):
+    if previous.get(k)!=manifest.get(k):
+     raise ValueError(f'Frozen manifest {k} differs: use a NEW output root')
+   for method in methods:
+    if previous.get('methods',{}).get(method)!=manifest['methods'][method]:
+     raise ValueError(f'{method} configuration CHANGED. Use a NEW output root; do not --resume here.')
+   print('Existing selected-method settings match; other methods/CSV hash changed.')
+   print('Continuing ONLY the requested methods; existing frozen manifest remains unchanged.')
   if a.phase in ('reconstruct','all') and not a.resume:raise ValueError('Output already exists. Add --resume')
- else:mp.write_text(json.dumps(manifest,indent=2)+'\n')
+ else:
+  if a.phase not in ('reconstruct','plan','all'):
+   raise ValueError('No frozen manifest exists for evaluation/analysis. Run reconstruction first.')
+  mp.write_text(json.dumps(manifest,indent=2)+'\n')
  status=a.output_root/'01_execution_status.csv'
  all_jobs=[(m,t,r,run) for m in METHODS for t,r,run in jobs]
  run_jobs=[(m,t,r,run) for m in methods for t,r,run in jobs
