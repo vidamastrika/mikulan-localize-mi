@@ -6,8 +6,9 @@ Two independent reporting cohorts:
  B complete_all_pass: the same 61 observations must all be PASS.
 
 For the complete_all_pass cohort, a method's primary selection parameter value
-is eligible only if no run using that value failed anywhere in the complete
-grid, even when other parameters differ. A value with a failure is excluded
+is eligible only if no run using that value failed anywhere in the unfiltered
+loaded grid, and every observed configuration using it covers all reference
+runs, even when other parameters differ. A value with a failure is excluded
 even if it is the only observed value. Configurations containing a failed
 primary value are excluded; each remaining full configuration must also pass
 all 61 runs. Selection uses lowest configuration median, then more successful
@@ -17,7 +18,8 @@ FAIL rows; its medians must be interpreted with PASS coverage. Overall-grid
 values are within-run medians across eligible PASS solutions, as in Script 17.
 
 This is an in-sample descriptive comparison, not unseen-subject validation.
-Script 25's 06/07 CSVs must first be validated as per its audit output.
+Script 25's 06/07 CSVs supply complete comparison rows. Script 24's unfiltered
+master supplies reliability evidence before incomplete configurations are removed.
 """
 from __future__ import annotations
 import argparse
@@ -95,6 +97,8 @@ def arguments():
                    help='Explicit MxNE extension CSV(s); these replace the old MxNE grid. If omitted, discover extension CSVs under --mxne-extension-root and --script15-root.')
     a.add_argument('--new-any', type=Path, default=ROOT/'outputs/25_next_method_audit/06_complete_any_status.csv')
     a.add_argument('--new-pass', type=Path, default=ROOT/'outputs/25_next_method_audit/07_complete_all_pass.csv')
+    a.add_argument('--new-master', type=Path, default=ROOT/'outputs/23_full_next_method_grid/23_all_next_methods_combined.csv',
+                   help='Unfiltered Script-24 master, required for failure and coverage checks before Script-25 filtering.')
     a.add_argument('--output-root', type=Path, default=ROOT/'outputs/26_twelve_methods_comparison')
     a.add_argument('--expected-runs', type=int, default=61)
     a.add_argument('--dpi', type=int, default=240)
@@ -327,8 +331,49 @@ def primary_parameter_for(method, group):
     return alpha_fields[0] if alpha_fields else None
 
 
-def parameter_value_screen(grid):
-    """Exclude a primary parameter value if any complete-grid run failed under it.
+def load_new_reliability_evidence(path, mod):
+    """Read raw allowed experiments; recover only primary values encoded by IDs.
+
+    Never assign a failed observation to a different alpha from its stored ID.
+    Other method inputs and all input CSVs remain unchanged.
+    """
+    allowed={
+        'champagne':{'23_full_next_method_grid','23_champagne_pruning_extension'},
+        'irmxne':{'23_full_next_method_grid','23_irmxne_alpha15_extension','23_irmxne_alpha20_extension'},
+        'gamma_map':{'23_full_next_method_grid','23_gamma_alpha_extension','23_gamma_alpha_low_extension','23_gamma_xyz_true'},
+        'sesame':{'23_full_next_method_grid','23_sesame_fs_extension'},
+    }
+    data=normalize(pd.read_csv(path,low_memory=False),str(path),mod)
+    mod.require_columns(data,['source_experiment','configuration_id'],str(path))
+    ids=data.method.str.lower().str.replace('-','_',regex=False)
+    mask=pd.Series([s in allowed.get(m,set()) for m,s in zip(ids,data.source_experiment)],index=data.index)
+    data=data.loc[mask].copy(); data['method']=ids.loc[mask].map(NEW_NAMES)
+    params=[]
+    for row in data.to_dict('records'):
+        field=PRIMARY_PARAMETER_HINTS[row['method']][0]
+        value=row.get(field,np.nan)
+        if pd.isna(value):
+            patterns={'Gamma-MAP':r'^gamma_a([0-9.eE+-]+)_',
+                      'irMxNE':r'^irmxne_a([0-9.eE+-]+)_',
+                      'SESAME':r'^sesame_fs_([0-9p.eE+-]+)',
+                      'Champagne':r'^champagne_thresh_([0-9.eE+-]+)'}
+            match=re.search(patterns[row['method']],str(row['configuration_id']))
+            if not match:
+                raise ValueError(f'Cannot establish primary parameter for raw row: {row["method"]}/{row["configuration_id"]}')
+            value=float(match.group(1).replace('p','.'))
+        params.append(json.dumps({field:float(value)}))
+    data['screen_parameters']=params
+    # IDs encode controlled grid settings. Normalize numeric spellings so
+    # gamma_a0.50 and gamma_a0.5 describe the same requested configuration.
+    def canonical_id(value):
+        return re.sub(r'\d+(?:\.\d+)?',lambda m:format(float(m.group()),'.12g'),str(value))
+    data['configuration_key']=(data.method+':'+data.montage.astype(str)+':'
+                               +data.configuration_id.map(canonical_id))
+    return data
+
+
+def parameter_value_screen(grid, evidence=None, ref=None):
+    """Exclude values with failures or incomplete observed grids in the evidence.
 
     The primary field is method-specific (e.g. alpha for MxNE and fs for
     SESAME). Other parameter dimensions are screened at the full-configuration
@@ -352,7 +397,10 @@ def parameter_value_screen(grid):
     work=grid.copy()
     work['_screen_params']=parsed
     blocked=set()
-    for method, group in work.groupby('method',sort=False):
+    evidence_work=work if evidence is None else evidence.copy()
+    if evidence is not None:
+        evidence_work['_screen_params']=evidence_work.screen_parameters.map(json.loads)
+    for method, group in evidence_work.groupby('method',sort=False):
         primary=primary_parameter_for(method,group)
         fields=[primary] if primary else []
         for field in fields:
@@ -361,6 +409,13 @@ def parameter_value_screen(grid):
             distinct=normalized.nunique(dropna=False)
             fail_mask=group.status.eq('FAIL')
             failed=set(normalized.loc[fail_mask])
+            incomplete={}
+            if ref is not None:
+                for cfg,g in group.assign(_value=normalized).groupby('configuration_key',sort=False):
+                    if reference_keys(g)!=ref:
+                        for value in g._value.unique():
+                            incomplete[value]=incomplete.get(value,0)+1
+            other=set(normalized.loc[~group.status.isin(['PASS','FAIL'])])
             counts=group.assign(_value=normalized).groupby('_value',dropna=False).agg(
                 configurations=('configuration_key','nunique'),
                 pass_rows=('status',lambda s:int(s.eq('PASS').sum())),
@@ -368,10 +423,16 @@ def parameter_value_screen(grid):
             for _, item in counts.iterrows():
                 value=item['_value']
                 varied=distinct>1
-                bad=value in failed
+                bad=value in failed or incomplete.get(value,0)>0 or value in other
                 rows.append({'method':method,'parameter':field,'value':value,
                     'varied_parameter':varied,'configurations':int(item.configurations),
                     'pass_rows':int(item.pass_rows),'fail_rows':int(item.fail_rows),
+                    'incomplete_configurations':incomplete.get(value,0),
+                    'screen_scope':'unfiltered loaded grid' if evidence is not None else 'complete configurations',
+                    'exclusion_reason':'; '.join(reason for condition,reason in [
+                        (value in failed,'recorded failure'),
+                        (incomplete.get(value,0)>0,'incomplete configuration coverage'),
+                        (value in other,'unrecognised status')] if condition),
                     'eligible_value':not bad})
                 if bad: blocked.add((method,field,value))
     keep=[]
@@ -452,6 +513,7 @@ def make_report(mod, grid, audit, ref, root, args, mode,
     tables=destination/'tables'; figures=destination/'figures'
     tables.mkdir(parents=True,exist_ok=True); figures.mkdir(parents=True,exist_ok=True)
     selected, definitions=select_and_overall(grid,METHODS,ref,mode)
+    definitions['report_mode']=mode
     selected_all=selected[['subject','run','method','status','localization_error_mm','configuration_key']].copy()
     selected_pass=selected_all[selected_all.status.eq('PASS')].copy()
     selected_pass['view']='selected_configuration'
@@ -641,7 +703,9 @@ def main():
     # combination passes all runs and whose primary parameter value has no
     # failures anywhere across the merged grid.
     merged_any=pd.concat([old_complete,incoming_any],ignore_index=True,sort=False)
-    screened,parameter_audit,configuration_screen=parameter_value_screen(merged_any)
+    raw_new=load_new_reliability_evidence(args.new_master,mod)
+    evidence=pd.concat([old,raw_new],ignore_index=True,sort=False)
+    screened,parameter_audit,configuration_screen=parameter_value_screen(merged_any,evidence,ref)
     merged_all_pass,audit_all_pass=eligibility(screened,ref,True)
     if not merged_all_pass.status.eq('PASS').all():
         raise ValueError('Strict all-pass screen retained a failed observation')
@@ -674,7 +738,7 @@ def main():
         raise ValueError('No strict all-pass configuration remains for method(s): '
                          f'{missing_all_pass}. Complete configurations by method: {config_counts}. '
                          f'Strict all-pass configurations by method: {passing_counts}. '
-                         f'Primary parameter values excluded for failures: {excluded_values}. '
+                         f'Primary parameter values excluded for failures or incomplete coverage: {excluded_values}. '
                          'Combined CSVs and eligibility audits were written to --output-root.')
 
     for mode in ['complete_any_status','complete_all_pass']:
