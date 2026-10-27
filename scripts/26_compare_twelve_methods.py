@@ -5,12 +5,16 @@ Two independent reporting cohorts:
  A complete_any_status: one observation for every one of 61 runs, FAIL allowed.
  B complete_all_pass: the same 61 observations must all be PASS.
 
-For each cohort, select a single fixed configuration per method by the LOWEST
-median localization error among successful observations, breaking ties by more
-successful runs, then lower mean error, then stable configuration ID. Report A
-medians condition on successful observations and must be interpreted with PASS
-coverage. Overall-grid values are within-run medians across eligible PASS
-solutions, as in Script 17 (not pooled solution medians).
+For the complete_all_pass cohort, a method's primary selection parameter value
+is eligible only if no run using that value failed anywhere in the complete
+grid, even when other parameters differ. A value with a failure is excluded
+even if it is the only observed value. Configurations containing a failed
+primary value are excluded; each remaining full configuration must also pass
+all 61 runs. Selection uses lowest configuration median, then more successful
+runs, lower primary-parameter overall median, lower configuration mean, and ID.
+The complete_any_status cohort remains a descriptive comparison that allows
+FAIL rows; its medians must be interpreted with PASS coverage. Overall-grid
+values are within-run medians across eligible PASS solutions, as in Script 17.
 
 This is an in-sample descriptive comparison, not unseen-subject validation.
 Script 25's 06/07 CSVs must first be validated as per its audit output.
@@ -19,6 +23,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import re
 from pathlib import Path
 import sys
 import numpy as np
@@ -30,7 +35,19 @@ OTHER = ['Continuous-ECD','MxNE','RAP-MUSIC','LCMV']
 NEW = ['irMxNE','Champagne','Gamma-MAP','SESAME']
 METHODS = ORIGINAL + OTHER + NEW
 NEW_NAMES = {'irmxne':'irMxNE','champagne':'Champagne','gamma_map':'Gamma-MAP','sesame':'SESAME'}
-COLORS = {'irMxNE':'#2D6A9F','Champagne':'#D65A31','Gamma-MAP':'#8561A8','SESAME':'#299C87'}
+COLORS = {
+    'MNE':'#4C78A8', 'dSPM':'#E45756', 'sLORETA':'#54A24B', 'eLORETA':'#8E5C99',
+    'MxNE':'#72B7B2', 'irMxNE':'#2D6A9F',
+    'Continuous-ECD':'#F58518', 'RAP-MUSIC':'#B279A2', 'LCMV':'#ECA82C',
+    'Gamma-MAP':'#8561A8', 'Champagne':'#D65A31', 'SESAME':'#299C87',
+}
+METHOD_GROUPS = [
+    ('Distributed / minimum-norm',['MNE','dSPM','sLORETA','eLORETA']),
+    ('Sparse',['MxNE','irMxNE']),
+    ('Dipole-based',['Continuous-ECD','RAP-MUSIC']),
+    ('Beamformer',['LCMV']),
+    ('Bayesian / hierarchical',['Gamma-MAP','Champagne','SESAME']),
+]
 
 # Reference publication years, not necessarily first invention dates.
 # Continuous-ECD: 1985 is an established dipole-model paper, not an origin claim.
@@ -72,7 +89,10 @@ def arguments():
     a.add_argument('--script17', type=Path, default=ROOT/'scripts/17_compare_all_methods_selected_and_overall.py')
     a.add_argument('--original-grid', type=Path, default=ROOT/'outputs/grid_all_runs/grid_results.csv')
     a.add_argument('--script15-root', type=Path, default=ROOT/'outputs/15_full_additional_method_grid')
-    a.add_argument('--mxne-extra-results', type=Path, action='append', default=[])
+    a.add_argument('--mxne-extension-root', type=Path, default=ROOT/'outputs/15_mxne_alpha_extension',
+                   help='Folder containing the newer MxNE alpha-extension grid_results CSVs.')
+    a.add_argument('--mxne-extra-results', type=Path, action='append', default=[],
+                   help='Explicit MxNE extension CSV(s); these replace the old MxNE grid. If omitted, discover extension CSVs under --mxne-extension-root and --script15-root.')
     a.add_argument('--new-any', type=Path, default=ROOT/'outputs/25_next_method_audit/06_complete_any_status.csv')
     a.add_argument('--new-pass', type=Path, default=ROOT/'outputs/25_next_method_audit/07_complete_all_pass.csv')
     a.add_argument('--output-root', type=Path, default=ROOT/'outputs/26_twelve_methods_comparison')
@@ -111,21 +131,115 @@ def normalize(frame, label, mod):
     return out
 
 
+def load_non_mxne_additional(args, mod):
+    """Load the three Script-15 methods independently of Script-17's MxNE mode."""
+    if hasattr(mod, 'additional_grid_paths'):
+        available=mod.additional_grid_paths(args.script15_root)
+    else:
+        available={
+            'Continuous-ECD':args.script15_root/'continuous_ecd'/'grid_results.csv',
+            'RAP-MUSIC':args.script15_root/'rap_music'/'grid_results.csv',
+            'LCMV':args.script15_root/'lcmv'/'grid_results.csv',
+        }
+    frames=[]
+    for method in ['Continuous-ECD','RAP-MUSIC','LCMV']:
+        path=Path(available[method])
+        if not path.is_file():
+            raise FileNotFoundError(f'Missing Script-15 {method} grid: {path}')
+        frame=normalize(pd.read_csv(path,low_memory=False),str(path),mod)
+        observed=set(frame.method.dropna().astype(str).str.strip())
+        if observed!={method}:
+            raise ValueError(f'Expected only {method} rows in {path}; found {observed}')
+        frames.append(frame)
+    return pd.concat(frames,ignore_index=True,sort=False)
+
+
 def old_grid(args, mod):
     original = mod.load_original_grid(args.original_grid)
-    additional = mod.load_additional_grids(args.script15_root,
-        args.mxne_extra_results, 'all' if args.mxne_extra_results else 'old')
+    # Read these explicitly: current Script 17 variants can make
+    # load_additional_grids(..., mode='old') return only the MxNE grid.
+    # MxNE is handled separately below so its old grid cannot leak in.
+    additional=load_non_mxne_additional(args,mod)
+    extra_paths=list(args.mxne_extra_results)
+    baseline=(args.script15_root/'mxne'/'grid_results.csv').resolve()
+    if not extra_paths:
+        baseline_dir=(args.script15_root/'mxne').resolve()
+        extension_root=args.mxne_extension_root.resolve()
+        script15_root=args.script15_root.resolve()
+        discovered=[]
+        if extension_root.exists():
+            discovered.extend(p for p in extension_root.rglob('grid_results*.csv')
+                              if p.resolve()!=baseline)
+        if script15_root.exists():
+            for path in script15_root.rglob('grid_results*.csv'):
+                resolved=path.resolve()
+                # Script 15 also contains Continuous-ECD, RAP-MUSIC, and LCMV
+                # grids. Only MxNE-named folders may supply MxNE extensions.
+                if (resolved!=baseline and path.parent.resolve()!=baseline_dir
+                        and 'mxne' in str(path.parent).lower()):
+                    discovered.append(path)
+        extra_paths=sorted(set(discovered))
+    if not extra_paths:
+        raise FileNotFoundError(
+            'No MxNE extra-result CSVs found. Pass one or more --mxne-extra-results paths; '
+            'the old mxne/grid_results.csv is intentionally excluded.')
+    extras=[]
+    for path in extra_paths:
+        frame=pd.read_csv(path,low_memory=False)
+        mod.require_columns(frame,['method','subject','run','status','montage'],str(path))
+        observed=set(frame.method.dropna().astype(str).str.strip().str.lower())
+        if observed!={'mxne'}:
+            raise ValueError(f'Expected only MxNE rows in extra result {path}; found {observed}')
+        frame=normalize(frame,str(path),mod)
+        frame['method']='MxNE'
+        if 'configuration_id' not in frame:
+            param_cols=[c for c in frame.columns if re.search(
+                r'(^|_)(alpha|loose|depth|snr|lambda2?)(_|$)',str(c),re.I)]
+            if not param_cols:
+                raise ValueError(f'{path}: MxNE extras need configuration_id or identifiable parameter columns')
+            frame['configuration_id']=frame[param_cols].astype(str).agg('|'.join,axis=1)
+        extras.append(frame)
+    additional=pd.concat([additional,*extras],ignore_index=True,sort=False)
     return pd.concat([original,additional], ignore_index=True, sort=False)
 
 
 def prepare_old(old, reference):
     """Identify full configurations for old methods, not row-specific outcomes."""
+    controlled={
+        'Continuous-ECD':['ecd_min_dist_mm'],
+        'MxNE':['mxne_alpha','mxne_loose','mxne_depth','mxne_iterations',
+                'alpha','loose','depth'],
+        'RAP-MUSIC':['rap_music_n_dipoles'],
+        'LCMV':['lcmv_reg','lcmv_window_half_ms','lcmv_data_covariance_method',
+                'lcmv_pick_ori','lcmv_weight_norm','lcmv_reduce_rank'],
+    }
     out=[]
     for method, group in old.groupby('method', sort=False):
+        group=group.copy()
         if method in ORIGINAL:
             fields = [c for c in ['method_origin','montage','loose','depth','snr','lambda2'] if c in group.columns]
+            screen_fields=fields[:]
         else:
-            fields = ['montage','configuration_id']
+            identity_fields=['montage','configuration_id']
+            if not all(c in group.columns for c in identity_fields):
+                raise ValueError(f'Cannot identify full configurations for {method}: {identity_fields}')
+            # Script 15 writes the realized noise covariance estimator in
+            # covariance_method. It can change between runs and MUST NOT be
+            # part of a requested configuration. Use controlled inputs only.
+            screen_fields=['montage']+[c for c in controlled.get(method,[])
+                                       if c in group and group[c].notna().any()]
+            # Failed fits can lack method inputs. Recover an input only when
+            # its stable Script-15 ID + montage identifies one observed value.
+            for col in screen_fields[1:]:
+                group[col]=group[col].replace(r'^\s*$',np.nan,regex=True)
+                known=group.groupby(identity_fields,dropna=False)[col]
+                unique=known.transform('nunique')
+                first=known.transform('first')
+                fill=group[col].isna() & unique.eq(1)
+                group.loc[fill,col]=first.loc[fill]
+            # Include actual varied inputs in the identity; extension files may
+            # reuse configuration_id values across different alpha settings.
+            fields=list(dict.fromkeys(identity_fields+screen_fields))
         if not all(c in group for c in fields):
             raise ValueError(f'Cannot identify old configuration inputs for {method}: {fields}')
         part = group.copy()
@@ -140,7 +254,13 @@ def prepare_old(old, reference):
             return str(v).strip()
         cfg = part[fields].apply(lambda s:s.map(norm))
         part['configuration_key'] = (method + ':' + cfg.agg('|'.join,axis=1))
-        part['configuration_parameters'] = cfg.apply(lambda r:json.dumps(r.to_dict(), sort_keys=True),axis=1)
+        # configuration_id is retained for provenance but is not itself a
+        # tunable parameter in the global parameter-value reliability check.
+        screen = part[screen_fields].apply(lambda s:s.map(norm))
+        display=part[fields].apply(lambda s:s.map(norm))
+        part['configuration_parameters'] = display.apply(
+            lambda r:json.dumps(r.to_dict(), sort_keys=True),axis=1)
+        part['screen_parameters'] = screen.apply(lambda r:json.dumps(r.to_dict(), sort_keys=True),axis=1)
         out.append(part)
     return pd.concat(out, ignore_index=True, sort=False)
 
@@ -177,6 +297,7 @@ def load_new(path, expected_methods, ref, mod):
         raise ValueError(f'{path}: methods mismatch: {data.method.unique()}')
     for name in ['configuration_key','configuration_parameters']:
         if name not in data.columns: raise ValueError(f'{path}: missing {name}; rerun Script 25')
+    data['screen_parameters'] = data.configuration_parameters
     grouped=data.groupby(['method','configuration_key'],dropna=False)
     for (method,cfg), group in grouped:
         if reference_keys(group)!=ref or len(group)!=len(ref):
@@ -186,18 +307,121 @@ def load_new(path, expected_methods, ref, mod):
     return data
 
 
+PRIMARY_PARAMETER_HINTS = {
+    'MxNE':['alpha'], 'irMxNE':['irmxne_alpha'],
+    'Gamma-MAP':['gamma_alpha'], 'SESAME':['sesame_fs'],
+    'Champagne':['champagne_pruning_thresh','champagne_prune'],
+    'Continuous-ECD':['ecd_min_dist_mm','min_dist'],
+}
+
+
+def primary_parameter_for(method, group):
+    params=[]
+    for value in group.screen_parameters.drop_duplicates():
+        try: params.append(json.loads(value))
+        except (TypeError,json.JSONDecodeError): pass
+    fields={key for item in params if isinstance(item,dict) for key in item}
+    for hint in PRIMARY_PARAMETER_HINTS.get(method,[]):
+        if hint in fields: return hint
+    alpha_fields=sorted(f for f in fields if f.lower().endswith('alpha'))
+    return alpha_fields[0] if alpha_fields else None
+
+
+def parameter_value_screen(grid):
+    """Exclude a primary parameter value if any complete-grid run failed under it.
+
+    The primary field is method-specific (e.g. alpha for MxNE and fs for
+    SESAME). Other parameter dimensions are screened at the full-configuration
+    level, where the selected configuration must pass all 61 runs.
+    """
+    rows=[]
+    config_records=[]
+    def canonical(v):
+        if pd.isna(v): return '<NA>'
+        if isinstance(v,(bool,np.bool_)): return str(bool(v)).lower()
+        if isinstance(v,(int,float,np.integer,np.floating)):
+            return f'{float(v):.12g}'
+        return str(v).strip()
+    parsed=[]
+    for _, row in grid.iterrows():
+        try:
+            params=json.loads(row.screen_parameters)
+        except (TypeError, json.JSONDecodeError):
+            params={}
+        parsed.append(params if isinstance(params,dict) else {})
+    work=grid.copy()
+    work['_screen_params']=parsed
+    blocked=set()
+    for method, group in work.groupby('method',sort=False):
+        primary=primary_parameter_for(method,group)
+        fields=[primary] if primary else []
+        for field in fields:
+            vals=group._screen_params.map(lambda p: p.get(field, '<MISSING>'))
+            normalized=vals.map(canonical)
+            distinct=normalized.nunique(dropna=False)
+            fail_mask=group.status.eq('FAIL')
+            failed=set(normalized.loc[fail_mask])
+            counts=group.assign(_value=normalized).groupby('_value',dropna=False).agg(
+                configurations=('configuration_key','nunique'),
+                pass_rows=('status',lambda s:int(s.eq('PASS').sum())),
+                fail_rows=('status',lambda s:int(s.eq('FAIL').sum()))).reset_index()
+            for _, item in counts.iterrows():
+                value=item['_value']
+                varied=distinct>1
+                bad=value in failed
+                rows.append({'method':method,'parameter':field,'value':value,
+                    'varied_parameter':varied,'configurations':int(item.configurations),
+                    'pass_rows':int(item.pass_rows),'fail_rows':int(item.fail_rows),
+                    'eligible_value':not bad})
+                if bad: blocked.add((method,field,value))
+    keep=[]
+    for idx,row in work.iterrows():
+        rejected=[]
+        for field,value in row['_screen_params'].items():
+            key=(row.method,field,canonical(value))
+            if key in blocked: rejected.append(f'{field}={canonical(value)}')
+        keep.append(not rejected)
+        config_records.append({'method':row.method,'configuration_key':row.configuration_key,
+            'configuration_parameters':row.configuration_parameters,
+            'parameter_value_failures':'; '.join(sorted(set(rejected))),
+            'eligible_after_parameter_value_screen':not rejected})
+    filtered=work.loc[keep].drop(columns=['_screen_params']).copy()
+    config_audit=pd.DataFrame(config_records).drop_duplicates(
+        ['method','configuration_key'],keep='first')
+    return filtered,pd.DataFrame(rows),config_audit
+
+
 def select_and_overall(grid, methods, ref, mode):
     defs=[]; selected=[]
     for method in methods:
         m=grid.loc[grid.method.eq(method)]
         if m.empty: raise ValueError(f'{mode}: no eligible configurations: {method}')
+        primary_field=primary_parameter_for(method,m)
+        value_overall={}
+        if primary_field:
+            def field_value(raw):
+                try: parsed=json.loads(raw)
+                except (TypeError,json.JSONDecodeError): return '<MISSING>'
+                v=parsed.get(primary_field,'<MISSING>')
+                if pd.isna(v): return '<NA>'
+                if isinstance(v,(bool,np.bool_)): return str(bool(v)).lower()
+                if isinstance(v,(int,float,np.integer,np.floating)): return f'{float(v):.12g}'
+                return str(v).strip()
+            value_overall=(m.loc[m.status.eq('PASS')]
+                .assign(_primary_value=lambda d:d.screen_parameters.map(field_value))
+                .groupby('_primary_value').localization_distance_mm.median().to_dict())
         stats=[]
         for cfg,g in m.groupby('configuration_key',sort=False):
             v=g.loc[g.status.eq('PASS'),'localization_distance_mm'].dropna().to_numpy(float)
+            pv=field_value(g.screen_parameters.iloc[0]) if primary_field else None
             stats.append({'key':cfg,'median':np.median(v) if len(v) else np.inf,
                           'mean':np.mean(v) if len(v) else np.inf,
-                          'pass':len(v)})
-        ranked=sorted(stats,key=lambda v:(v['median'],-v['pass'],v['mean'],str(v['key'])))
+                          'pass':len(v),
+                          'parameter_field':primary_field,
+                          'parameter_value':pv,
+                          'parameter_value_overall_median':value_overall.get(pv,np.inf)})
+        ranked=sorted(stats,key=lambda v:(v['median'],-v['pass'],
+            v['parameter_value_overall_median'],v['mean'],str(v['key'])))
         best=ranked[0]
         if not np.isfinite(best['median']):
             raise ValueError(f'{mode}: {method} has no successful localization in eligible grid')
@@ -209,13 +433,17 @@ def select_and_overall(grid, methods, ref, mode):
             'configuration_parameters':chosen.configuration_parameters.iloc[0],
             'candidate_configurations_searched':len(stats),
             'selected_median_mm':best['median'],
+            'primary_parameter':best['parameter_field'],
+            'primary_parameter_value':best['parameter_value'],
+            'primary_parameter_overall_median_mm':best['parameter_value_overall_median'],
             'selected_pass':best['pass'],'selected_fail':len(ref)-best['pass'],
-            'selection_label':'lowest-median observed configuration (in sample)'})
+            'selection_label':'lowest configuration median; ties use primary-parameter overall median, then configuration mean (in sample)'})
     chosen=pd.concat(selected,ignore_index=True)
     return chosen,pd.DataFrame(defs)
 
 
-def make_report(mod, grid, audit, ref, root, args, mode):
+def make_report(mod, grid, audit, ref, root, args, mode,
+                parameter_audit=None, configuration_screen=None):
     import matplotlib.pyplot as plt
     destination=root/mode
     if destination.exists() and not args.overwrite:
@@ -276,6 +504,8 @@ def make_report(mod, grid, audit, ref, root, args, mode):
       '19_dataset_summary.csv':overview,
       '20_configuration_completeness_audit.csv':audit,
       '21_grid_eligible_rows_by_method.csv':grid.groupby(['method','status']).size().rename('rows').reset_index(),
+      '22_parameter_value_reliability.csv':parameter_audit if parameter_audit is not None else pd.DataFrame(),
+      '23_configuration_parameter_screen.csv':configuration_screen if configuration_screen is not None else pd.DataFrame(),
     }
     for name,df in outputs.items():df.to_csv(tables/name,index=False)
     if not args.no_figures:
@@ -290,10 +520,10 @@ def make_report(mod, grid, audit, ref, root, args, mode):
         Figure.savefig = savefig_with_years
         mod.setup_plot_style()
         context=f'{len(ref)} runs | {len({x[0] for x in ref})} participants | 12 methods | {mode}'
-        mod.save_distribution(selected_pass,figures/'01_selected_configuration_distribution.png',
+        save_grouped_distribution(selected_pass,figures/'01_selected_configuration_distribution.png',
             'Localization error for selected lowest-median observed configurations',context,
             'Localization error (mm)',args.dpi)
-        mod.save_distribution(overall_pass,figures/'02_overall_grid_run_distribution.png',
+        save_grouped_distribution(overall_pass,figures/'02_overall_grid_run_distribution.png',
             'Typical localization error across tested parameter grids',context,
             'Within-run median localization error (mm)',args.dpi)
         mod.save_selected_vs_overall(compare,figures/'03_selected_vs_overall_method_medians.png',args.dpi)
@@ -318,6 +548,64 @@ def make_report(mod, grid, audit, ref, root, args, mode):
     print(f'Wrote: {destination}')
 
 
+def write_merged_result_files(root, all_results, all_pass, parameter_audit,
+                              configuration_audit, overwrite=False):
+    """Write the two merged method grids and their screening audit at output root."""
+    root.mkdir(parents=True, exist_ok=True)
+    outputs={
+        'all_methods_complete_configuration_results.csv':all_results,
+        'all_methods_all_pass_configurations.csv':all_pass,
+        'all_methods_parameter_value_reliability.csv':parameter_audit,
+        'all_methods_configuration_eligibility.csv':configuration_audit,
+    }
+    existing=[name for name in outputs if (root/name).exists()]
+    if existing and not overwrite:
+        raise FileExistsError(f'Merged output(s) already exist in {root}: {existing}; pass --overwrite')
+    for name,frame in outputs.items():
+        frame.to_csv(root/name,index=False)
+    print(f'Wrote merged results: {root}/all_methods_complete_configuration_results.csv '
+          f'({len(all_results):,} rows)')
+    print(f'Wrote strict all-pass results: {root}/all_methods_all_pass_configurations.csv '
+          f'({len(all_pass):,} rows)')
+
+
+def save_grouped_distribution(long_table, path, title, subtitle, ylabel, dpi):
+    """Boxplot styled to match Script 17's grouped-method figure."""
+    import matplotlib.pyplot as plt
+    fig,ax=plt.subplots(figsize=(17,7.5))
+    values=[long_table.loc[long_table.method.eq(m),'localization_error_mm']
+            .dropna().to_numpy(float) for m in METHODS]
+    positions=np.arange(1,len(METHODS)+1)
+    boxes=ax.boxplot(values,positions=positions,patch_artist=True,showfliers=True,
+        widths=.58,medianprops={'color':'#222222','linewidth':1.4},
+        whiskerprops={'color':'#555555','linewidth':1.0},
+        capprops={'color':'#555555','linewidth':1.0},
+        flierprops={'marker':'o','markerfacecolor':'white','markeredgecolor':'#333333',
+                    'markersize':4.5,'linestyle':'none'})
+    for patch,method in zip(boxes['boxes'],METHODS):
+        patch.set_facecolor(COLORS[method]); patch.set_alpha(.82)
+        patch.set_edgecolor('#555555'); patch.set_linewidth(.9)
+    labels=[f'{m}\n({METHOD_YEARS[m]})' for m in METHODS]
+    ax.set_xticks(positions,labels,rotation=35,ha='right',rotation_mode='anchor')
+    ax.set_xlim(.5,len(METHODS)+.5)
+    ax.set_ylabel(ylabel)
+    ax.set_xlabel('')
+    ax.set_title(f'{title}\n{subtitle}',pad=14)
+    ax.grid(axis='y',alpha=.25)
+    start=1
+    for group_name,group_methods in METHOD_GROUPS:
+        end=start+len(group_methods)-1
+        center=(start+end)/2
+        ax.text(center,-.43,group_name,transform=ax.get_xaxis_transform(),
+                ha='center',va='top',fontsize=10,fontweight='bold',clip_on=False)
+        if end<len(METHODS):
+            ax.axvline(end+.5,color='#bdbdbd',linestyle=':',linewidth=1.2,zorder=0)
+        start=end+1
+    fig.subplots_adjust(left=.07,right=.99,top=.88,bottom=.39)
+    fig.savefig(path,dpi=dpi,bbox_inches='tight')
+    plt.close(fig)
+
+
 def main():
     args=arguments()
     mod=script17_module(args.script17)
@@ -326,17 +614,84 @@ def main():
     ref=reference_keys(old.loc[old.method.eq('MNE')])
     if len(ref)!=args.expected_runs:
         raise ValueError(f'Original MNE reference contains {len(ref)} runs, expected {args.expected_runs}')
-    for mode,path,all_pass in [('complete_any_status',args.new_any,False),('complete_all_pass',args.new_pass,True)]:
-        accepted_old,audit_old=eligibility(old,ref,all_pass)
-        incoming=load_new(path,NEW,ref,mod)
-        if all_pass and not incoming.status.eq('PASS').all():
-            raise ValueError('Script 25 all-pass dataset contains failures')
-        all_data=pd.concat([accepted_old,incoming],ignore_index=True,sort=False)
+    old_complete,audit_complete=eligibility(old,ref,False)
+    args.output_root.mkdir(parents=True,exist_ok=True)
+    completeness_path=args.output_root/'input_configuration_completeness.csv'
+    if completeness_path.exists() and not args.overwrite:
+        raise FileExistsError(f'{completeness_path} exists; pass --overwrite')
+    audit_complete.to_csv(completeness_path,index=False)
+    print('Input grid completeness (before parameter-wide PASS filtering):')
+    print(audit_complete.groupby('method').agg(
+        configurations=('configuration_key','size'),
+        largest_runs_per_configuration=('runs','max'),
+        complete_configurations=('eligible','sum')).to_string())
+    incoming_any=load_new(args.new_any,NEW,ref,mod)
+    incoming_pass=load_new(args.new_pass,NEW,ref,mod)
+    if not incoming_pass.status.eq('PASS').all():
+        raise ValueError('Script 25 all-pass dataset contains failures')
+    expected_pass_keys=set(incoming_any.loc[
+        incoming_any.groupby(['method','configuration_key']).status.transform(
+            lambda s:s.eq('PASS').all()),'configuration_key'])
+    observed_pass_keys=set(incoming_pass.configuration_key)
+    if expected_pass_keys!=observed_pass_keys:
+        raise ValueError('Script 25 06/07 datasets disagree on all-pass configurations')
+    # Merge Script 17 methods + MxNE alpha extensions + Script 25 next methods.
+    # The all-results file retains every complete configuration, including FAIL
+    # rows. The strict file retains only configurations whose full parameter
+    # combination passes all runs and whose primary parameter value has no
+    # failures anywhere across the merged grid.
+    merged_any=pd.concat([old_complete,incoming_any],ignore_index=True,sort=False)
+    screened,parameter_audit,configuration_screen=parameter_value_screen(merged_any)
+    merged_all_pass,audit_all_pass=eligibility(screened,ref,True)
+    if not merged_all_pass.status.eq('PASS').all():
+        raise ValueError('Strict all-pass screen retained a failed observation')
+    expected_methods=set(METHODS)
+    missing_any=sorted(expected_methods-set(merged_any.method))
+    unexpected_any=sorted(set(merged_any.method)-expected_methods)
+    if missing_any or unexpected_any:
+        raise ValueError(f'Combined complete-results grid method mismatch; '
+                         f'missing={missing_any}, unexpected={unexpected_any}')
+    merged_config_audit=configuration_screen.merge(
+        audit_all_pass[['method','configuration_key','runs','pass','fail','eligible']],
+        on=['method','configuration_key'],how='left')
+    merged_config_audit['eligible_all_runs_pass']=merged_config_audit.eligible.fillna(False)
+    merged_config_audit=merged_config_audit.drop(columns=['eligible'])
+    # Persist the combined tables before strict cohort validation, so a method
+    # with no qualifying configuration still leaves a reviewable audit trail.
+    write_merged_result_files(args.output_root,merged_any,merged_all_pass,
+                              parameter_audit,merged_config_audit,args.overwrite)
+    missing_all_pass=sorted(expected_methods-set(merged_all_pass.method))
+    if missing_all_pass:
+        config_counts=(merged_any.groupby('method').configuration_key.nunique()
+                       .reindex(METHODS,fill_value=0).to_dict())
+        passing_counts=(merged_all_pass.groupby('method').configuration_key.nunique()
+                        .reindex(METHODS,fill_value=0).to_dict())
+        excluded_values=(parameter_audit.loc[~parameter_audit.eligible_value]
+                         .groupby('method').apply(
+                             lambda d:'; '.join(f"{r.parameter}={r.value} (FAIL={r.fail_rows})"
+                                                for r in d.itertuples()),
+                             include_groups=False).to_dict())
+        raise ValueError('No strict all-pass configuration remains for method(s): '
+                         f'{missing_all_pass}. Complete configurations by method: {config_counts}. '
+                         f'Strict all-pass configurations by method: {passing_counts}. '
+                         f'Primary parameter values excluded for failures: {excluded_values}. '
+                         'Combined CSVs and eligibility audits were written to --output-root.')
+
+    for mode in ['complete_any_status','complete_all_pass']:
+        configuration_screen_mode=configuration_screen
+        parameter_audit_mode=parameter_audit
+        if mode=='complete_any_status':
+            all_data=merged_any
+            audit_old=audit_complete
+        else:
+            all_data=merged_all_pass
+            audit_old=audit_all_pass
         if set(all_data.method)!=set(METHODS):
             raise ValueError(f'Incomplete method set: {set(METHODS)-set(all_data.method)}')
         for meth,group in all_data.groupby('method'):
             if reference_keys(group)!=ref:
                 raise ValueError(f'{mode}: {meth} run key mismatch')
-        make_report(mod,all_data,audit_old,ref,args.output_root,args,mode)
+        make_report(mod,all_data,audit_old,ref,args.output_root,args,mode,
+                    parameter_audit_mode,configuration_screen_mode)
 
 if __name__=='__main__':main()
