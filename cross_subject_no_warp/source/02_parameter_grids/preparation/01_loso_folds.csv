@@ -1,0 +1,8 @@
+fold_id,test_subject,reference_subject,training_subjects,n_training_subjects,n_test_runs
+sub-01,sub-01,sub-02,sub-02;sub-03;sub-04;sub-05;sub-06;sub-07,6,11
+sub-02,sub-02,sub-01,sub-01;sub-03;sub-04;sub-05;sub-06;sub-07,6,6
+sub-03,sub-03,sub-01,sub-01;sub-02;sub-04;sub-05;sub-06;sub-07,6,7
+sub-04,sub-04,sub-01,sub-01;sub-02;sub-03;sub-05;sub-06;sub-07,6,9
+sub-05,sub-05,sub-01,sub-01;sub-02;sub-03;sub-04;sub-06;sub-07,6,14
+sub-06,sub-06,sub-01,sub-01;sub-02;sub-03;sub-04;sub-05;sub-07,6,7
+sub-07,sub-07,sub-01,sub-01;sub-02;sub-03;sub-04;sub-05;sub-06,6,7

@@ -16,3 +16,4 @@ figures/
 
 # Local configuration
 .env.ipynb*
+/cross_subject_no_warp/outputs/

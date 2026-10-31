@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "path": "scripts/01_inspect_dataset.py",
+      "sha256": "156b6b2d18df7d36a15e38ffc29ea7e444fb841cd9f92cfd143806adf216fa66"
+    },
+    {
+      "path": "scripts/02_validate_dataset.py",
+      "sha256": "a738a9a70e431c7b18768cb1a1534ea3d522af97bf4c411cedafacea5dc7cff1"
+    },
+    {
+      "path": "scripts/03_visualize_run.py",
+      "sha256": "ce4448158e82d3258a8d11033b78fa40b55489fdc7b796f77cb1d739c83c70f3"
+    },
+    {
+      "path": "scripts/04_reproduce_method.py",
+      "sha256": "2cec5e3d322d0e801d8117806037d1ea00476b8997a7fcbbd591c892b56b92e7"
+    },
+    {
+      "path": "scripts/05_batch_inverse_methods.py",
+      "sha256": "5b99de40264466ee6074725be41f0b31a060af0cc5663d77f55102d58e16b82d"
+    },
+    {
+      "path": "scripts/06_summarize_inverse_methods.py",
+      "sha256": "1dbb25c549a7120badb074da7d925d1bae3f2efa30a5fb35a6e17a2a8f7af5a2"
+    },
+    {
+      "path": "scripts/07_inspect_anatomical_locations.py",
+      "sha256": "df593dda09d8c9ec9a21a4fd4049cb783f37f3579de831be459baa8dfee826a1"
+    },
+    {
+      "path": "scripts/08_parameter_pilot.py",
+      "sha256": "73b76d83f334fb098b0c74180606d5c326e579d371aa915adc0996b551b5bd6f"
+    },
+    {
+      "path": "scripts/09_full_parameter_grid.py",
+      "sha256": "540651730a1e54985ee4d9c380928b4ea0eee1cc927f2ff865f45da7fc9311f9"
+    },
+    {
+      "path": "scripts/10_explore_parameter_grid.py",
+      "sha256": "3c9f84169fde550d569e5a208a6402015c8d7e78b111b620255bade5cd6f03b3"
+    },
+    {
+      "path": "scripts/11_additional_method_pilot.py",
+      "sha256": "405501b755095e5930aac8239dd5a42a12ae73be75cb3367413104566193d54a"
+    },
+    {
+      "path": "scripts/12_batch_additional_methods.py",
+      "sha256": "c9ed45f869808aafe55194c3b32de949123f8af3ebe92b3cd3d21504df0013f1"
+    },
+    {
+      "path": "scripts/13_summarize_all_methods.py",
+      "sha256": "1764f9b420b60a3882e6d20a2aa499b9499b210200414f325d6ede1400b68dcd"
+    },
+    {
+      "path": "scripts/14_additional_method_parameter_pilot.py",
+      "sha256": "ee1e7164c42946a8151fc3508798ae855dcdf7fa96ea4429a98d8169b4cf58a2"
+    },
+    {
+      "path": "scripts/15_full_additional_method_grid.py",
+      "sha256": "8280bf0ebc02ceb84ec33717064589635f6a03b511eb4d4563f8dfe249233627"
+    },
+    {
+      "path": "scripts/16_analyze_additional_method_grid.py",
+      "sha256": "8005f9cb9469c9ac5dbebdea5f16233a5fa10706cd2ea6cf394f610a7857134a"
+    },
+    {
+      "path": "scripts/17_compare_all_methods_selected_and_overall.py",
+      "sha256": "3b5f417c5f655f4f25ee082d021be3fc7a0007f8e7d86d64c5a4452ce2273ca0"
+    },
+    {
+      "path": "scripts/18_make_presentation_figures.py",
+      "sha256": "1ae772aa046aae9dd3b83b2361666e11ad1a90aa1d2f304a6e8c41caa2b83d0b"
+    },
+    {
+      "path": "scripts/19_next_method_pilot.py",
+      "sha256": "f94573eedf590c294e5149de3a6e7e4d14044c9215530e3d5d9418abeca2bf10"
+    },
+    {
+      "path": "scripts/20_batch_next_methods.py",
+      "sha256": "bacaf7ed0a070b0d077cc9c9b0908a2723af2fd3bbe21d76fa94b019bea15ec7"
+    },
+    {
+      "path": "scripts/21_summarize_all_methods.py",
+      "sha256": "d5f4c1753f174a23eeff1e22fcd998e63d681be22d3f8206edee1cac487dc6e9"
+    },
+    {
+      "path": "scripts/22_next_method_parameter_pilot.py",
+      "sha256": "0abac11e9cd6b111426b826e265e18d1b8f0f06d2cd6c25c8057cea7ba6e5032"
+    },
+    {
+      "path": "scripts/23_full_next_method_grid.py",
+      "sha256": "36cc1edfc023d9b40dcd6d31f33aa718cdecb858dd097fd6ae3f4c373e749ef3"
+    },
+    {
+      "path": "scripts/24_combine_next_method_results.py",
+      "sha256": "a33100edf90676ec08e69d1f8563ebdde3f36b3d6585c071759048e7b6bf8c3c"
+    },
+    {
+      "path": "scripts/25_audit_next_method_results.py",
+      "sha256": "530695d626214022efcfc640c1baa5057e9527d940da8d24d39344d9a86a9ab7"
+    },
+    {
+      "path": "scripts/26_compare_twelve_methods.py",
+      "sha256": "e7b3c21dcfb730c4511875231c97a1e080531de67d49fd1a4eea79139056246f"
+    },
+    {
+      "path": "src/localize_mi/__init__.py",
+      "sha256": "0aa4c977aebb7549631b86372302f0688241ec2042e238007c0f90e57bfa71c5"
+    },
+    {
+      "path": "src/localize_mi/inverse.py",
+      "sha256": "3988664745a34789884d11ba29944e4c9ebdc6705c1916b2960e98ceee723b5c"
+    },
+    {
+      "path": "src/localize_mi/io.py",
+      "sha256": "4a613f50dc6f6d976f453a4ed6fe53b107171801df167ef3658b5bf57b18258e"
+    },
+    {
+      "path": "src/localize_mi/metrics.py",
+      "sha256": "3b32099a6571849153682f315653b0243c218c8362681f4418d632f76fd5918b"
+    },
+    {
+      "path": "src/localize_mi/plotting.py",
+      "sha256": "afe5331ad80167f449151443526c27d415b7b197d5a619bdc84651ff7dc34221"
+    }
+  ]
+}
