@@ -1,2 +1,4 @@
 cross_subject_no_warp/source/02_parameter_grids/inputs/01_grid_results.csv filter=lfs diff=lfs merge=lfs -text
 cross_subject_no_warp/source/02_parameter_grids/inputs/06_23_all_next_methods_combined.csv filter=lfs diff=lfs merge=lfs -text
+cross_subject_warp/source/02_parameter_grids/inputs/01_grid_results.csv filter=lfs diff=lfs merge=lfs -text
+cross_subject_warp/source/02_parameter_grids/inputs/06_23_all_next_methods_combined.csv filter=lfs diff=lfs merge=lfs -text

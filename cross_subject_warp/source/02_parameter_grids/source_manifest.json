@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "original": "/home/girvi949/projects/mikulan-localize-mi/outputs/grid_all_runs/grid_results.csv",
+      "copy": "inputs/01_grid_results.csv",
+      "sha256": "cc3668ca366469005dcfdbb54ab0604007e19b329ad33fe4452f2e9ea169a402",
+      "size_bytes": 134537163
+    },
+    {
+      "original": "/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/continuous_ecd/grid_results.csv",
+      "copy": "inputs/02_grid_results.csv",
+      "sha256": "0aa9036a2bddac8acc30c0969adfe09f5162767b1237e001a8eb9112d1b082d2",
+      "size_bytes": 669242
+    },
+    {
+      "original": "/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/rap_music/grid_results.csv",
+      "copy": "inputs/03_grid_results.csv",
+      "sha256": "1a504003270c8c8b244785338342d3a4026bb5fb6a759cc40183244a1a7b4d35",
+      "size_bytes": 79729
+    },
+    {
+      "original": "/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/lcmv/grid_results.csv",
+      "copy": "inputs/04_grid_results.csv",
+      "sha256": "e4a664332aa4e2de4925b123e789ec20c7d0d39967ece08f8a0de37126294c5a",
+      "size_bytes": 4678705
+    },
+    {
+      "original": "/home/girvi949/projects/mikulan-localize-mi/outputs/15_mxne_alpha_extension/mxne/grid_results.csv",
+      "copy": "inputs/05_grid_results.csv",
+      "sha256": "edc328d7a4319741336ff1ed655d22f6ac323c9b4db8c87fc37a3e2657843d3e",
+      "size_bytes": 18686204
+    },
+    {
+      "original": "/home/girvi949/projects/mikulan-localize-mi/outputs/23_full_next_method_grid/23_all_next_methods_combined.csv",
+      "copy": "inputs/06_23_all_next_methods_combined.csv",
+      "sha256": "dabb674e3b4cddfcf5b95f34ba0e949f222a6ace9da3c317d2b93b0aa6ed2bde",
+      "size_bytes": 66444055
+    },
+    {
+      "original": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_no_warp/outputs/01_prepare_experiment/01_loso_folds.csv",
+      "copy": "preparation/01_loso_folds.csv",
+      "sha256": "e492fd4ecaee1ef41f91c9f9f218401a688423287c08e70395178ed8fe181fed",
+      "size_bytes": 560
+    },
+    {
+      "original": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_no_warp/outputs/01_prepare_experiment/03_single_reference_cases.csv",
+      "copy": "preparation/03_single_reference_cases.csv",
+      "sha256": "00af2541f19a4a90239ce01ee6a5c924264a11dd8ef4d8a1ee6db779671947c9",
+      "size_bytes": 1751
+    },
+    {
+      "original": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_no_warp/outputs/01_prepare_experiment/07_experiment_manifest.json",
+      "copy": "preparation/07_experiment_manifest.json",
+      "sha256": "a4cb5c91353cc2d129237af53a74c62f1be407ef8e9b8edbd43029eea9788890",
+      "size_bytes": 1546
+    }
+  ],
+  "methods": {
+    "MNE": [
+      "inputs/01_grid_results.csv"
+    ],
+    "dSPM": [
+      "inputs/01_grid_results.csv"
+    ],
+    "sLORETA": [
+      "inputs/01_grid_results.csv"
+    ],
+    "eLORETA": [
+      "inputs/01_grid_results.csv"
+    ],
+    "Continuous-ECD": [
+      "inputs/02_grid_results.csv"
+    ],
+    "RAP-MUSIC": [
+      "inputs/03_grid_results.csv"
+    ],
+    "LCMV": [
+      "inputs/04_grid_results.csv"
+    ],
+    "MxNE": [
+      "inputs/05_grid_results.csv"
+    ],
+    "irMxNE": [
+      "inputs/06_23_all_next_methods_combined.csv"
+    ],
+    "Gamma-MAP": [
+      "inputs/06_23_all_next_methods_combined.csv"
+    ],
+    "Champagne": [
+      "inputs/06_23_all_next_methods_combined.csv"
+    ],
+    "SESAME": [
+      "inputs/06_23_all_next_methods_combined.csv"
+    ]
+  },
+  "preparation": {
+    "01_loso_folds.csv": "preparation/01_loso_folds.csv",
+    "03_single_reference_cases.csv": "preparation/03_single_reference_cases.csv",
+    "07_experiment_manifest.json": "preparation/07_experiment_manifest.json"
+  }
+}
