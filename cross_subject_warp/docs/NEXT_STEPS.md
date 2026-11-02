@@ -1,35 +1,58 @@
 # Next steps
 
-1. Make the existing local output folders accessible to the coding session.
-   Codex CLI running in your Ubuntu project can inspect them directly. A cloud
-   session sees GitHub code, not your desktop's filesystem.
-2. Inventory existing affine/SyN transforms, MRI inputs and QA reports. Copy
-   them without overwriting originals into this experiment's ignored local
-   registration-resource area, recording hashes and original paths.
-3. Implement Script 01 with the same schedule/fold/artifact conventions. Its
-   first run should inspect files and report readiness only. Validate 7
-   subjects, 61 EEG runs, 12 methods, 7 LOSO folds, 366 all-reference run cases,
-   42 registration pairs, coordinate frames and dependencies.
-4. Check the provisional MRI coordinate bridge. Existing matrix/field files
-   alone do not establish a correct anatomical point mapping.
-5. Adapt Scripts 02–05 while preserving strict training-only all-PASS selection,
-   reference-derived montages, patched inverse behavior and failure policy.
-   If canonical local reconstruction records match all required inputs and
-   fingerprints, import them with provenance instead of rerunning inverse fits.
-6. Add affine/SyN point mapping and QA to Script 06. Adapt comparisons and plots
-   in 07–09 to distinguish registration modes and retain failures.
+Scripts 01–08 and the separate registration-QA threshold sensitivity work are
+complete. The six SyN failures remain failures under the primary 0.1 mm rule;
+the 0.15 mm analysis is separately labeled and retains the same source-point
+validation. Both policies preserve all rows and invalid errors as blank.
 
-The registration scripts, solver code and historical grids have already been
-copied into `source/` with provenance. No experiment computations are needed
-until local resource inventory and coordinate validation are complete.
+Script 07 is written and checked but has not been run on experiment tables. Run
+it from the repository root:
 
-## Suggested request in a local Codex session
+```bash
+python cross_subject_warp/scripts/07_compare_strategies.py
+```
 
-> Continue `cross_subject_warp/` on branch
-> `experiment/loso-single-reference-warp`. Read its README and provenance
-> manifest. First inventory my existing `cross_subject/outputs/` registration
-> files, `cross_subject_no_warp/outputs/` canonical reconstruction files and
-> Localize-MI dataset. Copy reusable local outputs into the new experiment
-> without altering originals, and record checksums and source paths. Implement
-> and run only Script 01's preparation/audit stage. Do not run registrations,
-> inverse reconstructions, or change selection/solver policies.
+It reads completed CSVs only and writes `outputs/07_compare_strategies/`.
+To preserve a completed run, it refuses an existing output directory; select a
+new location with `--output cross_subject_warp/outputs/07_compare_strategies_review`.
+The tables keep primary and peak-sensitivity observations, affine and SyN, and
+the 0.1 mm and 0.15 mm QA policies distinct. Raw unregistered cross-subject
+head-frame separation is not treated as anatomical localization error.
+
+Script 08 has completed successfully. While preparing visualization, a join
+key error was found in Script 07: strategy labels had been included in the
+LOSO-versus-single-reference match key, so those rows could not match. The
+script is fixed; regenerate its tables into a fresh folder (the original output
+is preserved):
+
+```bash
+python cross_subject_warp/scripts/07_compare_strategies.py \
+  --output cross_subject_warp/outputs/07_compare_strategies_review
+```
+
+The corrected table should contain actual `_merge == both` matched rows. Then
+audit and plot with Script 09:
+
+```bash
+python cross_subject_warp/scripts/09_visualize_results.py --phase audit \
+  --comparison-root cross_subject_warp/outputs/07_compare_strategies_review
+python cross_subject_warp/scripts/09_visualize_results.py \
+  --comparison-root cross_subject_warp/outputs/07_compare_strategies_review
+```
+
+Script 09 is implemented and checked with synthetic plotting tests but has not
+been run on the experiment tables. Its master figure compares the historical
+within-subject baseline with matched LOSO affine and SyN errors; the top panel
+uses primary 0.1 mm QA and the lower panel shows the separate 0.15 mm QA
+sensitivity. Script 08 summarizes six single-reference
+results per method/test/run, retaining the two QA policies, registration modes
+and peak scenarios. Reference anatomy and the reference-selected configuration
+both vary, so the summaries describe reference-choice sensitivity rather than
+isolating an anatomy effect. No new fitting or inverse reconstruction was run.
+
+The unavailable exact intermediate patch executable and fitting-time MRI/ANTs
+provenance remain documented limitations. Numerical coordinate checks and
+round-trip QA do not establish cortical registration accuracy. See the
+[registration QA sensitivity protocol](REGISTRATION_QA_SENSITIVITY_PROTOCOL.md),
+[validation record](REGISTRATION_QA_SENSITIVITY_VALIDATION.md), and
+[runnable stage instructions](../scripts/README.md).

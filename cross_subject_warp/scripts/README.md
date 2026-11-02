@@ -175,8 +175,9 @@ failed pairs with blank errors. See the mapped-evaluation section at the end.
 The earlier `outputs/06_evaluate_localization/` preflight report remains preserved.
 Audit mode does not perform mapping or consume the later QA reports as mapping
 authorization; evaluate mode performs those checks. Always use a new output
-folder. Scripts 07–09 remain unimplemented. Historical scripts under `source/`
-remain reference copies and must not be run as new warp stages.
+folder. Scripts 07 and 08 are implemented and described below; Script 09 remains
+unimplemented. Historical scripts under `source/` remain reference copies and
+must not be run as new warp stages.
 
 ### Next Script 06 step: native coordinate bridge
 
@@ -216,7 +217,7 @@ original registration MRI provenance, affine/SyN field-grid/point-direction QA
 remain separate from native bridge validation; mapped evaluation now has an
 explicit per-mode QA policy described below. The earlier preflight
 reports remain immutable; they do not automatically consume a later bridge
-report. Do not start Script 07 before evaluation tables exist.
+report.
 
 References: [FreeSurfer coordinate systems](https://surfer.nmr.mgh.harvard.edu/fswiki/CoordinateSystems),
 [NiBabel FreeSurfer headers](https://nipy.org/nibabel/reference/nibabel.freesurfer.html).
@@ -398,3 +399,267 @@ Invalid inputs/checksums stop before publication. Existing output folders are
 refused. The historical fit-time MRI/ANTs provenance caveats remain attached;
 numerical mapping QA is not a claim of cortical registration accuracy or solver
 convergence. No inverse fitting or registration fitting occurs.
+
+
+### Separate 0.15 mm registration-QA sensitivity
+
+The primary 0.1 mm results remain unchanged. The new
+`06_registration_qa_sensitivity.py` driver implements the approved diagnostic
+and sensitivity protocol in
+[`REGISTRATION_QA_SENSITIVITY_PROTOCOL.md`](../docs/REGISTRATION_QA_SENSITIVITY_PROTOCOL.md).
+It keeps pair MRI-sample tolerance (0.15 mm in the sensitivity) separate from
+individual source-point tolerance (still 0.1 mm), and keeps QA policy separate
+from the existing peak `scenario` axis. It does not refit registrations or
+inverse reconstructions, edit transforms, or change primary pair flags.
+
+Run the stages in this order from the project root. The opening comments in the
+script also include these sample terminal commands:
+
+```bash
+micromamba run -n localizemi-registration .venv/bin/python \
+  cross_subject_warp/scripts/06_registration_qa_sensitivity.py --stage investigate
+```
+
+Review `outputs/06_registration_qa_attribution_domain_review/manifest.json` and its
+validation report. Only if its independent controls and required checks pass,
+run the all-pair QA sensitivity:
+
+```bash
+micromamba run -n localizemi-registration .venv/bin/python \
+  cross_subject_warp/scripts/06_registration_qa_sensitivity.py --stage qa
+```
+
+After the full QA report completes and reproduces all original 0.1 mm flags,
+map the fixed native peaks under the new policy (while retaining source-point
+0.1 mm validation):
+
+```bash
+micromamba run -n localizemi-registration .venv/bin/python \
+  cross_subject_warp/scripts/06_registration_qa_sensitivity.py --stage evaluate
+```
+
+Finally, compare within-policy matched affine/SyN rows, the identical common
+cohort across policies, and newly eligible observations:
+
+```bash
+python cross_subject_warp/scripts/06_registration_qa_sensitivity.py --stage compare
+```
+
+Each stage writes only to a new, ignored output directory. Defaults are
+`06_registration_qa_attribution_domain_review/`, `06_registration_qa_sensitivity_rt015/`,
+`06_evaluate_localization_qa_rt015/`, and
+`06_compare_registration_qa_thresholds/`, respectively. Existing outputs are
+refused. Exit 2 is a blocked/failed validation gate; inspect the stage manifest
+and do not continue to the next command unless its prerequisite status is
+complete. Partial artifact hashes are retained in the incomplete report where
+possible. Original primary outputs are read-only dependencies.
+
+The initial investigation report was `ATTRIBUTION_BLOCKED` because one
+additional sample, sub-06 -> sub-04 sample 196, is about 0.0003 voxel beyond a
+SyN field boundary. The corrected boundary diagnostic found the point outside
+both fields; at 0.01 and 0.25 voxel inward both field inputs were in-domain and
+the ANTs/reader differences were below the control-derived budget. The
+original point remains invalid. The investigation and all-pair QA code now
+exclude field-outside roundtrips from error scoring while retaining them in the
+200-sample denominator and enforcing the original 75% valid-coverage floor.
+The six points above 0.1 mm must themselves remain in-domain.
+
+```bash
+micromamba run -n localizemi-registration .venv/bin/python \
+  cross_subject_warp/scripts/06_diagnose_field_boundary.py \
+  --output-root cross_subject_warp/outputs/06_registration_qa_boundary_diagnostic_review
+```
+
+It writes `outputs/06_registration_qa_boundary_diagnostic_review/` and refuses an
+existing output. An initial version of this diagnostic accidentally compared
+ANTs' inverse-field result with forward-field values; its report at
+`outputs/06_registration_qa_boundary_diagnostic/` is preserved but must not be
+used for the inverse-reader comparison. The corrected script reads the saved
+forward and inverse fields separately. Review `02_boundary_geometry.json` and
+`01_boundary_probe_results.csv`. Probe mapping errors remain explicit error
+rows. This stage does not change primary or sensitivity QA status.
+
+Now rerun the attribution audit under the field-domain exclusion/coverage rule.
+Its new default output is `outputs/06_registration_qa_attribution_domain_review/`:
+
+```bash
+micromamba run -n localizemi-registration .venv/bin/python \
+  cross_subject_warp/scripts/06_registration_qa_sensitivity.py --stage investigate
+```
+
+Continue to QA only if the new manifest says `ATTRIBUTION_CONTROLS_PASS`, the
+six original >0.1 mm samples are in-domain, and field-domain coverage is at
+least 75% in every direction. QA independently applies the same domain rule to
+all 84 mode/pairs and requires every original 0.1 mm pass/fail flag to
+reproduce. The initial `06_registration_qa_attribution/` and first boundary
+diagnostic remain preserved; neither is overwritten.
+
+The revised user-run audit completed with `ATTRIBUTION_CONTROLS_PASS`: 12/12
+directions passed, all six exceedance samples are in-domain, and coverage after
+field-domain exclusion ranges from 93% to 100%. Exactly one MRI-interior sample
+was excluded for the field boundary. The next command is the all-pair QA stage:
+
+```bash
+micromamba run -n localizemi-registration .venv/bin/python \
+  cross_subject_warp/scripts/06_registration_qa_sensitivity.py --stage qa
+```
+
+The user-run QA completed as `SENSITIVITY_QA_COMPLETE`: all 84 pairs passed at
+0.15 mm (42/42 affine, 42/42 SyN), while all 84 original 0.1 mm flags were
+reproduced (42/42 affine, 36/42 SyN). No original primary result was
+reclassified. Source-point tolerance remained 0.1 mm.
+
+The user-run mapped evaluation completed as `SENSITIVITY_EVALUATION_COMPLETE`:
+21,960 rows, 0 mapping execution failures, 0 point-validation exclusions, and
+20,444 cross-subject mapped localizations. The 30 primary and 22 peak-sensitivity
+reconstruction failures remain in their native rows. The matched affine/SyN
+table contains 10,222 pairs; see the method/strategy/peak breakdown in the
+tables and the next comparison stage.
+
+The cross-policy comparison has completed in
+`outputs/06_compare_registration_qa_thresholds/`. It confirmed unchanged
+primary results, passed common-cohort numerical parity, and passed both
+no-warp within-subject checks at 7.11e-15 mm maximum difference. It found
+10,222 matched affine/SyN observations: 8,834 in the original-policy common
+cohort and 1,388 newly eligible under QA015. All 1,388 newly eligible rows are
+single-reference observations across six directed subject pairs (694 for each
+peak scenario).
+
+On the common cohort, median paired SyN-minus-affine error was -1.3096 mm for
+LOSO primary, -1.3082 mm for LOSO peak sensitivity, -0.5828 mm for
+single-reference primary, and -0.5842 mm for single-reference peak sensitivity.
+These match the existing primary matched results. In the newly eligible
+single-reference cohort, the pooled descriptive median paired difference was
+-0.5688 mm in both peak scenarios. This exploratory coverage analysis does not
+establish improved registration or anatomical accuracy; summaries are
+descriptive and no new significance tests were run.
+
+The comparison reads completed tables and does not call ANTs. To reproduce it,
+choose another new output root because the completed output already exists:
+
+```bash
+python cross_subject_warp/scripts/06_registration_qa_sensitivity.py \
+  --stage compare \
+  --output-root cross_subject_warp/outputs/06_compare_registration_qa_thresholds_review
+```
+
+The completed reports remain under `outputs/06_compare_registration_qa_thresholds/`.
+
+Implementation checks are documented in
+[`REGISTRATION_QA_SENSITIVITY_VALIDATION.md`](../docs/REGISTRATION_QA_SENSITIVITY_VALIDATION.md).
+Synthetic tests validate software mechanics, not anatomical accuracy. The
+attribution, boundary, all-pair QA, mapped evaluation and cross-policy
+comparison stages have been run by the user. QA015 pass counts and mapped
+sensitivity results are available in their manifests/tables; they do not
+establish anatomical registration accuracy.
+
+### Script 07: compare strategies
+
+`07_compare_strategies.py` combines the frozen historical selected baseline,
+the completed no-warp results, the original 0.1 mm mapped evaluation, and the
+separate 0.15 mm QA sensitivity evaluation. It preserves each peak scenario,
+registration mode and QA policy in the output. Unregistered cross-subject
+head-frame distances remain diagnostics and are excluded from localization
+error summaries. Matched LOSO/single-reference comparisons require the same
+test, run, method, reference, mode, QA policy and peak scenario. Within-subject
+regression and the historical baseline comparison use exact method/test/run
+matches. Invalid rows remain in the denominators with blank errors.
+
+An initial user-run output had a matching-key defect: the LOSO and
+single-reference strategy labels were mistakenly required to be equal. The
+code now matches their shared observation dimensions and keeps strategy as the
+comparison side. Preserve the initial output; regenerate into a fresh folder
+before using the matched table:
+
+```bash
+python cross_subject_warp/scripts/07_compare_strategies.py \
+  --output cross_subject_warp/outputs/07_compare_strategies_review
+```
+
+```bash
+python cross_subject_warp/scripts/07_compare_strategies.py
+```
+
+Default output is `outputs/07_compare_strategies/`. Existing output folders
+are refused. Use `--output cross_subject_warp/outputs/07_compare_strategies_review`
+for a separate run. Artifacts are `01_localization_observations.csv`,
+`02_descriptive_summary.csv`, `03_historical_vs_no_warp_within.csv`,
+`04_no_warp_within_regression.csv`, `05_loso_vs_single_reference_matched.csv`,
+and `06_comparison_manifest.json`. This is a table-only stage: no registration
+fitting, inverse reconstruction, or source-peak mapping occurs. It has been
+checked with synthetic tests, compilation and CLI help. The initial run exists,
+but its strategy match table is invalid due to the documented key defect; use
+the corrected fresh review output before downstream comparisons/plots.
+
+### Script 08: reference sensitivity
+
+`08_reference_sensitivity.py` summarizes single-reference localization errors
+across the six available references for each method, test subject and run. It
+retains every scheduled result, including native reconstruction failures and
+registration-QA exclusions. Reports include per-reference summaries,
+test-run variation, directed-pair coverage and exact primary/peak-sensitivity
+matches. Affine and SyN remain separate, as do the primary 0.1 mm policy and
+the 0.15 mm sensitivity policy. Historical and no-warp within-subject errors
+are included as labeled context only. Since reference anatomy and
+reference-selected parameters both vary, this is descriptive reference-choice
+sensitivity, not an isolated anatomy effect or proof of anatomical accuracy.
+
+Run from the repository root:
+
+```bash
+python cross_subject_warp/scripts/08_reference_sensitivity.py
+```
+
+The script reads completed Script 06 outputs and writes
+`outputs/08_reference_sensitivity/`. Existing output directories are refused;
+use a new `--output-root cross_subject_warp/outputs/08_reference_sensitivity_review`
+for a separate run. `--phase audit` validates all 4,392 jobs per scenario,
+six references per method/test/run, both modes and both QA policies, without
+writing summaries. Outputs retain names 01–08 from the no-warp workflow, with
+`07_within_baseline_context.csv` clearly separated from across-reference
+localization error. Four synthetic unit tests, compilation, CLI help and
+`git diff --check` passed. The stage has been run on experiment outputs;
+synthetic tests check software behavior only.
+
+### Script 09: visualization
+
+`09_visualize_results.py` makes seven PNG figures: a master comparison,
+within-subject error context,
+valid mapped cross-subject error distributions, mapping coverage, variation
+across references, reference-by-method median error heatmaps, and matched
+LOSO-versus-single-reference differences. It reads the corrected Script 07
+review output and Script 08 summaries. Panels keep QA policy and registration
+mode separate; invalid errors appear in coverage denominators and are excluded
+from error plots. Figures describe localization results and do not establish
+anatomical accuracy.
+
+It also creates `00_master_baseline_affine_syn.png`, modeled on the no-warp
+workflow's master figure. It uses the historical within-subject baseline and
+LOSO affine/SyN errors, matched to the same method/test/run cases where all
+three errors are valid. The top panel is the primary 0.1 mm QA analysis. The
+bottom panel is the separate 0.15 mm pair-QA sensitivity, with source-point
+roundtrip still at 0.1 mm. This preserves the primary analysis while making
+the threshold sensitivity visible without pooling it into the primary panel.
+The stage writes `00_master_baseline_affine_syn_statistics.csv` in the same
+method/strategy/statistics layout as the previous no-warp master statistics,
+adding registration mode and QA policy. Its `figure_series` distinguishes the
+baseline, LOSO affine and LOSO SyN boxes. It also writes
+`08_method_strategy_mode_statistics.csv` with Baseline, LOSO and
+Single-reference summaries by method, registration mode, QA policy and peak
+scenario; invalid cases remain counted in `Scheduled` and `Invalid_N`.
+
+After regenerating Script 07, first audit the visualization inputs and then
+write plots:
+
+```bash
+python cross_subject_warp/scripts/09_visualize_results.py --phase audit \
+  --comparison-root cross_subject_warp/outputs/07_compare_strategies_review
+python cross_subject_warp/scripts/09_visualize_results.py \
+  --comparison-root cross_subject_warp/outputs/07_compare_strategies_review
+```
+
+Default plot output is `outputs/09_visualize_results/`; existing folders are
+refused. Use `--output-root cross_subject_warp/outputs/09_visualize_results_review`
+for a separate destination. Synthetic data verified error filtering and PNG
+rendering. Compilation and CLI help passed; no experiment figures were
+generated during implementation.
