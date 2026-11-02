@@ -4,6 +4,7 @@ import tempfile
 from pathlib import Path
 import unittest
 
+import numpy as np
 import pandas as pd
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "09_visualize_results.py"
@@ -91,6 +92,38 @@ class VisualizationTests(unittest.TestCase):
         self.assertEqual(set(result.strategy), {"Baseline", "LOSO", "Single-reference"})
         self.assertTrue(result.Valid_N.eq(1).all())
         self.assertTrue(result.Invalid_N.eq(0).all())
+
+    def test_single_reference_master_uses_common_references_once_per_test_run(self):
+        rows = [dict(comparison_source="historical_baseline", strategy="Historical-selected",
+                     condition="historical_within", scenario="primary", peak_scenario="primary",
+                     qa_policy="not_applicable", registration_mode="none", method="MNE",
+                     test_subject="sub-01", run="run-01", reference_subject=None,
+                     localization_error_mm=9., localization_error_valid=True)]
+        for policy, source in [("primary_rt010", "warp_primary"),
+                               ("pair_rt015_source_rt010", "warp_sensitivity")]:
+            for mode in stage.MODES:
+                for i in range(6):
+                    valid = not (policy == "primary_rt010" and mode == "syn" and i == 5)
+                    rows.append(dict(comparison_source=source, strategy="Single-reference",
+                        condition="cross_reference", scenario="primary", peak_scenario="primary",
+                        qa_policy=policy, registration_mode=mode, method="MNE", test_subject="sub-01",
+                        run="run-01", reference_subject=f"sub-{i+2:02d}",
+                        localization_error_mm=(10.+i if mode == "affine" else 20.+i) if valid else np.nan,
+                        localization_error_valid=valid))
+        data, coverage = stage.master_single_reference_rows(pd.DataFrame(rows), strict_expected=False)
+        self.assertEqual(len(data), 2)  # one row per policy/test-run, not six rows per reference
+        primary = data[data.qa_policy.eq("primary_rt010")].iloc[0]
+        self.assertEqual(primary.common_valid_references, 5)
+        self.assertEqual(primary.affine_reference_median_mm, 12.)
+        self.assertEqual(primary.syn_reference_median_mm, 22.)
+        self.assertEqual(set(coverage.common_valid_reference_cases), {5, 6})
+        stats = stage.single_reference_figure_statistics(data)
+        mne = stats[stats.method.eq("MNE")]
+        self.assertEqual(len(mne), 6)
+        self.assertEqual(set(mne.strategy), {"Baseline", "Single-reference"})
+        with tempfile.TemporaryDirectory() as temp:
+            stage.plot_master_single_reference(data, Path(temp))
+            self.assertTrue((Path(temp) / "00_master_single_reference_affine_syn.png").is_file())
 
 
 if __name__ == "__main__":

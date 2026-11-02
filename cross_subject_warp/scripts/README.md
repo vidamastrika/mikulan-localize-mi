@@ -623,7 +623,7 @@ synthetic tests check software behavior only.
 
 ### Script 09: visualization
 
-`09_visualize_results.py` makes seven PNG figures: a master comparison,
+`09_visualize_results.py` makes eight PNG figures: two master comparisons,
 within-subject error context,
 valid mapped cross-subject error distributions, mapping coverage, variation
 across references, reference-by-method median error heatmaps, and matched
@@ -648,6 +648,15 @@ baseline, LOSO affine and LOSO SyN boxes. It also writes
 Single-reference summaries by method, registration mode, QA policy and peak
 scenario; invalid cases remain counted in `Scheduled` and `Invalid_N`.
 
+The parallel single-reference figure is
+`00_master_single_reference_affine_syn.png`. It reduces the six references to
+one median per method/test/run and uses the same reference subset for affine
+and SyN. The baseline is included once per test-run; six reference observations
+are not treated as six independent runs. Its matched cases, reference counts
+and statistics are saved as `00_master_single_reference_affine_syn_plot_data.csv`,
+`00_master_single_reference_affine_syn_coverage.csv`, and
+`00_master_single_reference_affine_syn_statistics.csv`.
+
 After regenerating Script 07, first audit the visualization inputs and then
 write plots:
 
@@ -661,5 +670,8 @@ python cross_subject_warp/scripts/09_visualize_results.py \
 Default plot output is `outputs/09_visualize_results/`; existing folders are
 refused. Use `--output-root cross_subject_warp/outputs/09_visualize_results_review`
 for a separate destination. Synthetic data verified error filtering and PNG
-rendering. Compilation and CLI help passed; no experiment figures were
-generated during implementation.
+rendering. The experiment-table audit passed, and the figures and CSVs were
+generated in `outputs/09_visualize_results_single_reference/` using
+`outputs/07_compare_strategies_corrected/`. The single-reference plot data
+contain 1,464 method/test/run rows across both QA policies; its coverage and
+statistics tables contain 24 and 72 rows, respectively.

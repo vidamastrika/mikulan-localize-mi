@@ -5,11 +5,12 @@ complete. The six SyN failures remain failures under the primary 0.1 mm rule;
 the 0.15 mm analysis is separately labeled and retains the same source-point
 validation. Both policies preserve all rows and invalid errors as blank.
 
-Script 07 is written and checked but has not been run on experiment tables. Run
-it from the repository root:
+Script 07 was run on the experiment tables. The corrected comparison is in
+`outputs/07_compare_strategies_corrected/`. To rerun it from the repository root:
 
 ```bash
-python cross_subject_warp/scripts/07_compare_strategies.py
+python cross_subject_warp/scripts/07_compare_strategies.py \
+  --output cross_subject_warp/outputs/07_compare_strategies_new
 ```
 
 It reads completed CSVs only and writes `outputs/07_compare_strategies/`.
@@ -30,21 +31,25 @@ python cross_subject_warp/scripts/07_compare_strategies.py \
   --output cross_subject_warp/outputs/07_compare_strategies_review
 ```
 
-The corrected table should contain actual `_merge == both` matched rows. Then
-audit and plot with Script 09:
+The corrected table contains `_merge == both` matched rows. Audit and plot
+with Script 09:
 
 ```bash
 python cross_subject_warp/scripts/09_visualize_results.py --phase audit \
-  --comparison-root cross_subject_warp/outputs/07_compare_strategies_review
+  --comparison-root cross_subject_warp/outputs/07_compare_strategies_corrected
 python cross_subject_warp/scripts/09_visualize_results.py \
-  --comparison-root cross_subject_warp/outputs/07_compare_strategies_review
+  --comparison-root cross_subject_warp/outputs/07_compare_strategies_corrected \
+  --output-root cross_subject_warp/outputs/09_visualize_results_new
 ```
 
-Script 09 is implemented and checked with synthetic plotting tests but has not
-been run on the experiment tables. Its master figure compares the historical
-within-subject baseline with matched LOSO affine and SyN errors; the top panel
-uses primary 0.1 mm QA and the lower panel shows the separate 0.15 mm QA
-sensitivity. Script 08 summarizes six single-reference
+Script 09 passed its experiment-table audit and ran with
+`outputs/07_compare_strategies_corrected/` as input. Figures and CSVs are in
+`outputs/09_visualize_results_single_reference/`. Its master figures compare the historical
+within-subject baseline with matched LOSO affine/SyN errors and, separately,
+single-reference affine/SyN medians across common valid references. Each has a
+primary 0.1 mm panel and a separate 0.15 mm QA sensitivity panel. The
+single-reference summary uses the test-run as its unit and does not count six
+references as six independent runs. Script 08 summarizes six single-reference
 results per method/test/run, retaining the two QA policies, registration modes
 and peak scenarios. Reference anatomy and the reference-selected configuration
 both vary, so the summaries describe reference-choice sensitivity rather than

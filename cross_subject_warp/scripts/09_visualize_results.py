@@ -269,6 +269,73 @@ def master_affine_syn_rows(obs: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFram
     return pd.concat(datasets, ignore_index=True), pd.concat(coverage, ignore_index=True)
 
 
+def master_single_reference_rows(obs: pd.DataFrame, strict_expected: bool = True) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Collapse the same valid references to one median per test-run and mode."""
+    keys = ["method", "test_subject", "run"]
+    baseline = obs[(obs.comparison_source == "historical_baseline") & obs.peak_scenario.eq("primary")].copy()
+    baseline = baseline[keys + ["localization_error_mm", "localization_error_valid"]].rename(columns={
+        "localization_error_mm": "baseline_error_mm", "localization_error_valid": "baseline_valid"})
+    if baseline.duplicated(keys).any():
+        raise ValueError("Historical baseline is not unique by method/test/run")
+    datasets, coverage = [], []
+    for policy, source in [("primary_rt010", "warp_primary"), ("pair_rt015_source_rt010", "warp_sensitivity")]:
+        d = obs[(obs.comparison_source == source) & obs.strategy.eq("Single-reference") &
+                obs.condition.eq("cross_reference") & obs.scenario.eq("primary") &
+                obs.peak_scenario.eq("primary") & obs.qa_policy.eq(policy)].copy()
+        d["localization_error_valid"] = d.localization_error_valid.astype(str).str.lower().isin(["true", "1"])
+        d["localization_error_mm"] = pd.to_numeric(d.localization_error_mm, errors="coerce")
+        pair_keys = keys + ["reference_subject"]
+        mode_tables = {}
+        for mode in MODES:
+            m = d[d.registration_mode.eq(mode)][pair_keys + ["localization_error_mm", "localization_error_valid"]].copy()
+            if m.duplicated(pair_keys).any():
+                raise ValueError(f"{policy}/{mode}: duplicate single-reference observation keys")
+            m = m.rename(columns={"localization_error_mm": f"{mode}_error_mm",
+                                  "localization_error_valid": f"{mode}_valid"})
+            mode_tables[mode] = m
+        pair = mode_tables["affine"].merge(mode_tables["syn"], on=pair_keys, how="outer", validate="one_to_one", indicator=True)
+        if not pair._merge.eq("both").all():
+            raise ValueError(f"{policy}: affine/SyN single-reference schedules differ")
+        expected_pairs = 4392 if strict_expected else len(d[d.registration_mode.eq("affine")])
+        if len(pair) != expected_pairs:
+            raise ValueError(f"{policy}: expected {expected_pairs} paired single-reference keys; got {len(pair)}")
+        common = pair.affine_valid & pair.syn_valid
+        pair["common_reference_valid"] = common
+        # Each reference has one observation for a given test run. Collapse only
+        # references valid under both registration modes, avoiding mode-specific
+        # reference cohorts in the plotted affine-vs-SyN comparison.
+        rows = []
+        for key, g in pair.groupby(keys, sort=True):
+            ok = g[g.common_reference_valid]
+            rows.append(dict(zip(keys, key), scheduled_references=int(g.reference_subject.nunique()),
+                affine_valid_references=int(g.affine_valid.sum()), syn_valid_references=int(g.syn_valid.sum()),
+                common_valid_references=int(len(ok)),
+                affine_reference_median_mm=float(ok.affine_error_mm.median()) if len(ok) else np.nan,
+                syn_reference_median_mm=float(ok.syn_error_mm.median()) if len(ok) else np.nan))
+        per_run = pd.DataFrame(rows)
+        expected_groups = len(METHODS) * 61 if strict_expected else pair[keys].drop_duplicates().shape[0]
+        if len(per_run) != expected_groups or not per_run.scheduled_references.eq(6).all():
+            raise ValueError(f"{policy}: expected 732 test-run/method groups with six references each")
+        per_run = per_run.merge(baseline, on=keys, how="left", validate="one_to_one", indicator=True)
+        if not per_run._merge.eq("both").all():
+            raise ValueError(f"{policy}: historical baseline missing for single-reference test runs")
+        per_run["baseline_valid"] = per_run.baseline_valid.astype(str).str.lower().isin(["true", "1"])
+        common_runs = per_run.baseline_valid & per_run.common_valid_references.gt(0)
+        per_run["qa_policy"] = policy
+        per_run["common_run_valid"] = common_runs
+        counts = per_run.groupby("method", sort=False).agg(
+            scheduled_test_runs=("run", "size"), runs_with_common_references=("common_run_valid", "sum"),
+            scheduled_reference_cases=("scheduled_references", "sum"),
+            affine_valid_reference_cases=("affine_valid_references", "sum"),
+            syn_valid_reference_cases=("syn_valid_references", "sum"),
+            common_valid_reference_cases=("common_valid_references", "sum")).reset_index()
+        counts["qa_policy"] = policy
+        coverage.append(counts)
+        datasets.append(per_run.loc[common_runs, keys + ["qa_policy", "scheduled_references",
+            "common_valid_references", "baseline_error_mm", "affine_reference_median_mm", "syn_reference_median_mm"]])
+    return pd.concat(datasets, ignore_index=True), pd.concat(coverage, ignore_index=True)
+
+
 def _group_positions(ax: plt.Axes) -> None:
     ranges = []
     start = 0
@@ -334,6 +401,55 @@ def plot_master_baseline_affine_syn(data: pd.DataFrame, out: Path) -> None:
     plt.close(fig)
 
 
+def plot_master_single_reference(data: pd.DataFrame, out: Path) -> None:
+    """Master comparison using one test-run median across shared references."""
+    series = [("baseline_error_mm", "Baseline", .95, ""),
+              ("affine_reference_median_mm", "Single-reference affine", .68, "//"),
+              ("syn_reference_median_mm", "Single-reference SyN", .48, "xx")]
+    palette = plt.get_cmap("tab20")([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 1, 5])
+    fig, axes = plt.subplots(2, 1, figsize=(20, 15), sharex=True, sharey=True)
+    for ax, policy in zip(axes, POLICIES):
+        q = data[data.qa_policy.eq(policy)]
+        _group_positions(ax)
+        for mi, method in enumerate(METHODS):
+            g = q[q.method.eq(method)]
+            for si, (column, label, alpha, hatch) in enumerate(series):
+                vals = pd.to_numeric(g[column], errors="coerce").dropna().to_numpy(float)
+                if not len(vals):
+                    continue
+                bp = ax.boxplot([vals], positions=[mi+1+(si-1)*.24], widths=.21,
+                                patch_artist=True, showfliers=True, manage_ticks=False,
+                                flierprops={"marker": ".", "markersize": 2.2,
+                                            "markeredgecolor": palette[mi], "alpha": .3})
+                for box in bp["boxes"]:
+                    box.set(facecolor=palette[mi], edgecolor="#343434", linewidth=.8, alpha=alpha, hatch=hatch)
+                for line in bp["whiskers"] + bp["caps"]:
+                    line.set(color="#555555", linewidth=.8)
+                for line in bp["medians"]:
+                    line.set(color="black", linewidth=1.7)
+        ax.set_ylabel("Localization error (mm)")
+        title = "PRIMARY QA (pair and source-point roundtrip ≤ 0.1 mm)" if policy == POLICIES[0] else "QA SENSITIVITY (pair ≤ 0.15 mm; source-point ≤ 0.1 mm)"
+        n_min = int(q.groupby("method").size().min()) if len(q) else 0
+        n_max = int(q.groupby("method").size().max()) if len(q) else 0
+        ax.set_title(f"{title} | matched test-runs per method: {n_min}–{n_max}", fontsize=11, loc="left")
+        ax.set_xlim(.45, len(METHODS)+.55); ax.grid(axis="y", alpha=.2); ax.set_axisbelow(True)
+    axes[-1].set_xticks(np.arange(1, len(METHODS)+1))
+    axes[-1].set_xticklabels([f"{m}\n({METHOD_META[m][1]})" for m in METHODS], fontsize=9)
+    axes[-1].tick_params(axis="x", pad=8, length=0)
+    handles = [Patch(facecolor="#737373", edgecolor="#343434", alpha=alpha, hatch=hatch, label=label)
+               for _, label, alpha, hatch in series]
+    fig.legend(handles=handles, loc="upper right", ncol=3, title="Figure series")
+    fig.suptitle("Historical baseline versus single-reference affine and SyN", fontsize=17, weight="bold", y=.995)
+    fig.text(.5, .018,
+             "For each method/test/run, affine and SyN use the same references valid under both modes; "
+             "their reference errors are reduced to one median per test-run. Baseline is matched once per test-run. "
+             "Lower panel is the separate QA sensitivity; references are repeated measurements, not independent runs.",
+             ha="center", va="bottom", fontsize=9, color="#444444", wrap=True)
+    fig.subplots_adjust(left=.065, right=.99, top=.955, bottom=.13, hspace=.30)
+    fig.savefig(out / "00_master_single_reference_affine_syn.png", dpi=280, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+
 def _distribution(values: pd.Series) -> dict[str, float | int]:
     x = pd.to_numeric(values, errors="coerce").replace([np.inf, -np.inf], np.nan).dropna()
     if not len(x):
@@ -359,6 +475,23 @@ def master_figure_statistics(data: pd.DataFrame) -> pd.DataFrame:
                 row = {"method": method, "strategy": strategy, "registration_mode": mode,
                        "qa_policy": policy, "figure_series": "Baseline" if mode == "none" else mode.capitalize(),
                        "cohort": "common valid baseline/affine/SyN method-test-run cases"}
+                row.update(_distribution(g[column]))
+                rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def single_reference_figure_statistics(data: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    series = [("Baseline", "none", "baseline_error_mm"),
+              ("Single-reference", "affine", "affine_reference_median_mm"),
+              ("Single-reference", "syn", "syn_reference_median_mm")]
+    for policy in POLICIES:
+        for method in METHODS:
+            g = data[(data.qa_policy == policy) & data.method.eq(method)]
+            for strategy, mode, column in series:
+                row = {"method": method, "strategy": strategy, "registration_mode": mode,
+                       "qa_policy": policy, "figure_series": "Baseline" if mode == "none" else mode.capitalize(),
+                       "cohort": "test-run median over references valid under both affine and SyN"}
                 row.update(_distribution(g[column]))
                 rows.append(row)
     return pd.DataFrame(rows)
@@ -409,6 +542,7 @@ def main(argv: list[str] | None = None) -> int:
         raise FileExistsError(f"Refusing to overwrite existing output directory: {out}")
     obs, matched, ref, perrun = validate_inputs(comparison, reference)
     master_data, master_coverage = master_affine_syn_rows(obs)
+    single_data, single_coverage = master_single_reference_rows(obs)
     matched_rows = matched[(matched._merge == "both") & matched.peak_scenario.eq("primary")]
     if matched_rows.empty:
         raise ValueError("No matched LOSO/single-reference rows. Regenerate Script 07 outputs with the corrected matching key first.")
@@ -416,6 +550,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"AUDIT PASSED: observations={len(obs)}; reference summaries={len(ref)}; matched primary rows={len(matched_rows)}")
         print("Common valid baseline/affine/SyN cases by policy and method:")
         print(master_coverage[["qa_policy", "method", "scheduled", "common_valid"]].to_string(index=False))
+        print(f"Single-reference common-reference test-run rows: {len(single_data)}")
         print("No plots were written.")
         return 0
     out.mkdir(parents=True, exist_ok=False)
@@ -426,11 +561,16 @@ def main(argv: list[str] | None = None) -> int:
     plot_reference_heatmaps(ref, out)
     plot_loso_sr(matched, out)
     plot_master_baseline_affine_syn(master_data, out)
+    plot_master_single_reference(single_data, out)
     master_data.to_csv(out / "00_master_baseline_affine_syn_plot_data.csv", index=False)
     master_coverage.to_csv(out / "00_master_baseline_affine_syn_coverage.csv", index=False)
+    single_data.to_csv(out / "00_master_single_reference_affine_syn_plot_data.csv", index=False)
+    single_coverage.to_csv(out / "00_master_single_reference_affine_syn_coverage.csv", index=False)
+    single_data_stats = single_reference_figure_statistics(single_data)
     master_stats = master_figure_statistics(master_data)
     strategy_stats = method_strategy_statistics(obs)
     master_stats.to_csv(out / "00_master_baseline_affine_syn_statistics.csv", index=False)
+    single_data_stats.to_csv(out / "00_master_single_reference_affine_syn_statistics.csv", index=False)
     strategy_stats.to_csv(out / "08_method_strategy_mode_statistics.csv", index=False)
     files = sorted(p.name for p in out.glob("*.png"))
     input_paths = [comparison / "01_localization_observations.csv", comparison / "05_loso_vs_single_reference_matched.csv",
@@ -445,6 +585,9 @@ def main(argv: list[str] | None = None) -> int:
         "master_figure_common_valid_rows": len(master_data),
         "master_figure_coverage_rows": len(master_coverage),
         "master_figure_statistics_rows": len(master_stats),
+        "single_reference_master_common_valid_rows": len(single_data),
+        "single_reference_master_coverage_rows": len(single_coverage),
+        "single_reference_master_statistics_rows": len(single_data_stats),
         "method_strategy_statistics_rows": len(strategy_stats),
         "interpretation": ["Only valid mapped localization errors are plotted.",
                            "QA policies and registration modes are kept separate.",
@@ -454,8 +597,13 @@ def main(argv: list[str] | None = None) -> int:
         "inverse_reconstruction_executed": False,
     }
     (out / "07_plot_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    (out / "README.txt").write_text("Script 09 visualization outputs (PNG only)\n\n" + "\n".join(files) +
-        "\n\nQA policies and registration modes remain separate. Invalid observations are excluded from error distributions but are represented in the coverage figure. These figures do not establish anatomical accuracy.\n")
+    tables = ["00_master_baseline_affine_syn_plot_data.csv", "00_master_baseline_affine_syn_coverage.csv",
+              "00_master_baseline_affine_syn_statistics.csv", "00_master_single_reference_affine_syn_plot_data.csv",
+              "00_master_single_reference_affine_syn_coverage.csv", "00_master_single_reference_affine_syn_statistics.csv",
+              "08_method_strategy_mode_statistics.csv"]
+    (out / "README.txt").write_text("Script 09 visualization outputs\n\nPNG figures:\n" + "\n".join(files) +
+        "\n\nCSV tables:\n" + "\n".join(tables) +
+        "\n\nQA policies and registration modes remain separate. Invalid observations are excluded from error distributions but are represented in coverage tables/figures. Single-reference observations are summarized at the method/test/run level. These figures do not establish anatomical accuracy.\n")
     print(f"Plots written: {out}")
     return 0
 
