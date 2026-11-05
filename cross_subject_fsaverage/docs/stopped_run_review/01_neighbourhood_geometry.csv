@@ -1,0 +1,13 @@
+model,n_sources,radius_mm,minimum,median,maximum,nodes_above_100,nodes_below_3,components
+native_sub01,8196,10.0,8,35.0,86,0,0,1
+native_sub01,8196,9.0,5,26.0,68,0,0,1
+native_sub01,8196,8.0,2,19.0,57,0,1,1
+native_sub01,8196,7.0,2,14.0,40,0,1,1
+native_sub01,8196,6.0,1,9.0,33,0,21,3
+native_sub01,8196,5.0,1,6.0,23,0,450,149
+fsaverage_sub01,20484,10.0,28,73.0,146,2340,0,1
+fsaverage_sub01,20484,9.0,23,56.0,118,135,0,1
+fsaverage_sub01,20484,8.0,18,43.0,89,0,0,1
+fsaverage_sub01,20484,7.0,12,31.0,69,0,0,1
+fsaverage_sub01,20484,6.0,7,22.0,53,0,0,1
+fsaverage_sub01,20484,5.0,5,14.0,40,0,0,1
