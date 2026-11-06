@@ -1,0 +1,98 @@
+{
+  "created_utc": "2026-11-06T03:53:09.144524+00:00",
+  "input_sha256": {
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/outputs/07_evaluate_localization/01_run_level_diagnostic.csv": "af302677c07547692c587b236e6d02854b1773713228c99a408b915d53fe4aef",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/outputs/07_evaluate_localization/07_evaluation_manifest.json": "fcd4fb71c30742a49df269a9f92ca4792cda45da1c80d2817fe143df377e1f0e",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_no_warp/outputs/07_compare_strategies/01_master_run_level.csv": "83be29156d13d05fc851ab4a5492ce350c78d6cf553d9fb5424a17857cb29f71",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_no_warp/scripts/09_visualize_results.py": "1bcb545389b9a7b088e117e37f99a73e467e95f0b02b81565c2361b194323e54",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/scripts/09_visualize_results.py": "236a4620ce1dcb78b0e3991313c3029d9b02469c2be50b6048a8eb00d963c24d"
+  },
+  "rows": 5124,
+  "status_counts": {
+    "PASS": 5118,
+    "FAIL": 6
+  },
+  "cohorts": {
+    "all_subjects_including_sub03": [
+      "sub-01",
+      "sub-02",
+      "sub-03",
+      "sub-04",
+      "sub-05",
+      "sub-06",
+      "sub-07"
+    ],
+    "six_subjects": [
+      "sub-01",
+      "sub-02",
+      "sub-04",
+      "sub-05",
+      "sub-06",
+      "sub-07"
+    ],
+    "sub03_exploratory": [
+      "sub-03"
+    ]
+  },
+  "dpi": 300,
+  "metric": "diagnostic unregistered HEAD separation mm",
+  "anatomical_error_valid": false,
+  "figures": [
+    "all_subjects_including_sub03/00_master_three_strategies_boxplot.png",
+    "all_subjects_including_sub03/01_historical_baseline_boxplot.png",
+    "all_subjects_including_sub03/02_cross_boxplot.png",
+    "all_subjects_including_sub03/03_pass_rate_grouped.png",
+    "all_subjects_including_sub03/04_reference_sensitivity.png",
+    "all_subjects_including_sub03/05_reference_by_method_heatmap.png",
+    "all_subjects_including_sub03/06_test_reference_heatmap.png",
+    "all_subjects_including_sub03/07_loso_subject_method_heatmap.png",
+    "all_subjects_including_sub03/07_single-reference_subject_method_heatmap.png",
+    "all_subjects_including_sub03/08_no_warp_vs_fsaverage_boxplot.png",
+    "six_subjects/00_master_three_strategies_boxplot.png",
+    "six_subjects/01_historical_baseline_boxplot.png",
+    "six_subjects/02_cross_boxplot.png",
+    "six_subjects/03_pass_rate_grouped.png",
+    "six_subjects/04_reference_sensitivity.png",
+    "six_subjects/05_reference_by_method_heatmap.png",
+    "six_subjects/06_test_reference_heatmap.png",
+    "six_subjects/07_loso_subject_method_heatmap.png",
+    "six_subjects/07_single-reference_subject_method_heatmap.png",
+    "six_subjects/08_no_warp_vs_fsaverage_boxplot.png",
+    "sub03_exploratory/00_master_three_strategies_boxplot.png",
+    "sub03_exploratory/01_historical_baseline_boxplot.png",
+    "sub03_exploratory/02_cross_boxplot.png",
+    "sub03_exploratory/03_pass_rate_grouped.png",
+    "sub03_exploratory/04_reference_sensitivity.png",
+    "sub03_exploratory/05_reference_by_method_heatmap.png",
+    "sub03_exploratory/06_test_reference_heatmap.png",
+    "sub03_exploratory/07_loso_subject_method_heatmap.png",
+    "sub03_exploratory/07_single-reference_subject_method_heatmap.png",
+    "sub03_exploratory/08_no_warp_vs_fsaverage_boxplot.png"
+  ],
+  "no_warp_pairing_coverage": [
+    {
+      "strategy": "LOSO",
+      "_merge": "both",
+      "jointly_pass": false,
+      "count": 1
+    },
+    {
+      "strategy": "LOSO",
+      "_merge": "both",
+      "jointly_pass": true,
+      "count": 731
+    },
+    {
+      "strategy": "Single-reference",
+      "_merge": "both",
+      "jointly_pass": false,
+      "count": 14
+    },
+    {
+      "strategy": "Single-reference",
+      "_merge": "both",
+      "jointly_pass": true,
+      "count": 4378
+    }
+  ]
+}

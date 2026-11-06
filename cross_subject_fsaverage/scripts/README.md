@@ -199,3 +199,63 @@ Inspect that pilot before running any full continuation. A complete successful
 SESAME fit is not established by capacity/geometry tests. The dense source
 neighbour matrix remains large and the first pilot may take time. No coarser
 source space or automatic radius adjustment is introduced.
+
+## Script 07: unregistered localization diagnostic
+
+`07_evaluate_localization.py` implements the simplified workflow's initial
+HEAD-coordinate distance evaluation. It reads the completed exploratory ledger
+(including inherited results for the other subjects) and the no-warp stage's
+61 audited stimulation midpoints in native test HEAD coordinates. It verifies
+the reconstruction's frozen inputs, exact job keys, coordinate units/frames,
+and stimulation identities before calculating Euclidean separation in mm.
+It performs no registration or inverse calculations.
+
+```bash
+.venv/bin/python cross_subject_fsaverage/scripts/07_evaluate_localization.py
+```
+
+Defaults: `--reconstruction-root outputs/05_reconstruct_sub03_exploratory` under
+this experiment, `--ground-truth` from the no-warp evaluation's
+`02_coordinate_validation.csv`, and `--output-root outputs/07_evaluate_localization`
+under this experiment. Existing output directories are refused; supply a fresh
+`--output-root` to evaluate a later checkpoint.
+
+`01_run_level_diagnostic.csv` preserves all 5,124 jobs, including failures.
+`diagnostic_distance_mm` holds the calculated distances, while
+`localization_error_mm` remains empty and `localization_error_valid` remains
+false. An unregistered coordinate separation is not an anatomically validated
+localization error. The optional Script 03 MRI mappings are not applied here.
+Sub-03 remains a separate failed-coregistration exploratory cohort; the other
+six subjects still require anatomical review. Summaries include solver success
+rates, diagnostic median/IQR, per-subject results, and equal-subject aggregates.
+Single-reference summaries include repeated runs across references, so they
+must not be treated as independent participant observations. The manifest
+records input checksums and interpretation limits.
+
+## Script 09: plots and complete diagnostic report
+
+```bash
+.venv/bin/python cross_subject_fsaverage/scripts/09_visualize_results.py
+```
+
+Reads Script 07's completed diagnostic evaluation and the no-warp experiment's
+`07_compare_strategies/01_master_run_level.csv`. Creates a fresh
+`outputs/09_visualize_results/` with `REPORT.html`, `REPORT.md`, 30 PNG figures
+at 300 dpi, CSV summary tables, and `07_plot_manifest.json`. Existing output
+folders are refused; use `--output-root` for a new report directory.
+
+The no-warp plotting module supplies method order/year labels, family bands,
+and box styles. Each of `all_subjects_including_sub03/`, `six_subjects/`, and
+`sub03_exploratory/` includes the grouped three-strategy master boxplot,
+historical baseline context, fsaverage strategy boxplots, solver pass rates,
+reference SD/range sensitivity, reference/method and test/reference heatmaps,
+subject/method heatmaps, and matched no-warp-versus-fsaverage boxplots.
+
+The report retains failures, distinguishes pooled runs from equal-subject
+summaries, and gives no-warp pairing coverage and paired diagnostic differences.
+Baseline values occur once per method/test run. Only no-warp primary results
+are used for the matched comparison. No within-subject fsaverage or whole-brain
+sensitivity fit is invented. Reference variability uses only complete sets of
+six successful references. All fsaverage and no-warp cross distances remain
+diagnostic. Sub-03's failed alignment is labeled throughout; the inclusive
+all-seven view is exploratory. No inverse fit or MRI registration is executed.

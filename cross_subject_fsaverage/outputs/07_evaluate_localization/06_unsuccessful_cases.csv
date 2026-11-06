@@ -1,0 +1,7 @@
+strategy,method,reference_subject,test_subject,run,status,failure_reason,evaluation_cohort
+Single-reference,Gamma-MAP,sub-02,sub-04,run-05,FAIL,Exception: No active dipoles found. alpha is too big.,other_six_subjects_review_required
+Single-reference,Gamma-MAP,sub-02,sub-05,run-06,FAIL,Exception: No active dipoles found. alpha is too big.,other_six_subjects_review_required
+Single-reference,Gamma-MAP,sub-02,sub-05,run-08,FAIL,Exception: No active dipoles found. alpha is too big.,other_six_subjects_review_required
+Single-reference,Gamma-MAP,sub-02,sub-06,run-05,FAIL,Exception: No active dipoles found. alpha is too big.,other_six_subjects_review_required
+Single-reference,Gamma-MAP,sub-07,sub-05,run-08,FAIL,Exception: No active dipoles found. alpha is too big.,other_six_subjects_review_required
+Single-reference,Gamma-MAP,sub-07,sub-06,run-05,FAIL,Exception: No active dipoles found. alpha is too big.,other_six_subjects_review_required

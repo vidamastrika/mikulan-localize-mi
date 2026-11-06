@@ -1,0 +1,29 @@
+{
+  "created_utc": "2026-11-06T03:40:01.694271+00:00",
+  "script_sha256": "b02db337891744456417b9596d1e04aad166ca991ab4b46f37c532e16863e12c",
+  "input_sha256": {
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/outputs/05_reconstruct_sub03_exploratory/01_execution_status.csv": "6d2d57c5156d7b05186f5c6a39700e76c6f240e645cc09d53a1df3da82443519",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/outputs/05_reconstruct_sub03_exploratory/02_reconstruction_plan.csv": "0d50125278578bf1aa88800684f5aa016fe503613666135030f70a7d7b338e14",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/outputs/05_reconstruct_sub03_exploratory/06_frozen_run_manifest.json": "4ffb012cd409ee2faf64083a75cc906c418e06a0b26534ef0146d91faf6e13f6",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_no_warp/outputs/06_evaluate_localization/02_coordinate_validation.csv": "9b8700c81a60b34a88f79a3f7e1cf5b3938082fe095d5a56460590f5f87b766a"
+  },
+  "frozen_inputs_verified": 93,
+  "rows": 5124,
+  "status_counts": {
+    "PASS": 5118,
+    "FAIL": 6
+  },
+  "diagnostic_distances": 5118,
+  "metric": "Euclidean distance (mm): estimated model HEAD minus test ground-truth HEAD",
+  "ground_truth_conversion": "Existing audited stimulation midpoint, native surface to native HEAD via test subject H5",
+  "registration_applied": false,
+  "valid_anatomical_localization_error": false,
+  "limitations": [
+    "Unregistered head-coordinate distances are diagnostic only.",
+    "Sub-03 uses a failed-QA candidate alignment and is reported separately.",
+    "Other six subjects retain anatomical review requirements.",
+    "Cortical methods use the original known-stimulation-hemisphere peak policy; ECD/RAP-MUSIC use maximum GOF.",
+    "Single-reference pooled summaries repeat runs across references; use equal-subject summary for participant weighting.",
+    "Failures retain missing distances and remain in pass-rate denominators."
+  ]
+}

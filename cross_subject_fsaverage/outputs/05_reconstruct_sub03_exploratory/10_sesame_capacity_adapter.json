@@ -1,0 +1,8 @@
+{
+  "original_function_sha256": "b3689d77ba2aee79ee092a1d2720c5d7f38e27170dc7d65258cb4da935d07779",
+  "original_capacity": 100,
+  "compatibility_capacity": 256,
+  "radius": "unchanged automatic 0.01 m",
+  "minimum_neighbours": 3,
+  "probability_rule": "unchanged"
+}
