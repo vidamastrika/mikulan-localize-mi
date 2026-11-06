@@ -1,0 +1,15 @@
+{
+  "method": "dSPM",
+  "input_paths": [
+    "/home/girvi949/projects/mikulan-localize-mi/outputs/grid_all_runs/grid_results.csv"
+  ],
+  "configuration_fields": [
+    "method_origin",
+    "montage",
+    "loose",
+    "depth",
+    "snr",
+    "lambda2"
+  ],
+  "error_column": "localization_distance_mm"
+}

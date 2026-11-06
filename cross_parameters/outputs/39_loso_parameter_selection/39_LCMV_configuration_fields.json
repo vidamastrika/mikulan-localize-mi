@@ -1,0 +1,11 @@
+{
+  "method": "LCMV",
+  "input_paths": [
+    "/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/lcmv/grid_results.csv"
+  ],
+  "configuration_fields": [
+    "montage",
+    "configuration_id"
+  ],
+  "error_column": "localization_distance_mm"
+}

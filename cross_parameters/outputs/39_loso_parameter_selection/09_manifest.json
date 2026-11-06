@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "script": "39_loso_parameter_selection.py",
+  "methods_loaded": [
+    "MNE",
+    "dSPM",
+    "sLORETA",
+    "eLORETA",
+    "Continuous-ECD",
+    "RAP-MUSIC",
+    "LCMV",
+    "MxNE",
+    "irMxNE",
+    "Gamma-MAP",
+    "Champagne",
+    "SESAME"
+  ],
+  "subjects": [
+    "sub-01",
+    "sub-02",
+    "sub-03",
+    "sub-04",
+    "sub-05",
+    "sub-06",
+    "sub-07"
+  ],
+  "expected_run_counts": {
+    "sub-01": 11,
+    "sub-02": 6,
+    "sub-03": 7,
+    "sub-04": 9,
+    "sub-05": 14,
+    "sub-06": 7,
+    "sub-07": 7
+  },
+  "expected_runs": 61,
+  "selection_score": "mean(subject run-level medians)",
+  "require_all_pass": true,
+  "input_sources": [
+    {
+      "method": "MNE",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/grid_all_runs/grid_results.csv",
+      "rows_in_method": 97600
+    },
+    {
+      "method": "dSPM",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/grid_all_runs/grid_results.csv",
+      "rows_in_method": 97600
+    },
+    {
+      "method": "sLORETA",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/grid_all_runs/grid_results.csv",
+      "rows_in_method": 97600
+    },
+    {
+      "method": "eLORETA",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/grid_all_runs/grid_results.csv",
+      "rows_in_method": 97600
+    },
+    {
+      "method": "Continuous-ECD",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/continuous_ecd/grid_results.csv",
+      "rows_in_method": 1464
+    },
+    {
+      "method": "RAP-MUSIC",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/rap_music/grid_results.csv",
+      "rows_in_method": 244
+    },
+    {
+      "method": "LCMV",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/lcmv/grid_results.csv",
+      "rows_in_method": 10980
+    },
+    {
+      "method": "MxNE",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/mxne/grid_results.csv",
+      "rows_in_method": 73200
+    },
+    {
+      "method": "irMxNE",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/23_full_next_method_grid/23_all_next_methods_combined.csv",
+      "rows_in_method": 122000
+    },
+    {
+      "method": "Gamma-MAP",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/23_full_next_method_grid/23_all_next_methods_combined.csv",
+      "rows_in_method": 6241
+    },
+    {
+      "method": "Champagne",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/23_full_next_method_grid/23_all_next_methods_combined.csv",
+      "rows_in_method": 1220
+    },
+    {
+      "method": "SESAME",
+      "path": "/home/girvi949/projects/mikulan-localize-mi/outputs/23_full_next_method_grid/23_all_next_methods_combined.csv",
+      "rows_in_method": 2684
+    }
+  ],
+  "full_61_all_pass_archive": "10_all_12_methods_full_61_all_pass.csv",
+  "full_canonical_archive": "11_all_12_methods_canonical_grid_backup.csv",
+  "warning": "Global fixed baseline is selected using all subjects; NOT held-out",
+  "warning2": "Only precomputed configurations in supplied CSV are eligible."
+}

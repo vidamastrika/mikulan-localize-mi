@@ -1,0 +1,11 @@
+{
+  "methods": 12,
+  "all_rows": 5856,
+  "loso_rows": 732,
+  "single_reference_rows": 4392,
+  "global_rows": 732,
+  "source_csv": "/home/girvi949/projects/mikulan-localize-mi/cross_subject/outputs/39_loso_parameter_selection/11_all_12_methods_canonical_grid_backup.csv",
+  "baseline_csv": "/home/girvi949/projects/mikulan-localize-mi/outputs/26_twelve_methods_comparison/complete_all_pass/tables/13_selected_configuration_results_long.csv",
+  "warning": "Script 26 fixed baseline was selected using all 7 subjects; descriptive/in-sample, not held-out.",
+  "paired_analysis": "Only jointly PASS results have numeric paired deltas; failures separately tabulated."
+}

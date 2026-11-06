@@ -1,0 +1,17 @@
+{
+  "method": "Gamma-MAP",
+  "input_paths": [
+    "/home/girvi949/projects/mikulan-localize-mi/outputs/23_full_next_method_grid/23_all_next_methods_combined.csv"
+  ],
+  "configuration_fields": [
+    "montage",
+    "gamma_alpha",
+    "gamma_loose",
+    "gamma_depth",
+    "gamma_xyz_same_gamma",
+    "gamma_update_mode",
+    "gamma_maxit",
+    "gamma_tol"
+  ],
+  "error_column": "localization_distance_mm"
+}

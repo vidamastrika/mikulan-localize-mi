@@ -1,0 +1,13 @@
+method,path,rows_in_method
+MNE,/home/girvi949/projects/mikulan-localize-mi/outputs/grid_all_runs/grid_results.csv,97600
+dSPM,/home/girvi949/projects/mikulan-localize-mi/outputs/grid_all_runs/grid_results.csv,97600
+sLORETA,/home/girvi949/projects/mikulan-localize-mi/outputs/grid_all_runs/grid_results.csv,97600
+eLORETA,/home/girvi949/projects/mikulan-localize-mi/outputs/grid_all_runs/grid_results.csv,97600
+Continuous-ECD,/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/continuous_ecd/grid_results.csv,1464
+RAP-MUSIC,/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/rap_music/grid_results.csv,244
+LCMV,/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/lcmv/grid_results.csv,10980
+MxNE,/home/girvi949/projects/mikulan-localize-mi/outputs/15_full_additional_method_grid/mxne/grid_results.csv,73200
+irMxNE,/home/girvi949/projects/mikulan-localize-mi/outputs/23_full_next_method_grid/23_all_next_methods_combined.csv,122000
+Gamma-MAP,/home/girvi949/projects/mikulan-localize-mi/outputs/23_full_next_method_grid/23_all_next_methods_combined.csv,6241
+Champagne,/home/girvi949/projects/mikulan-localize-mi/outputs/23_full_next_method_grid/23_all_next_methods_combined.csv,1220
+SESAME,/home/girvi949/projects/mikulan-localize-mi/outputs/23_full_next_method_grid/23_all_next_methods_combined.csv,2684

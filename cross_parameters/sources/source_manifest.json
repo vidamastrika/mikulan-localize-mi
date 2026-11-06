@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "copied_path": "sources/grid_all_runs/grid_results.csv",
+      "original_path": "outputs/grid_all_runs/grid_results.csv",
+      "used_for": [
+        "MNE",
+        "dSPM",
+        "sLORETA",
+        "eLORETA"
+      ],
+      "size_bytes": 134537163,
+      "sha256": "cc3668ca366469005dcfdbb54ab0604007e19b329ad33fe4452f2e9ea169a402"
+    },
+    {
+      "copied_path": "sources/15_full_additional_method_grid/continuous_ecd/grid_results.csv",
+      "original_path": "outputs/15_full_additional_method_grid/continuous_ecd/grid_results.csv",
+      "used_for": [
+        "Continuous-ECD"
+      ],
+      "size_bytes": 669242,
+      "sha256": "0aa9036a2bddac8acc30c0969adfe09f5162767b1237e001a8eb9112d1b082d2"
+    },
+    {
+      "copied_path": "sources/15_full_additional_method_grid/rap_music/grid_results.csv",
+      "original_path": "outputs/15_full_additional_method_grid/rap_music/grid_results.csv",
+      "used_for": [
+        "RAP-MUSIC"
+      ],
+      "size_bytes": 79729,
+      "sha256": "1a504003270c8c8b244785338342d3a4026bb5fb6a759cc40183244a1a7b4d35"
+    },
+    {
+      "copied_path": "sources/15_full_additional_method_grid/lcmv/grid_results.csv",
+      "original_path": "outputs/15_full_additional_method_grid/lcmv/grid_results.csv",
+      "used_for": [
+        "LCMV"
+      ],
+      "size_bytes": 4678705,
+      "sha256": "e4a664332aa4e2de4925b123e789ec20c7d0d39967ece08f8a0de37126294c5a"
+    },
+    {
+      "copied_path": "sources/15_full_additional_method_grid/mxne/grid_results.csv",
+      "original_path": "outputs/15_full_additional_method_grid/mxne/grid_results.csv",
+      "used_for": [
+        "MxNE"
+      ],
+      "size_bytes": 27999768,
+      "sha256": "11017eb7ded6266ada9b9875e3a87afa98fbe4333d68070d7fe3e79fc8b8038b"
+    },
+    {
+      "copied_path": "sources/23_full_next_method_grid/23_all_next_methods_combined.csv",
+      "original_path": "outputs/23_full_next_method_grid/23_all_next_methods_combined.csv",
+      "used_for": [
+        "irMxNE",
+        "Gamma-MAP",
+        "Champagne",
+        "SESAME"
+      ],
+      "size_bytes": 66444055,
+      "sha256": "dabb674e3b4cddfcf5b95f34ba0e949f222a6ace9da3c317d2b93b0aa6ed2bde"
+    },
+    {
+      "copied_path": "sources/26_twelve_methods_comparison/complete_all_pass/tables/13_selected_configuration_results_long.csv",
+      "original_path": "outputs/26_twelve_methods_comparison/complete_all_pass/tables/13_selected_configuration_results_long.csv",
+      "used_for": [
+        "Script 26 baseline run results"
+      ],
+      "size_bytes": 57651,
+      "sha256": "c86fca51e38f6ac61565adea3a1ae0f62075880c4242e540747245efa6f7ebe5"
+    },
+    {
+      "copied_path": "sources/26_twelve_methods_comparison/complete_all_pass/tables/01_selected_configuration_definitions.csv",
+      "original_path": "outputs/26_twelve_methods_comparison/complete_all_pass/tables/01_selected_configuration_definitions.csv",
+      "used_for": [
+        "Script 26 baseline configuration definitions"
+      ],
+      "size_bytes": 5053,
+      "sha256": "8257a13025476148afe7d8befac36c05540d292d305bb58715c529e72a6b9ebb"
+    }
+  ]
+}
