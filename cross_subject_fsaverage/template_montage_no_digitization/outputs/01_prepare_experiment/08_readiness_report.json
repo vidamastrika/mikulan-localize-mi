@@ -1,0 +1,11 @@
+{
+  "status": "BLOCKED",
+  "blockers": [
+    "Independent Localize-MI net model/numbering and fiducial/unit evidence has not been supplied."
+  ],
+  "independent_channel_mapping_validated": false,
+  "geometry_evaluated": false,
+  "scientific_anatomical_validity_established": false,
+  "forward_modeling_authorized": false,
+  "next_step": "Review Script01 evidence and geometry before separately implementing Script02; no forward work is executed here."
+}

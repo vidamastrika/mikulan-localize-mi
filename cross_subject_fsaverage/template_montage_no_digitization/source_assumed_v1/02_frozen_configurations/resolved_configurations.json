@@ -1,0 +1,2508 @@
+{
+  "LOSO|MNE|sub-01": {
+    "configuration_key": "23bec8a78c99499a9e9a",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.4",
+      "lambda2": "1",
+      "loose": "0.8",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MNE|sub-02": {
+    "configuration_key": "922968e3248d9ddfc1eb",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "1",
+      "lambda2": "1",
+      "loose": "0.6",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MNE|sub-03": {
+    "configuration_key": "922968e3248d9ddfc1eb",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "1",
+      "lambda2": "1",
+      "loose": "0.6",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MNE|sub-04": {
+    "configuration_key": "922968e3248d9ddfc1eb",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "1",
+      "lambda2": "1",
+      "loose": "0.6",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MNE|sub-05": {
+    "configuration_key": "d54c847fc2b44faedd39",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.2",
+      "lambda2": "1",
+      "loose": "0.9",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MNE|sub-06": {
+    "configuration_key": "fbc41139e6489fa8d0c7",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "1",
+      "lambda2": "1",
+      "loose": "0.1",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MNE|sub-07": {
+    "configuration_key": "922968e3248d9ddfc1eb",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "1",
+      "lambda2": "1",
+      "loose": "0.6",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|dSPM|sub-01": {
+    "configuration_key": "1b3abc4d2e17b3988bc2",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.9",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|dSPM|sub-02": {
+    "configuration_key": "48a0851d4a96ad1fcdd9",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.5",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|dSPM|sub-03": {
+    "configuration_key": "fbc41139e6489fa8d0c7",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "1",
+      "lambda2": "1",
+      "loose": "0.1",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|dSPM|sub-04": {
+    "configuration_key": "48a0851d4a96ad1fcdd9",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.5",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|dSPM|sub-05": {
+    "configuration_key": "8befacf8fc6108b28c3d",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.3",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|dSPM|sub-06": {
+    "configuration_key": "1b3abc4d2e17b3988bc2",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.9",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|dSPM|sub-07": {
+    "configuration_key": "48a0851d4a96ad1fcdd9",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.5",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|sLORETA|sub-01": {
+    "configuration_key": "0bb14d1e6867c6c9fa78",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.6",
+      "lambda2": "1",
+      "loose": "0.5",
+      "method_origin": "extension",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|sLORETA|sub-02": {
+    "configuration_key": "f029a051285e8152d505",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.1",
+      "lambda2": "1",
+      "loose": "0.5",
+      "method_origin": "extension",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|sLORETA|sub-03": {
+    "configuration_key": "04fc26d7e2fe5dbb9ca3",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "1",
+      "lambda2": "1",
+      "loose": "0.4",
+      "method_origin": "extension",
+      "montage": "32",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|sLORETA|sub-04": {
+    "configuration_key": "0bb14d1e6867c6c9fa78",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.6",
+      "lambda2": "1",
+      "loose": "0.5",
+      "method_origin": "extension",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|sLORETA|sub-05": {
+    "configuration_key": "0bb14d1e6867c6c9fa78",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.6",
+      "lambda2": "1",
+      "loose": "0.5",
+      "method_origin": "extension",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|sLORETA|sub-06": {
+    "configuration_key": "0bb14d1e6867c6c9fa78",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.6",
+      "lambda2": "1",
+      "loose": "0.5",
+      "method_origin": "extension",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|sLORETA|sub-07": {
+    "configuration_key": "0bb14d1e6867c6c9fa78",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.6",
+      "lambda2": "1",
+      "loose": "0.5",
+      "method_origin": "extension",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|eLORETA|sub-01": {
+    "configuration_key": "1dc58226c71eedfbaac8",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.7",
+      "lambda2": "0.111111111111",
+      "loose": "0.8",
+      "method_origin": "author",
+      "montage": "32",
+      "snr": "3",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|eLORETA|sub-02": {
+    "configuration_key": "0772908d0dd787152951",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.3",
+      "lambda2": "0.25",
+      "loose": "0.1",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "2",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|eLORETA|sub-03": {
+    "configuration_key": "216a06d25ffbf39b653b",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.2",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "32",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|eLORETA|sub-04": {
+    "configuration_key": "216a06d25ffbf39b653b",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.2",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "32",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|eLORETA|sub-05": {
+    "configuration_key": "216a06d25ffbf39b653b",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.2",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "32",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|eLORETA|sub-06": {
+    "configuration_key": "024fb308420491ba71c7",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.7",
+      "lambda2": "1",
+      "loose": "0.8",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|eLORETA|sub-07": {
+    "configuration_key": "024fb308420491ba71c7",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.7",
+      "lambda2": "1",
+      "loose": "0.8",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Continuous-ECD|sub-01": {
+    "configuration_key": "3633ad1a92ea35c25f8d",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_15",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "15",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Continuous-ECD|sub-02": {
+    "configuration_key": "3633ad1a92ea35c25f8d",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_15",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "15",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Continuous-ECD|sub-03": {
+    "configuration_key": "3633ad1a92ea35c25f8d",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_15",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "15",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Continuous-ECD|sub-04": {
+    "configuration_key": "3633ad1a92ea35c25f8d",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_15",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "15",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Continuous-ECD|sub-05": {
+    "configuration_key": "3633ad1a92ea35c25f8d",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_15",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "15",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Continuous-ECD|sub-06": {
+    "configuration_key": "3633ad1a92ea35c25f8d",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_15",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "15",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Continuous-ECD|sub-07": {
+    "configuration_key": "3633ad1a92ea35c25f8d",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_15",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "15",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|RAP-MUSIC|sub-01": {
+    "configuration_key": "21358ab895a6a2c3085f",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|RAP-MUSIC|sub-02": {
+    "configuration_key": "21358ab895a6a2c3085f",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|RAP-MUSIC|sub-03": {
+    "configuration_key": "21358ab895a6a2c3085f",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|RAP-MUSIC|sub-04": {
+    "configuration_key": "21358ab895a6a2c3085f",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|RAP-MUSIC|sub-05": {
+    "configuration_key": "722c0e23ec547ebd84cc",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|RAP-MUSIC|sub-06": {
+    "configuration_key": "722c0e23ec547ebd84cc",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|RAP-MUSIC|sub-07": {
+    "configuration_key": "722c0e23ec547ebd84cc",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|LCMV|sub-01": {
+    "configuration_key": "2df7efe07ed5615230d4",
+    "parameters": {
+      "configuration_id": "lcmv_r0.01_w5_diagonal_fixed",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "diagonal_fixed",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.01",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "5",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|LCMV|sub-02": {
+    "configuration_key": "3da3a3a8fed22145a73a",
+    "parameters": {
+      "configuration_id": "lcmv_r0_w10_diagonal_fixed",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "diagonal_fixed",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "10",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|LCMV|sub-03": {
+    "configuration_key": "2df7efe07ed5615230d4",
+    "parameters": {
+      "configuration_id": "lcmv_r0.01_w5_diagonal_fixed",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "diagonal_fixed",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.01",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "5",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|LCMV|sub-04": {
+    "configuration_key": "2df7efe07ed5615230d4",
+    "parameters": {
+      "configuration_id": "lcmv_r0.01_w5_diagonal_fixed",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "diagonal_fixed",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.01",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "5",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|LCMV|sub-05": {
+    "configuration_key": "ba27aa0b5c6e8b8c02ff",
+    "parameters": {
+      "configuration_id": "lcmv_r0.01_w10_diagonal_fixed",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "diagonal_fixed",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.01",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "10",
+      "montage": "all_good",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|LCMV|sub-06": {
+    "configuration_key": "2df7efe07ed5615230d4",
+    "parameters": {
+      "configuration_id": "lcmv_r0.01_w5_diagonal_fixed",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "diagonal_fixed",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.01",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "5",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|LCMV|sub-07": {
+    "configuration_key": "dc0fc312d488b6c0e1b3",
+    "parameters": {
+      "configuration_id": "lcmv_r0.1_w2_diagonal_fixed",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "diagonal_fixed",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.1",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "2",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MxNE|sub-01": {
+    "configuration_key": "3728ca8bb42b4114dae8",
+    "parameters": {
+      "configuration_id": "mxne_a35_l0.9_d1.0",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "mxne_alpha": "35",
+      "mxne_depth": "1",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.9",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MxNE|sub-02": {
+    "configuration_key": "bfe133c063a61bf45d83",
+    "parameters": {
+      "configuration_id": "mxne_a25_l0.3_d1.0",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "mxne_alpha": "25",
+      "mxne_depth": "1",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.3",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MxNE|sub-03": {
+    "configuration_key": "8d62221683127aa19702",
+    "parameters": {
+      "configuration_id": "mxne_a25_l0.9_d1.0",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "mxne_alpha": "25",
+      "mxne_depth": "1",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.9",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MxNE|sub-04": {
+    "configuration_key": "8d62221683127aa19702",
+    "parameters": {
+      "configuration_id": "mxne_a25_l0.9_d1.0",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "mxne_alpha": "25",
+      "mxne_depth": "1",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.9",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MxNE|sub-05": {
+    "configuration_key": "7d7fe023f2a04249bac6",
+    "parameters": {
+      "configuration_id": "mxne_a35_l0.3_d1.0",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "mxne_alpha": "35",
+      "mxne_depth": "1",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.3",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MxNE|sub-06": {
+    "configuration_key": "8d62221683127aa19702",
+    "parameters": {
+      "configuration_id": "mxne_a25_l0.9_d1.0",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "mxne_alpha": "25",
+      "mxne_depth": "1",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.9",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|MxNE|sub-07": {
+    "configuration_key": "df4efc4ecd28f0b252a8",
+    "parameters": {
+      "configuration_id": "mxne_a35_l0.1_d1.0",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "mxne_alpha": "35",
+      "mxne_depth": "1",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|irMxNE|sub-01": {
+    "configuration_key": "e538618d964405da82c0",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "25",
+      "irmxne_depth": "1",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.2",
+      "irmxne_random_state": "0",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|irMxNE|sub-02": {
+    "configuration_key": "e538618d964405da82c0",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "25",
+      "irmxne_depth": "1",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.2",
+      "irmxne_random_state": "0",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|irMxNE|sub-03": {
+    "configuration_key": "9a2fb70d5b2a9ba4e308",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "25",
+      "irmxne_depth": "1",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.6",
+      "irmxne_random_state": "0",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|irMxNE|sub-04": {
+    "configuration_key": "a0c8daa21fcd5a389df0",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "20",
+      "irmxne_depth": "1",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.8",
+      "irmxne_random_state": "0",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|irMxNE|sub-05": {
+    "configuration_key": "c0192d01cde59d69346d",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "25",
+      "irmxne_depth": "1",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.7",
+      "irmxne_random_state": "0",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|irMxNE|sub-06": {
+    "configuration_key": "c0192d01cde59d69346d",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "25",
+      "irmxne_depth": "1",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.7",
+      "irmxne_random_state": "0",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|irMxNE|sub-07": {
+    "configuration_key": "e538618d964405da82c0",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "25",
+      "irmxne_depth": "1",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.2",
+      "irmxne_random_state": "0",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Gamma-MAP|sub-01": {
+    "configuration_key": "813e2f32f9193ab240ab",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.25",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.5",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "64",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Gamma-MAP|sub-02": {
+    "configuration_key": "bc55686144482857d6a6",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.25",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.7",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Gamma-MAP|sub-03": {
+    "configuration_key": "bc55686144482857d6a6",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.25",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.7",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Gamma-MAP|sub-04": {
+    "configuration_key": "bc55686144482857d6a6",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.25",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.7",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Gamma-MAP|sub-05": {
+    "configuration_key": "bc55686144482857d6a6",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.25",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.7",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Gamma-MAP|sub-06": {
+    "configuration_key": "bc55686144482857d6a6",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.25",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.7",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Gamma-MAP|sub-07": {
+    "configuration_key": "bc55686144482857d6a6",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.25",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.7",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Champagne|sub-01": {
+    "configuration_key": "f3b023b1d9b9bc46cdc4",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.001",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Champagne|sub-02": {
+    "configuration_key": "1a79c2221b8ed2256de5",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.01",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Champagne|sub-03": {
+    "configuration_key": "1a79c2221b8ed2256de5",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.01",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Champagne|sub-04": {
+    "configuration_key": "a4d0eef47286486f15e6",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.05",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Champagne|sub-05": {
+    "configuration_key": "a4d0eef47286486f15e6",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.05",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Champagne|sub-06": {
+    "configuration_key": "1a79c2221b8ed2256de5",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.01",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|Champagne|sub-07": {
+    "configuration_key": "1a79c2221b8ed2256de5",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.01",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|SESAME|sub-01": {
+    "configuration_key": "e04b924796484249bfba",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "64",
+      "sesame_fs": "0.03",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|SESAME|sub-02": {
+    "configuration_key": "ab5778bcffa5d7fdba6f",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "sesame_fs": "0.09",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|SESAME|sub-03": {
+    "configuration_key": "ab5778bcffa5d7fdba6f",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "sesame_fs": "0.09",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|SESAME|sub-04": {
+    "configuration_key": "9bd949852efb81dc8a37",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "sesame_fs": "0.15",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|SESAME|sub-05": {
+    "configuration_key": "75dfbdf3eae6b2ffa21f",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "64",
+      "sesame_fs": "0.06",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|SESAME|sub-06": {
+    "configuration_key": "c3e5c96fa929b2037330",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "sesame_fs": "0.15",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "LOSO|SESAME|sub-07": {
+    "configuration_key": "a9bfeb463fe0bf2fb688",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "sesame_fs": "0.12",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MNE|sub-01": {
+    "configuration_key": "124b68597d95cae286a7",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.5",
+      "lambda2": "1",
+      "loose": "0.1",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MNE|sub-02": {
+    "configuration_key": "df6f3d29544aeb98cda2",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.1",
+      "lambda2": "0.0625",
+      "loose": "0.5",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "4",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MNE|sub-03": {
+    "configuration_key": "77759664a073908fdcc7",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.1",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MNE|sub-04": {
+    "configuration_key": "815efa64a1fdf008055a",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.9",
+      "lambda2": "1",
+      "loose": "0.2",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MNE|sub-05": {
+    "configuration_key": "9588a79d5e585590c094",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "1",
+      "lambda2": "0.111111111111",
+      "loose": "0.6",
+      "method_origin": "author",
+      "montage": "32",
+      "snr": "3",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MNE|sub-06": {
+    "configuration_key": "f5593ce8e4178bd11b1f",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.6",
+      "lambda2": "0.0625",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "32",
+      "snr": "4",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MNE|sub-07": {
+    "configuration_key": "52ea6d8c3eb00ec0ff2e",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.1",
+      "lambda2": "1",
+      "loose": "0.8",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|dSPM|sub-01": {
+    "configuration_key": "0bed170e16d044f60d0b",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.1",
+      "lambda2": "1",
+      "loose": "0.9",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|dSPM|sub-02": {
+    "configuration_key": "1905fbec8d59d6e42ddb",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.8",
+      "lambda2": "1",
+      "loose": "0.1",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|dSPM|sub-03": {
+    "configuration_key": "17b56c970a376ecf0e6d",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.9",
+      "lambda2": "1",
+      "loose": "0.4",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|dSPM|sub-04": {
+    "configuration_key": "5c2078d9a8b199247fc2",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.2",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|dSPM|sub-05": {
+    "configuration_key": "6c1766f31b0a77dde281",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.8",
+      "lambda2": "1",
+      "loose": "0.1",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|dSPM|sub-06": {
+    "configuration_key": "66811e4fe806a5afef71",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.6",
+      "lambda2": "0.25",
+      "loose": "0.6",
+      "method_origin": "author",
+      "montage": "32",
+      "snr": "2",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|dSPM|sub-07": {
+    "configuration_key": "77cc73a769a0cbada7e4",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.4",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|sLORETA|sub-01": {
+    "configuration_key": "689ded7e3a5af9c14584",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.8",
+      "lambda2": "1",
+      "loose": "0.7",
+      "method_origin": "extension",
+      "montage": "32",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|sLORETA|sub-02": {
+    "configuration_key": "0fa2f37cec85840c647d",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.6",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "extension",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|sLORETA|sub-03": {
+    "configuration_key": "07a300da5ff29bf02947",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.2",
+      "lambda2": "1",
+      "loose": "0.6",
+      "method_origin": "extension",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|sLORETA|sub-04": {
+    "configuration_key": "31c9d34b33e76853b806",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.6",
+      "lambda2": "1",
+      "loose": "0.1",
+      "method_origin": "extension",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|sLORETA|sub-05": {
+    "configuration_key": "9df86857ff5a7fb7cd1d",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "1",
+      "lambda2": "1",
+      "loose": "0.5",
+      "method_origin": "extension",
+      "montage": "32",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|sLORETA|sub-06": {
+    "configuration_key": "0482a229b7fe96fd657b",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.2",
+      "lambda2": "1",
+      "loose": "0.6",
+      "method_origin": "extension",
+      "montage": "32",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|sLORETA|sub-07": {
+    "configuration_key": "24c4b41180452124a189",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.5",
+      "lambda2": "0.111111111111",
+      "loose": "1",
+      "method_origin": "extension",
+      "montage": "64",
+      "snr": "3",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|eLORETA|sub-01": {
+    "configuration_key": "02dbe71112f644c427fa",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.1",
+      "lambda2": "1",
+      "loose": "0.1",
+      "method_origin": "author",
+      "montage": "32",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|eLORETA|sub-02": {
+    "configuration_key": "090fb759c8cc822f2815",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.7",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "128",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|eLORETA|sub-03": {
+    "configuration_key": "0772908d0dd787152951",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.3",
+      "lambda2": "0.25",
+      "loose": "0.1",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "2",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|eLORETA|sub-04": {
+    "configuration_key": "024fb308420491ba71c7",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.7",
+      "lambda2": "1",
+      "loose": "0.8",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|eLORETA|sub-05": {
+    "configuration_key": "1ee27567258f45e2518d",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.9",
+      "lambda2": "0.25",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "32",
+      "snr": "2",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|eLORETA|sub-06": {
+    "configuration_key": "216a06d25ffbf39b653b",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.2",
+      "lambda2": "1",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "32",
+      "snr": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|eLORETA|sub-07": {
+    "configuration_key": "0ee159dc01a21edef057",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "depth": "0.8",
+      "lambda2": "0.111111111111",
+      "loose": "1",
+      "method_origin": "author",
+      "montage": "64",
+      "snr": "3",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Continuous-ECD|sub-01": {
+    "configuration_key": "5eb9efbdbb1ada24b4ea",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_15",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "15",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Continuous-ECD|sub-02": {
+    "configuration_key": "3633ad1a92ea35c25f8d",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_15",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "15",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Continuous-ECD|sub-03": {
+    "configuration_key": "30eb430b3a6ff3b736c3",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_7.5",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "7.5",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Continuous-ECD|sub-04": {
+    "configuration_key": "3633ad1a92ea35c25f8d",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_15",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "15",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Continuous-ECD|sub-05": {
+    "configuration_key": "b0fc63a7e70ed4b0dd0c",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_7.5",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "7.5",
+      "montage": "64",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Continuous-ECD|sub-06": {
+    "configuration_key": "cc3aa0d9a98c2a06e822",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_5",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "5",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Continuous-ECD|sub-07": {
+    "configuration_key": "0e2e7bf9a251a3ac6f7f",
+    "parameters": {
+      "configuration_id": "ecd_min_dist_10",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "ecd_min_dist_mm": "10",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|RAP-MUSIC|sub-01": {
+    "configuration_key": "722c0e23ec547ebd84cc",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|RAP-MUSIC|sub-02": {
+    "configuration_key": "cd9506cbcaae77385bae",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|RAP-MUSIC|sub-03": {
+    "configuration_key": "722c0e23ec547ebd84cc",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|RAP-MUSIC|sub-04": {
+    "configuration_key": "722c0e23ec547ebd84cc",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|RAP-MUSIC|sub-05": {
+    "configuration_key": "21358ab895a6a2c3085f",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|RAP-MUSIC|sub-06": {
+    "configuration_key": "21358ab895a6a2c3085f",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|RAP-MUSIC|sub-07": {
+    "configuration_key": "21358ab895a6a2c3085f",
+    "parameters": {
+      "configuration_id": "rap_music_n1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "rap_music_n_dipoles": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|LCMV|sub-01": {
+    "configuration_key": "1c68f6ca28ccb98a08c7",
+    "parameters": {
+      "configuration_id": "lcmv_r0.01_w10_diagonal_fixed",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "diagonal_fixed",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.01",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "10",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|LCMV|sub-02": {
+    "configuration_key": "40296249175631f78527",
+    "parameters": {
+      "configuration_id": "lcmv_r0.01_w5_empirical",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "empirical",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.01",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "5",
+      "montage": "all_good",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|LCMV|sub-03": {
+    "configuration_key": "1eff97454cbd9ac9f00c",
+    "parameters": {
+      "configuration_id": "lcmv_r0.05_w10_diagonal_fixed",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "diagonal_fixed",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.05",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "10",
+      "montage": "64",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|LCMV|sub-04": {
+    "configuration_key": "4a580689f60b39b2ab67",
+    "parameters": {
+      "configuration_id": "lcmv_r0.2_w5_empirical",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "empirical",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.2",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "5",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|LCMV|sub-05": {
+    "configuration_key": "556422affe8a5e130cc9",
+    "parameters": {
+      "configuration_id": "lcmv_r0.1_w5_shrunk",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "shrunk",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.1",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "5",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|LCMV|sub-06": {
+    "configuration_key": "de8c232d17b736fb79ef",
+    "parameters": {
+      "configuration_id": "lcmv_r0.2_w10_diagonal_fixed",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "diagonal_fixed",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.2",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "10",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|LCMV|sub-07": {
+    "configuration_key": "458b8f9e8c33eb17572a",
+    "parameters": {
+      "configuration_id": "lcmv_r0.05_w10_empirical",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "lcmv_data_covariance_method": "empirical",
+      "lcmv_pick_ori": "max-power",
+      "lcmv_reduce_rank": "true",
+      "lcmv_reg": "0.05",
+      "lcmv_weight_norm": "unit-noise-gain-invariant",
+      "lcmv_window_half_ms": "10",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MxNE|sub-01": {
+    "configuration_key": "95a271e4b148fcc9cc31",
+    "parameters": {
+      "configuration_id": "mxne_a35_l0.1_d0.9",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "mxne_alpha": "35",
+      "mxne_depth": "0.9",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MxNE|sub-02": {
+    "configuration_key": "49b9fdcacc5190b833e3",
+    "parameters": {
+      "configuration_id": "mxne_a35_l0.7_d0.1",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "mxne_alpha": "35",
+      "mxne_depth": "0.1",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.7",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MxNE|sub-03": {
+    "configuration_key": "6197ed11087a1d544d40",
+    "parameters": {
+      "configuration_id": "mxne_a25_l0.3_d1.0",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "mxne_alpha": "25",
+      "mxne_depth": "1",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.3",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MxNE|sub-04": {
+    "configuration_key": "f3dd64b18f0b63938750",
+    "parameters": {
+      "configuration_id": "mxne_a35_l1.0_d1.0",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "64",
+      "mxne_alpha": "35",
+      "mxne_depth": "1",
+      "mxne_iterations": "1",
+      "mxne_loose": "1",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MxNE|sub-05": {
+    "configuration_key": "8d62221683127aa19702",
+    "parameters": {
+      "configuration_id": "mxne_a25_l0.9_d1.0",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "mxne_alpha": "25",
+      "mxne_depth": "1",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.9",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MxNE|sub-06": {
+    "configuration_key": "98c12eb1357a536513b6",
+    "parameters": {
+      "configuration_id": "mxne_a25_l0.3_d0.7",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "mxne_alpha": "25",
+      "mxne_depth": "0.7",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.3",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|MxNE|sub-07": {
+    "configuration_key": "2dc7765b20703d7011b1",
+    "parameters": {
+      "configuration_id": "mxne_a25_l0.2_d0.4",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "mxne_alpha": "25",
+      "mxne_depth": "0.4",
+      "mxne_iterations": "1",
+      "mxne_loose": "0.2",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|irMxNE|sub-01": {
+    "configuration_key": "2c602b6d5690b7adb6af",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "30",
+      "irmxne_depth": "0.9",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.5",
+      "irmxne_random_state": "0",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|irMxNE|sub-02": {
+    "configuration_key": "a0b2b539a3d47f14a6b5",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "30",
+      "irmxne_depth": "0.1",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.8",
+      "irmxne_random_state": "0",
+      "montage": "all_good",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|irMxNE|sub-03": {
+    "configuration_key": "e0e9ebdd222908a85fe3",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "35",
+      "irmxne_depth": "0.9",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.8",
+      "irmxne_random_state": "0",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|irMxNE|sub-04": {
+    "configuration_key": "e9546019c28dccc013cc",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "25",
+      "irmxne_depth": "0.8",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "1",
+      "irmxne_random_state": "0",
+      "montage": "64",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|irMxNE|sub-05": {
+    "configuration_key": "01c85285ad6dac91a2ee",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "30",
+      "irmxne_depth": "1",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.7",
+      "irmxne_random_state": "0",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|irMxNE|sub-06": {
+    "configuration_key": "2f1439cfce950bb56c1f",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "20",
+      "irmxne_depth": "0.8",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.8",
+      "irmxne_random_state": "0",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|irMxNE|sub-07": {
+    "configuration_key": "07cfd602333ff7971e13",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "irmxne_alpha": "15",
+      "irmxne_depth": "0.6",
+      "irmxne_iterations": "10",
+      "irmxne_loose": "0.7",
+      "irmxne_random_state": "0",
+      "montage": "all_good",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Gamma-MAP|sub-01": {
+    "configuration_key": "873682b6dc1522dca481",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.25",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.5",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Gamma-MAP|sub-02": {
+    "configuration_key": "d61f68483aef43412a4c",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.7",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.7",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "128",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Gamma-MAP|sub-03": {
+    "configuration_key": "813e2f32f9193ab240ab",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.25",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.5",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "64",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Gamma-MAP|sub-04": {
+    "configuration_key": "1875255bebf09b617c94",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.2",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.7",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "all_good",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Gamma-MAP|sub-05": {
+    "configuration_key": "0c0f0cd781cf3aba5d1b",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.35",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.5",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "64",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Gamma-MAP|sub-06": {
+    "configuration_key": "0b7093830fa0b8114c4c",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.2",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.3",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "64",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Gamma-MAP|sub-07": {
+    "configuration_key": "3f4fba4931499272ed81",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "gamma_alpha": "0.5",
+      "gamma_depth": "0.5",
+      "gamma_loose": "0.7",
+      "gamma_maxit": "2000",
+      "gamma_tol": "0.0001",
+      "gamma_update_mode": "1",
+      "gamma_xyz_same_gamma": "true",
+      "montage": "all_good",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Champagne|sub-01": {
+    "configuration_key": "1a79c2221b8ed2256de5",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.01",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Champagne|sub-02": {
+    "configuration_key": "4d07591ea47e84c98298",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.001",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "64",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Champagne|sub-03": {
+    "configuration_key": "791bff44a8fbc6492ce6",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.05",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "64",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Champagne|sub-04": {
+    "configuration_key": "f3b023b1d9b9bc46cdc4",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.001",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Champagne|sub-05": {
+    "configuration_key": "db24f7d648c01f31d59a",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.0001",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Champagne|sub-06": {
+    "configuration_key": "188a3724d2a1d9c74cc5",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.005",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|Champagne|sub-07": {
+    "configuration_key": "188a3724d2a1d9c74cc5",
+    "parameters": {
+      "champagne_alpha": "auto",
+      "champagne_convergence_criterion": "1e-08",
+      "champagne_max_iter": "2000",
+      "champagne_prune": "true",
+      "champagne_pruning_thresh": "0.005",
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|SESAME|sub-01": {
+    "configuration_key": "36d3b60856938086c6a0",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "128",
+      "sesame_fs": "0.12",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|SESAME|sub-02": {
+    "configuration_key": "9bd949852efb81dc8a37",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "sesame_fs": "0.15",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|SESAME|sub-03": {
+    "configuration_key": "37b31e367479559d449e",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "sesame_fs": "0.18",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|SESAME|sub-04": {
+    "configuration_key": "e04b924796484249bfba",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "64",
+      "sesame_fs": "0.03",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|SESAME|sub-05": {
+    "configuration_key": "0b4288a61ee1bdc6d432",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "all_good",
+      "sesame_fs": "0.09",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|SESAME|sub-06": {
+    "configuration_key": "d25c11f5658ba0457731",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "32",
+      "sesame_fs": "0.03",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  },
+  "Single-reference|SESAME|sub-07": {
+    "configuration_key": "e04b924796484249bfba",
+    "parameters": {
+      "covariance_tmax_s": -0.05,
+      "covariance_tmin_s": -0.25,
+      "montage": "64",
+      "sesame_fs": "0.03",
+      "sesame_hyper_q": "true",
+      "sesame_lam": "0.25",
+      "sesame_max_n_dips": "1",
+      "sesame_n_parts": "100",
+      "sesame_random_seed": "0",
+      "target_tmax_s": 0.002,
+      "target_tmin_s": -0.002
+    }
+  }
+}

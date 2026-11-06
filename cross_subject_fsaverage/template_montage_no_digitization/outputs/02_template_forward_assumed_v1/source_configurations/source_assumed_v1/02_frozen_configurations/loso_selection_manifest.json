@@ -1,0 +1,42 @@
+{
+  "status": "COMPLETE",
+  "source_root": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_no_warp/source/02_parameter_grids",
+  "reliability": "primary-all-pass",
+  "expected_selections": 84,
+  "actual_selections": 84,
+  "score": "mean of six training-participant medians",
+  "tie_breaks": [
+    "pooled median",
+    "pooled mean",
+    "configuration key"
+  ],
+  "source_manifest_sha256": "7770dd644ac61b41cb5da3a5568ad517674ff063c4bbf3914a35bb9284c052a0",
+  "script_sha256": "bf5eb32a9dd3024a4854038f02a922bfe9b2778204098458bcb17769ca626316",
+  "selected_parameters_sha256": "77369c7a046e55fad23e2b13590c4106c7f0868e9abae63430e261dc6f0e02d5",
+  "test_outcomes_used": false,
+  "selection_geometry": "prior within-subject grid metric",
+  "peak_policy": "inherited from prior grids; verify hemisphere restriction before reconstruction",
+  "parameter_use": "same fold configuration for within and single-reference localization",
+  "error_column_overrides": {},
+  "allowed_experiments": {
+    "irMxNE": [
+      "23_full_next_method_grid",
+      "23_irmxne_alpha15_extension",
+      "23_irmxne_alpha20_extension"
+    ],
+    "Gamma-MAP": [
+      "23_full_next_method_grid",
+      "23_gamma_alpha_extension",
+      "23_gamma_alpha_low_extension",
+      "23_gamma_xyz_true"
+    ],
+    "Champagne": [
+      "23_champagne_pruning_extension",
+      "23_full_next_method_grid"
+    ],
+    "SESAME": [
+      "23_full_next_method_grid",
+      "23_sesame_fs_extension"
+    ]
+  }
+}

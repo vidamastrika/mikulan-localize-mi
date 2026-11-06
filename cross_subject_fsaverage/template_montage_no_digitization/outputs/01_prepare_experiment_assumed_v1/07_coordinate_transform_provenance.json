@@ -1,0 +1,111 @@
+{
+  "source_frame": "MNE template native unknown frame",
+  "source_units": "metres after fixed MNE auto normalization",
+  "mapping_policy": "documented-assumption",
+  "mapping_status": "ASSUMED_UNVERIFIED",
+  "native_to_head": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.9860038757324219,
+      0.16672228276729584,
+      0.0017765370627332855
+    ],
+    [
+      0.0,
+      -0.16672228276729584,
+      0.9860038757324219,
+      0.03745483643658691
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "head_to_fsaverage_mri": [
+    [
+      0.9999938011169434,
+      -0.003557611256837845,
+      -5.701684813175234e-07,
+      0.0018733639735728502
+    ],
+    [
+      0.0035518724471330643,
+      0.9983890652656555,
+      -0.05662653595209122,
+      -0.028795761987566948
+    ],
+    [
+      0.0002020396786974743,
+      0.056625932455062866,
+      0.9983953833580017,
+      -0.04129410162568092
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "native_to_fsaverage_mri": [
+    [
+      0.9999938011169434,
+      -0.0035077234278006403,
+      -0.0005936952582710335,
+      0.0018670223897530717
+    ],
+    [
+      0.0035518724471330643,
+      0.9938563931799432,
+      0.11061972013293353,
+      -0.029143024452150956
+    ],
+    [
+      0.0002020396786974743,
+      -0.11062136855012117,
+      0.9938625222270816,
+      -0.0037987677752452306
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "scalp_file_units": "FreeSurfer surface RAS mm; divided by 1000 for comparisons",
+  "template_fiducial_origin": "resource FidNz/FidT9/FidT10, documentary interpretation required",
+  "transform_policy": "template fiducial coordinate definition + predefined fsaverage transform; no subject registration",
+  "individual_subject_geometry_used": false,
+  "optimized_parameters": [],
+  "projection_or_scaling_search": false,
+  "mne_template_scaling": "head_size=auto; fixed 0.095m spherical convention; not a physical unit conversion",
+  "distance_metric": "nearest scalp vertex (upper bound on triangle-surface distance)",
+  "median_scalp_distance_mm": 6.82742970729555,
+  "p95_scalp_distance_mm": 14.897398360485424,
+  "max_scalp_distance_mm": 16.50165593492252,
+  "gates": {
+    "median_mm": 10.0,
+    "p95_mm": 20.0,
+    "rigidity_tolerance": 1e-05
+  },
+  "fiducial_residuals_mm": {
+    "nasion": 12.544866834949138,
+    "lpa": 5.008983412864837,
+    "rpa": 5.008988561570303
+  },
+  "fiducial_acceptance": "reported for independent review; no fitted landmark residual minimization",
+  "local_normal_offset_min_mm": -16.480465590445554,
+  "local_normal_offset_max_mm": 15.162244195905128,
+  "negative_local_normal_offsets": 191,
+  "numerical_status": "PASS_NUMERICAL_REVIEW_REQUIRED",
+  "surface_topology_signed_distance_not_verified": true
+}

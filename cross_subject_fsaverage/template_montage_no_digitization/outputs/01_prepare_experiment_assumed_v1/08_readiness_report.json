@@ -1,0 +1,15 @@
+{
+  "status": "EXPLORATORY_NUMERICAL_REVIEW_REQUIRED",
+  "blockers": [],
+  "mapping_policy": "documented-assumption",
+  "assumption_record_accepted": true,
+  "uncertainties": [
+    "Exact acquisition/export row-to-physical-sensor correspondence is assumed, not verified.",
+    "Fixed template normalization and fiducial placement remain modeling assumptions."
+  ],
+  "independent_channel_mapping_validated": false,
+  "geometry_evaluated": true,
+  "scientific_anatomical_validity_established": false,
+  "forward_modeling_authorized": false,
+  "next_step": "Review Script01 evidence and geometry before separately implementing Script02; no forward work is executed here."
+}

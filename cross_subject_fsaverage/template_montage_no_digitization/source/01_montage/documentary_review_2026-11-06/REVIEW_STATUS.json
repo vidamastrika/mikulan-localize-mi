@@ -1,0 +1,71 @@
+{
+  "reviewed_utc": "2026-11-06T05:00:29.787967+00:00",
+  "status": "PARTIAL_DOCUMENTARY_VERIFICATION_STILL_BLOCKED",
+  "candidate_supported": "GSN-HydroCel-256",
+  "mapping_validated": false,
+  "geometry_executed": false,
+  "script01_reexecuted": false,
+  "script02_implemented": false,
+  "old_audit_modified": false,
+  "confirmed": [
+    "Original paper identifies HydroCel CleanLeads 256-channel acquisition.",
+    "Public importer labels the EEG rows e1 through e256 without an explicit reordering operation.",
+    "All 61 local channels.tsv metadata files contain exactly the ordered e1 through e256 labels.",
+    "Installed MNE label/coordinate records match the EGI-origin FieldTrip HydroCel resource exactly.",
+    "MNE parser consumes FidNz/FidT9/FidT10 as nasion/LPA/RPA and uses explicit standard normalization."
+  ],
+  "unresolved": [
+    "Dataset custom C++/MATLAB acquisition exporter row-to-physical-sensor mapping is not established by the public Python importer alone.",
+    "The current vendor adult template is not byte/record identical to the installed MNE template; lineage supports family, not interchangeability.",
+    "Appropriateness of fixed 95-mm normalization and fiducial placement for fsaverage requires a declared model assumption and geometry review, not documentary facts alone."
+  ],
+  "metadata_records": 61,
+  "metadata_all_expected_labels": true,
+  "resource_comparison": {
+    "installed_mne_sha256": "63d3de763f3bd36bb9096989a828068edcb60fea81607ddb96022d3bd2126e1c",
+    "fieldtrip_normalized_snapshot_sha256": "63d3de763f3bd36bb9096989a828068edcb60fea81607ddb96022d3bd2126e1c",
+    "identical_label_coordinate_records": true,
+    "mne_record_count": 259,
+    "fieldtrip_record_count": 259,
+    "vendor_record_count": 260,
+    "vendor_raw_sha256": "bf7e2ae893e2dd70c4241c9aa7c81ceb126fc43cff41973d0dc11554c0d22194",
+    "vendor_only_labels": [
+      "Cz"
+    ],
+    "mne_only_labels": [],
+    "exact_text_coordinate_records_equal_to_current_vendor": 0,
+    "common_label_count": 259,
+    "comparison_scope": "Static label/text-record comparison only; no geometric fit or scaling comparison"
+  },
+  "sources": {
+    "dataset_paper": "https://www.nature.com/articles/s41597-020-0467-x",
+    "author_importer": "https://github.com/iTCf/mikulan_et_al_2020/blob/master/fx_preprocess.py",
+    "author_BIDS_export": "https://github.com/iTCf/mikulan_et_al_2020/blob/master/fx_bids.py",
+    "author_repository_scope": "https://github.com/iTCf/mikulan_et_al_2020",
+    "fieldtrip_template_origin": "https://www.fieldtriptoolbox.org/template/electrode/",
+    "fieldtrip_raw_resource": "https://github.com/fieldtrip/fieldtrip/blob/master/template/electrode/GSN-HydroCel-256.sfp",
+    "vendor_template_download_page": "https://www.magstim.com/3d-sensor-position-files-for-visualizing-data-in-third-party-software/",
+    "vendor_adult_archive": "https://www.egi.com/images/kb/Sensor_Position_.sfp_files/GS_3_.sfp/AdultAverageNet256_v1.sfp.zip",
+    "vendor_coordinate_convention": "https://www.egi.com/knowledge-center/item/93-what-sensor-coordinate-system-do-net-station-and-geosource-3-1-research-use",
+    "vendor_sensor_map": "https://www.egi.com/images/stories/manuals/Printed%20IFUs%20with%20New%20Notified%20Body/HC_GSN_channel_map_256_8403487-54_20181207.pdf",
+    "vendor_sensor_average_technical_note": "https://www.egi.com/images/HydroCelGSN_10-10.pdf",
+    "vendor_SDK_guide": "https://www.egi.com/images/stories/placards/ASProSDK_v21_ugid_8409500-57_20181029.pdf",
+    "MNE_versioned_montage_docs": "https://mne.tools/1.12/generated/mne.channels.make_standard_montage.html",
+    "BESA_sfp_format": "https://wiki.besa.de/index.php?title=Working_With_Additional_Files"
+  },
+  "artifact_hashes": {
+    "REVIEW.md": "0fea4eabac33e18bcfbadafe23d653989ebcbc4205bd7ec249b71d5e9a466af9",
+    "channel_identity_metadata_audit.csv": "764c14faafa7f2cf1a0fd3f1515b7edb20a2bb090e3699c73d41e1bd95794112",
+    "AUTHOR_CONFIRMATION_REQUEST.md": "86edc0730dd4badce725ca79808bff4cb2abd49ac4b386aec1ffa64c9893bb38",
+    "external/AdultAverageNet256_v1.sfp": "bf7e2ae893e2dd70c4241c9aa7c81ceb126fc43cff41973d0dc11554c0d22194",
+    "external/AdultAverageNet256_v1.sfp.zip": "26562783150af238e9564d8e4c7709e5610bc23791e914cac58d4949a89133c4",
+    "external/fieldtrip_GSN-HydroCel-256_records.sfp": "63d3de763f3bd36bb9096989a828068edcb60fea81607ddb96022d3bd2126e1c"
+  },
+  "local_source_hashes": {
+    "fx_preprocess.py": "c3c32cde6feb8a0fbd83d8d56ac19b8c3753cf4ea1080123d0414218cbf30b46",
+    "fx_bids.py": "aed30071bde21cd8919ea4584ec20cd54fc347a23e60f67e1d672490d4117a35",
+    "README.md": "0e599a95f08663b468588cfba21de96bb8950603b9535ee11007328483db423d",
+    ".venv/lib/python3.14/site-packages/mne/channels/_standard_montage_utils.py": "9e9b535bdc21d49abc0470427f7467378e050ce2ff1742e4aa5d5035a806cffe",
+    ".venv/lib/python3.14/site-packages/mne/channels/montage.py": "8b2a7af11989731998cae4b553780405fc7edbe91201f9a77b2a86e64409ae5f"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "audit_type": "static_source_inspection_only",
+  "mne_version": "1.12.1",
+  "source_path": "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/forward/_compute_forward.py",
+  "source_sha256": "a1c36cd6592be7c61ece9a31c91fdba205e5d91cc3e364fb66954486eddebfce",
+  "function": "_bem_specify_els",
+  "source_lines": "230-266",
+  "finding": "MRI-transformed EEG integration-point coordinates are projected onto BEM scalp to obtain interpolation weights.",
+  "forward_computation_executed": false,
+  "input_coordinates_modified": false,
+  "original_review_report_sha256": "22e1d11b9993434aa5d10e4be8a5346136a7ae97cc048f3f9b0aecc82c0d0814"
+}

@@ -1,0 +1,558 @@
+#!/usr/bin/env python3
+# RESEARCH OBJECTIVE
+# Prepare Localize-MI localization with fsaverage anatomy and a documented template
+# EEG cap, assuming only test EEG and channel identities are available. Individual
+# MRI, digitization, individual rigid/ICP fitting, affine/SyN registration and
+# stimulation outcomes must never determine template selection or geometry.
+#
+# SCOPE / ASSUMPTIONS
+# Script 01 ONLY: schedule/configuration freezing and template QA. It does not read
+# EEG samples, participant forwards, participant anatomy/transforms, contacts or
+# localization results. It does not preprocess, compute forwards or run inverses.
+# Channel labels alone are insufficient evidence of physical electrode identity.
+# Historical parameter selections transfer unchanged; their scores are provenance,
+# not input to montage selection. Geometry QA is performed only after independent
+# documentary channel correspondence and template conventions have been validated.
+#
+# INPUTS (read-only; defaults relative to repository root)
+# cross_subject_fsaverage/outputs/01_prepare_experiment/source_configurations/:
+#   test_runs.csv (61), loso_folds.csv (7), single_schedule.csv (366),
+#   loso_selection.csv (84), single_selection.csv (84), selection manifests.
+# cross_subject_fsaverage/outputs/05_reconstruct_sub03_exploratory/:
+#   05_resolved_configurations.json (168 resolved parameter records; no estimates).
+# Frozen no-warp solver helpers and preprocessing/channel-policy source code.
+# MNE installed standard-montage resources; local fsaverage scalp/fiducials/trans.
+# Optional --mapping-evidence: independently reviewed evidence JSON + full mapping
+# CSV and documentary files (schema in source/01_montage/README.md).
+#
+# OUTPUTS (all NEW files within this variant; originals remain read-only)
+# source/01_montage/: raw candidate resources and parser snapshots; evidence copies;
+#   validated template coordinates/subsets ONLY if documentary validation succeeds.
+# source/02_frozen_configurations/: byte-exact configuration/code snapshots + hashes.
+# outputs/01_prepare_experiment/: 01_experiment_manifest.json,
+#   02_planned_reconstruction_schedule.csv, 03_frozen_configuration_inventory.csv,
+#   04_template_montage_availability.csv, 05_channel_mapping_validation.csv,
+#   08_readiness_report.json, README.md; ONLY with validated mapping:
+#   06_sensor_scalp_geometry_qa.csv, 07_coordinate_transform_provenance.json,
+#   09_fiducial_alignment_qa.csv. Geometry failures are reported, not repaired.
+#
+# PARAMETERS / VALIDATION
+# --montage-kind defaults to GSN-HydroCel-256 (candidate, never assumed valid).
+# --fsaverage-root defaults to ~/mne_data/MNE-fsaverage-data/fsaverage.
+# --frozen-design-root and --resolved-configurations override frozen design inputs.
+# --mapping-evidence is optional; absence yields BLOCKED, with reports still written.
+# --output-root defaults to this variant's outputs/01_prepare_experiment; it must
+# be empty/new. --source-root defaults to this variant's source. Both must remain
+# strictly inside this variant. Existing files are never overwritten. No downloads.
+# Seven subjects, 61 runs, 12 methods, 732 LOSO + 4,392 Single Reference = 5,124
+# evaluations; these are NOT 5,124 distinct forward computations.
+# Exact keys, reference identities, training exclusions, configuration keys and
+# recorded parameters/windows are validated; missing settings are never inferred.
+# Explicit one-to-one e1..e256 correspondence and documentary review are required.
+# No fsaverage_1005 nearest-neighbour relabeling; no outcome-based choice.
+# Fixed MNE head_size='auto' uses the predefined 95-mm normalization for spherical
+# caps. This is NOT a unit conversion or a fit; no scale search or projection runs.
+# Its scientific appropriateness and fiducial interpretation require evidence.
+# Template-native->HEAD uses only template fiducials. HEAD->fsaverage MRI uses
+# the supplied fsaverage predefined transform, never a test-subject transform.
+# Nearest scalp-VERTEX distances are upper bounds on triangle-surface distances.
+# Existing fsaverage numerical gates remain median <=10 mm, p95 <=20 mm;
+# no thresholds are relaxed and numerical PASS still requires scientific review.
+#
+# DEPENDENCIES
+# Python >=3.10, NumPy, pandas, SciPy, MNE; local frozen files and fsaverage assets.
+# Geometry inspection reads only template/fsaverage assets and uses a KD tree;
+# no BEM/forward construction, registration optimization or inverse fit is called.
+#
+# COMPLETE TERMINAL EXAMPLES (repository root; run manually after review)
+# .venv/bin/python cross_subject_fsaverage/template_montage_no_digitization/scripts/01_prepare_experiment.py
+# With independently reviewed evidence (see schema):
+# .venv/bin/python cross_subject_fsaverage/template_montage_no_digitization/scripts/01_prepare_experiment.py \
+#   --mapping-evidence /absolute/path/to/evidence.json \
+#   --source-root cross_subject_fsaverage/template_montage_no_digitization/source_reviewed \
+#   --output-root cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_reviewed
+# Exit codes: 0 preparation numerically ready (review required); 3 scientific/input
+# BLOCKED with reports; 2 invalid CLI/protected/existing output path. Never delete
+# or bypass a frozen manifest to retry. Use new source/output roots on later runs.
+"""Prepare a separate template-montage experiment; default to blocked without evidence."""
+from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import importlib.metadata
+import json
+from pathlib import Path
+import shutil
+import sys
+
+import numpy as np
+import pandas as pd
+
+VARIANT = Path(__file__).resolve().parents[1]
+ROOT = VARIANT.parents[1]
+FS = ROOT / 'cross_subject_fsaverage'
+NW = ROOT / 'cross_subject_no_warp'
+SUBJECTS = [f'sub-{i:02d}' for i in range(1, 8)]
+METHODS = ['MNE', 'dSPM', 'sLORETA', 'eLORETA', 'Continuous-ECD', 'RAP-MUSIC',
+           'LCMV', 'MxNE', 'irMxNE', 'Gamma-MAP', 'Champagne', 'SESAME']
+CHANNELS = [f'e{i}' for i in range(1, 257)]
+KEY = ['strategy', 'method', 'reference_subject', 'test_subject', 'run']
+WINDOWS = dict(covariance_tmin_s=-.250, covariance_tmax_s=-.050,
+               target_tmin_s=-.002, target_tmax_s=.002)
+SNAPSHOT_NAMES = ['test_runs.csv', 'loso_folds.csv', 'single_schedule.csv',
+                  'loso_selection.csv', 'single_selection.csv',
+                  'loso_selection_manifest.json', 'single_selection_manifest.json']
+DOC_ROLES = {'dataset_net_and_numbering', 'template_numbering',
+             'fiducial_coordinate_convention', 'template_unit_scaling'}
+REQUIRED_SETTINGS = {
+    **{m:['loose','depth','snr','lambda2'] for m in METHODS[:4]},
+    'Continuous-ECD':['ecd_min_dist_mm'], 'RAP-MUSIC':['rap_music_n_dipoles'],
+    'LCMV':['lcmv_reg','lcmv_window_half_ms','lcmv_pick_ori','lcmv_weight_norm'],
+    'MxNE':['mxne_alpha','mxne_loose','mxne_depth'],
+    'irMxNE':['irmxne_alpha','irmxne_loose','irmxne_depth','irmxne_iterations','irmxne_random_state'],
+    'Gamma-MAP':['gamma_alpha','gamma_loose','gamma_depth','gamma_xyz_same_gamma','gamma_update_mode','gamma_maxit','gamma_tol'],
+    'Champagne':['champagne_alpha','champagne_prune','champagne_pruning_thresh','champagne_convergence_criterion','champagne_max_iter'],
+    'SESAME':['sesame_fs','sesame_n_parts','sesame_max_n_dips','sesame_lam','sesame_hyper_q','sesame_random_seed'],
+}
+
+
+def require(ok, message):
+    if not ok:
+        raise ValueError(message)
+
+
+def sha(path):
+    h = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(1024*1024), b''):
+            h.update(block)
+    return h.hexdigest()
+
+
+def write_json(path, obj):
+    with Path(path).open('x') as stream:
+        json.dump(obj, stream, indent=2, allow_nan=False)
+        stream.write('\n')
+
+
+def snapshot(path, destination, inventory, role):
+    path = Path(path).resolve()
+    expected = sha(path)
+    require(not destination.exists(), f'Refusing to replace snapshot: {destination}')
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(path, destination)
+    require(sha(destination) == expected and sha(path) == expected, f'Input changed during snapshot: {path}')
+    inventory.append(dict(role=role, original_path=str(path), copy_path=str(destination),
+                          sha256=expected, size_bytes=path.stat().st_size))
+    return destination
+
+
+def exact(frame, columns, expected, label):
+    require(set(columns) <= set(frame), f'{label}: missing columns')
+    require(not frame.duplicated(columns).any(), f'{label}: duplicate identities')
+    actual = set(map(tuple, frame[columns].itertuples(index=False, name=None)))
+    require(actual == expected and len(frame) == len(expected), f'{label}: identities differ from design')
+
+
+def freeze_design(args, source, inventory):
+    frozen = source / '02_frozen_configurations'
+    for name in SNAPSHOT_NAMES:
+        snapshot(args.frozen_design_root / name, frozen / name, inventory, 'frozen_design')
+    resolved_path = snapshot(args.resolved_configurations, frozen / 'resolved_configurations.json',
+                             inventory, 'fully_resolved_inverse_settings')
+    snapshot(args.frozen_design_root.parent/'02_fsaverage_reconstruction_plan.csv',
+             frozen/'original_fsaverage_job_schedule.csv',inventory,'original_job_identities')
+    # Snapshot policy definitions, not participant geometry or old outcomes.
+    for path in [NW/'scripts/03_run_localization.py', ROOT/'src/localize_mi/io.py',
+                 NW/'source/03_solver_code/scripts/09_full_parameter_grid.py',
+                 NW/'source/03_solver_code/src/localize_mi/io.py',
+                 NW/'source/03_solver_code/src/localize_mi/inverse.py',
+                 NW/'source/03_solver_code/scripts/19_next_method_pilot.py']:
+        snapshot(path, frozen/'policy_code'/path.relative_to(ROOT), inventory, 'policy_reference_only_do_not_execute_loader')
+    read = lambda name: pd.read_csv(frozen / name, dtype=str, keep_default_na=False)
+    runs, folds, single_schedule = [read(n) for n in ['test_runs.csv','loso_folds.csv','single_schedule.csv']]
+    run_keys = set(zip(runs.test_subject, runs.run))
+    require(len(runs) == len(run_keys) == 61 and set(runs.test_subject) == set(SUBJECTS), 'Expected seven subjects and 61 runs')
+    require(runs.groupby('test_subject').size().to_dict()==dict(zip(SUBJECTS,[11,6,7,9,14,7,7])), 'Per-subject run counts differ from Localize-MI frozen design')
+    require(not runs.duplicated(['test_subject','run']).any(), 'Duplicate test runs')
+    exact(folds, ['test_subject'], {(s,) for s in SUBJECTS}, 'LOSO folds')
+    for row in folds.itertuples():
+        require(set(row.training_subjects.split(';')) == set(SUBJECTS)-{row.test_subject}, 'LOSO training leakage/missing subject')
+        require(row.reference_subject in set(SUBJECTS)-{row.test_subject}, 'Invalid LOSO reference')
+        require(runs.loc[runs.test_subject.eq(row.test_subject),'reference_subject'].eq(row.reference_subject).all(), 'LOSO run/fold reference mismatch')
+    expected_single = {(ref,test,run) for test,run in run_keys for ref in SUBJECTS if ref != test}
+    exact(single_schedule, ['reference_subject','test_subject','run'], expected_single, 'Single Reference schedule')
+    resolved = json.loads(resolved_path.read_text())
+    expected_resolved = set()
+    selections = {}
+    for strategy, name, owner in [('LOSO','loso_selection.csv','test_subject'),
+                                   ('Single-reference','single_selection.csv','reference_subject')]:
+        selected = read(name)
+        exact(selected, ['method',owner], {(m,s) for m in METHODS for s in SUBJECTS}, strategy)
+        require(selected.selection_status.eq('SELECTED').all(), f'{strategy}: unselected configuration')
+        for row in selected.to_dict('records'):
+            subject = row[owner]
+            selection_json = json.loads(row['configuration_parameters'])
+            if strategy == 'LOSO':
+                require(set(row['training_subjects'].split(';')) == set(SUBJECTS)-{subject}, 'Selection training set mismatch')
+                require(row['reference_subject'] == folds.set_index('test_subject').loc[subject,'reference_subject'], 'Selection reference differs from fold')
+            else:
+                require(row['training_subjects']==subject, 'Single Reference selection must use only its reference subject')
+            key = f'{strategy}|{row["method"]}|{subject}'
+            expected_resolved.add(key)
+            cfg = resolved[key]
+            require(cfg['configuration_key'] == row['configuration_key'], f'{key}: changed configuration key')
+            parameters = cfg['parameters']
+            require(set(REQUIRED_SETTINGS[row['method']]) <= set(parameters), f'{key}: incomplete resolved method settings')
+            require(set(selection_json) <= set(parameters), f'{key}: missing selected settings')
+            for field, value in selection_json.items():
+                actual = parameters[field]
+                # Numeric strings and resolved numbers may differ in serialization only.
+                if isinstance(value, bool) or isinstance(actual, bool):
+                    equal = str(value).lower() == str(actual).lower()
+                else:
+                    try:
+                        equal = np.isclose(float(value), float(actual), rtol=1e-12, atol=1e-12)
+                    except (ValueError, TypeError):
+                        equal = str(value).lower() == str(actual).lower()
+                require(equal, f'{key}: resolved setting differs: {field}')
+            for field,value in WINDOWS.items():
+                require(field in parameters and np.isclose(float(parameters[field]),value,rtol=0,atol=1e-12), f'{key}: missing/changed time window')
+            require(str(parameters.get('montage')) in {'32','64','128','all_good'}, f'{key}: unsupported montage size')
+            selections[(strategy,row['method'],subject)] = cfg
+    require(set(resolved) == expected_resolved, 'Resolved parameter inventory must have exactly 168 entries')
+    schedule = pd.concat([
+        runs[['reference_subject','test_subject','run']].assign(strategy='LOSO'),
+        single_schedule[['reference_subject','test_subject','run']].assign(strategy='Single-reference')],ignore_index=True)
+    schedule = schedule.merge(pd.DataFrame({'method':METHODS}),how='cross')
+    require(len(schedule)==5124 and not schedule.duplicated(KEY).any(), 'Expected 5,124 unique jobs')
+    require(schedule.groupby('strategy').size().to_dict()=={'LOSO':732,'Single-reference':4392}, 'Strategy counts changed')
+    original=read('original_fsaverage_job_schedule.csv')
+    exact(schedule,KEY,set(map(tuple,original[KEY].itertuples(index=False,name=None))),'Original full job schedule')
+    records = []
+    for row in schedule.to_dict('records'):
+        owner = row['test_subject'] if row['strategy']=='LOSO' else row['reference_subject']
+        cfg = selections[(row['strategy'],row['method'],owner)]
+        records.append(row | dict(model_subject='fsaverage', sensor_geometry='validated_template_only',
+            parameter_owner=owner, configuration_key=cfg['configuration_key'],
+            configuration_parameters=json.dumps(cfg['parameters'],sort_keys=True),
+            montage_size=str(cfg['parameters']['montage']),
+            coordinate_policy='no_individual_MRI_or_digitization',status='PLANNED_NOT_EXECUTED'))
+    return pd.DataFrame(records)
+
+
+def montage_catalog(source, inventory):
+    import mne
+    resources = Path(mne.__file__).parent / 'channels/data/montages'
+    available = mne.channels.get_builtin_montages()
+    candidates = sorted({name for name in available if
+        name.startswith(('GSN-','EGI_')) or name in {'biosemi256','standard_1005'}})
+    rows, montages, paths = [], {}, {}
+    for name in candidates:
+        matches = list(resources.glob(name+'.*'))
+        row = dict(montage=name, available=True, n_channels=None,
+                   exact_casefold_e1_e256=False, correspondence='NOT_VALIDATED_BY_LABELS',
+                   eligible_model_family=name in {'GSN-HydroCel-256','EGI_256'},
+                   loader_head_size='auto (predefined 0.095 m for spherical caps)',
+                   native_coordinate_units='MNE output metres; raw units/normalization require documentary review',
+                   exception='')
+        try:
+            montage = mne.channels.make_standard_montage(name,head_size='auto')
+            pos = montage.get_positions()
+            folded = [c.casefold() for c in montage.ch_names]
+            row.update(n_channels=len(montage.ch_names), coordinate_frame=pos['coord_frame'],
+                       exact_casefold_e1_e256=len(folded)==256 and set(folded)==set(CHANNELS),
+                       duplicate_casefold_labels=len(folded)-len(set(folded)),
+                       fiducials_present=all(pos[k] is not None for k in ['nasion','lpa','rpa']),
+                       fiducial_origin='electrode-derived estimates in MNE' if name=='EGI_256' else
+                           'resource fiducials; anatomical landmark interpretation requires review')
+            montages[name] = montage
+            for path in matches:
+                paths[name] = path
+                snapshot(path,source/'01_montage/candidate_resources'/path.name,inventory,'unvalidated_MNE_template_resource')
+                row.update(resource_path=str(path),resource_sha256=sha(path))
+        except (ValueError, OSError, RuntimeError) as exc:
+            row['exception'] = f'{type(exc).__name__}: {exc}'
+        rows.append(row)
+    # Freeze the parser/normalization definitions as well as resource bytes.
+    for relative in ['channels/_standard_montage_utils.py','channels/montage.py']:
+        path = Path(mne.__file__).parent/relative
+        snapshot(path,source/'01_montage/MNE_code'/relative,inventory,'MNE_montage_parser')
+    return pd.DataFrame(rows), montages, paths
+
+
+def validate_mapping(args, montage, resource, source, inventory):
+    mapping = pd.DataFrame({'dataset_channel':CHANNELS, 'template_channel':'',
+                            'validation_status':'BLOCKED_NO_DOCUMENTARY_EVIDENCE', 'evidence_id':''})
+    # Lexical suggestions are availability diagnostics, not accepted mappings.
+    mapping['unvalidated_label_candidate'] = [
+        ';'.join(name for name in montage.ch_names if name.casefold()==c) for c in CHANNELS]
+    mapping['validation_detail']='Physical correspondence has not been established independently.'
+    reasons = []
+    if args.mapping_evidence is None:
+        return mapping, ['Independent Localize-MI net model/numbering and fiducial/unit evidence has not been supplied.']
+    try:
+        evidence_path = args.mapping_evidence.resolve()
+        evidence = json.loads(evidence_path.read_text())
+        require(evidence['montage_kind']==args.montage_kind, 'Evidence refers to a different template')
+        require(evidence['template_resource_sha256']==sha(resource), 'Evidence template resource hash differs')
+        require(set(evidence['subjects_covered'])==set(SUBJECTS), 'Acquisition/net evidence must cover all seven subjects')
+        for field in ['reviewer','reviewed_utc','dataset_net_model','numbering_correspondence_explanation',
+                      'fiducial_interpretation','unit_and_scaling_interpretation']:
+            require(isinstance(evidence.get(field),str) and evidence[field].strip(), f'Missing evidence field: {field}')
+        require(evidence['independent_of_subject_geometry_and_localization_outcomes'] is True, 'Evidence must be independent of outcomes/subject geometry')
+        require(evidence['template_head_size_auto_095m_accepted'] is True, 'Fixed MNE scale convention has not been accepted')
+        require(evidence['fiducial_convention_verified'] is True, 'Meaning of template fiducials remains unverified')
+        docs = evidence['documents']
+        require(DOC_ROLES <= {doc['role'] for doc in docs}, 'Missing required documentary roles')
+        require(len({doc['id'] for doc in docs})==len(docs), 'Duplicate evidence IDs')
+        for doc in docs:
+            require(doc.get('citation','').strip() and doc.get('relevant_excerpt_or_section','').strip(), 'Document needs citation and relevant section')
+            path = (evidence_path.parent/doc['path']).resolve()
+            require(sha(path)==doc['sha256'], f'Document hash mismatch: {doc["id"]}')
+        path = (evidence_path.parent/evidence['mapping_csv']).resolve()
+        require(sha(path)==evidence['mapping_sha256'],'Mapping CSV hash differs from evidence')
+        supplied = pd.read_csv(path,dtype=str,keep_default_na=False)
+        require({'dataset_channel','template_channel','evidence_id'} <= set(supplied), 'Mapping columns missing')
+        mapping=supplied[['dataset_channel','template_channel','evidence_id']].copy()
+        missing=set(CHANNELS)-set(mapping.dataset_channel)
+        if missing:
+            mapping=pd.concat([mapping,pd.DataFrame({'dataset_channel':sorted(missing),
+                'template_channel':'','evidence_id':''})],ignore_index=True)
+        mapping['duplicate_dataset_label']=mapping.dataset_channel.duplicated(keep=False)
+        mapping['duplicate_template_label']=mapping.template_channel.ne('') & mapping.template_channel.duplicated(keep=False)
+        mapping['unknown_dataset_label']=~mapping.dataset_channel.isin(CHANNELS)
+        mapping['missing_or_unknown_template_label']=~mapping.template_channel.isin(montage.ch_names)
+        mapping['validation_status']='BLOCKED_INVALID_EVIDENCE'
+        exact(supplied,['dataset_channel'],{(c,) for c in CHANNELS},'Localize-MI channels')
+        require(not supplied.template_channel.duplicated().any(),'Duplicate physical template mapping')
+        require(len(montage.ch_names)==256 and len(set(montage.ch_names))==256,'Template must contain exactly 256 distinct EEG sensors')
+        require(len({c.casefold() for c in montage.ch_names})==256,'Ambiguous case-insensitive template labels')
+        require(set(supplied.template_channel)==set(montage.ch_names),'Mapping must cover exact template channel names (case sensitive)')
+        require(set(supplied.evidence_id)<={doc['id'] for doc in docs},'Unknown channel evidence ID')
+        require(not supplied.evidence_id.eq('').any(),'Every correspondence needs documentary evidence')
+        mapping = supplied[['dataset_channel','template_channel','evidence_id']].copy()
+        mapping['validation_status']='VALIDATED_DOCUMENTARY_REVIEW'
+        snapshot(evidence_path,source/'01_montage/evidence/evidence.json',inventory,'independent_mapping_review')
+        snapshot(path,source/'01_montage/evidence/channel_mapping.csv',inventory,'explicit_channel_correspondence')
+        for index,doc in enumerate(docs):
+            path=(evidence_path.parent/doc['path']).resolve()
+            snapshot(path,source/'01_montage/evidence/documents'/f'{index:02d}_{path.name}',inventory,'document_'+doc['role'])
+    except (ValueError, KeyError, TypeError, OSError) as exc:
+        reasons.append(f'Mapping evidence rejected: {type(exc).__name__}: {exc}')
+        mapping['validation_status']='BLOCKED_INVALID_EVIDENCE'
+        mapping['validation_detail']=reasons[-1]
+    return mapping,reasons
+
+
+def template_geometry(args, montage, mapping, source, inventory, out):
+    import mne
+    from mne.io.constants import FIFF
+    from scipy.spatial import cKDTree
+    before=montage.get_positions()
+    require(before['coord_frame']=='unknown','Only reviewed native-template unknown-frame resources are supported')
+    require(all(before[k] is not None for k in ['nasion','lpa','rpa']), 'Missing template fiducials; no invented landmarks allowed')
+    xyz=np.array([before['ch_pos'][name] for name in mapping.template_channel])
+    require(np.isfinite(xyz).all() and len(np.unique(xyz,axis=0))==256,'Nonfinite or duplicated template positions')
+    require(np.max(np.linalg.norm(xyz,axis=1))<1,'Implausible template metre scale')
+    native_head=mne.channels.compute_native_head_t(montage,on_missing='raise')
+    require(int(native_head['to'])==int(FIFF.FIFFV_COORD_HEAD),'Template transform does not end in HEAD')
+    fsroot=args.fsaverage_root.expanduser().resolve()
+    paths={name:fsroot/'bem'/fname for name,fname in {
+        'head_mri':'fsaverage-trans.fif','fiducials':'fsaverage-fiducials.fif','scalp':'outer_skin.surf'}.items()}
+    for name,path in paths.items():
+        # Files are fsaverage-only, never derived from a subject's fitting output.
+        snapshot(path,source/'01_montage/fsaverage_geometry'/path.name,inventory,'fsaverage_'+name)
+    head_mri=mne.read_trans(paths['head_mri'],verbose=False)
+    if (int(head_mri['from']),int(head_mri['to']))==(int(FIFF.FIFFV_COORD_MRI),int(FIFF.FIFFV_COORD_HEAD)):
+        head_mri=mne.transforms.invert_transform(head_mri)
+    require((int(head_mri['from']),int(head_mri['to']))==(int(FIFF.FIFFV_COORD_HEAD),int(FIFF.FIFFV_COORD_MRI)), 'Predefined fsaverage transform has wrong direction')
+    for transform in [native_head,head_mri]:
+        matrix=np.asarray(transform['trans'])
+        require(np.isfinite(matrix).all() and np.allclose(matrix[3],[0,0,0,1],atol=1e-5,rtol=0), 'Invalid homogeneous transform')
+        rotation=matrix[:3,:3]
+        require(np.allclose(rotation.T@rotation,np.eye(3),atol=1e-5,rtol=0) and abs(np.linalg.det(rotation)-1)<1e-5,'Template transform is not rigid')
+    head=mne.transforms.apply_trans(native_head,xyz)
+    mri=mne.transforms.apply_trans(head_mri,head)
+    vertices,triangles=mne.read_surface(paths['scalp'],verbose=False)
+    # FreeSurfer .surf stores surface RAS in mm; MNE read_surface does not convert.
+    require(np.isfinite(vertices).all() and len(vertices)>3,'Invalid scalp surface')
+    vertices_m=vertices/1000.
+    distance,index=cKDTree(vertices_m).query(mri)
+    require(np.isfinite(distance).all(), 'Nonfinite scalp distances')
+    # Report local normal offsets, not a claimed robust inside/outside classifier.
+    surface=mne.surface.complete_surface_info(dict(rr=vertices_m,tris=triangles),copy=True,verbose=False)
+    normal_offset=((mri-vertices_m[index])*surface['nn'][index]).sum(axis=1)*1000
+    qa=mapping.copy()
+    for axis,i in zip('xyz',range(3)):
+        qa[f'template_native_{axis}_m']=xyz[:,i]
+        qa[f'template_head_{axis}_m']=head[:,i]
+        qa[f'fsaverage_surface_ras_{axis}_m']=mri[:,i]
+    qa['nearest_scalp_vertex']=index
+    qa['nearest_scalp_vertex_distance_mm']=distance*1000
+    qa['nearest_vertex_normal_offset_mm']=normal_offset
+    qa['normal_offset_interpretation']='local normal diagnostic only; not a reliable signed surface distance'
+    qa.to_csv(out/'06_sensor_scalp_geometry_qa.csv',index=False)
+    qa.to_csv(source/'01_montage/validated_template_coordinates.csv',index=False)
+    fsfid,frame=mne.io.read_fiducials(paths['fiducials'],verbose=False)
+    require(int(frame)==int(FIFF.FIFFV_COORD_MRI),'Fsaverage fiducials must be MRI/surface RAS')
+    fidmap={int(point['ident']):np.asarray(point['r']) for point in fsfid}
+    fidrows=[]
+    for name,ident in [('nasion',FIFF.FIFFV_POINT_NASION),('lpa',FIFF.FIFFV_POINT_LPA),('rpa',FIFF.FIFFV_POINT_RPA)]:
+        transformed=mne.transforms.apply_trans(head_mri,mne.transforms.apply_trans(native_head,before[name]))
+        require(int(ident) in fidmap,'Fsaverage fiducial missing')
+        fidrows.append(dict(fiducial=name,template_fsaverage_mri_xyz_m=json.dumps(transformed.tolist()),
+            fsaverage_mri_xyz_m=json.dumps(fidmap[int(ident)].tolist()),
+            residual_mm=float(np.linalg.norm(transformed-fidmap[int(ident)])*1000)))
+    pd.DataFrame(fidrows).to_csv(out/'09_fiducial_alignment_qa.csv',index=False)
+    med,p95,maximum=np.percentile(distance*1000,[50,95,100]).tolist()
+    numerical=med<=10 and p95<=20
+    provenance=dict(source_frame='MNE template native unknown frame',source_units='metres after fixed MNE auto normalization',
+        native_to_head=native_head['trans'].tolist(),head_to_fsaverage_mri=head_mri['trans'].tolist(),
+        native_to_fsaverage_mri=(head_mri['trans']@native_head['trans']).tolist(),
+        scalp_file_units='FreeSurfer surface RAS mm; divided by 1000 for comparisons',
+        template_fiducial_origin='MNE electrode-derived estimates' if args.montage_kind=='EGI_256' else 'resource FidNz/FidT9/FidT10, documentary interpretation required',
+        transform_policy='template fiducial coordinate definition + predefined fsaverage transform; no subject registration',
+        individual_subject_geometry_used=False,optimized_parameters=[],projection_or_scaling_search=False,
+        mne_template_scaling='head_size=auto; fixed 0.095m spherical convention; not a physical unit conversion',
+        distance_metric='nearest scalp vertex (upper bound on triangle-surface distance)',
+        median_scalp_distance_mm=med,p95_scalp_distance_mm=p95,max_scalp_distance_mm=maximum,
+        gates=dict(median_mm=10.,p95_mm=20.,rigidity_tolerance=1e-5),
+        fiducial_residuals_mm={r['fiducial']:r['residual_mm'] for r in fidrows},
+        fiducial_acceptance='reported for independent review; no fitted landmark residual minimization',
+        local_normal_offset_min_mm=float(normal_offset.min()),
+        local_normal_offset_max_mm=float(normal_offset.max()),
+        negative_local_normal_offsets=int((normal_offset<0).sum()),
+        numerical_status='PASS_NUMERICAL_REVIEW_REQUIRED' if numerical else 'BLOCKED_GEOMETRY',
+        surface_topology_signed_distance_not_verified=True)
+    write_json(out/'07_coordinate_transform_provenance.json',provenance)
+    # Same farthest-point policy as frozen Script09, now on template HEAD only.
+    # Geometry source necessarily changes; original reference-specific lists are not reused.
+    names=list(mapping.dataset_channel)
+    ranks=sorted(range(256),key=lambda i:names[i])
+    start=min(ranks,key=lambda i:(-head[i,2],names[i]))
+    picked=[start]; minimum_sq=np.sum((head-head[start])**2,axis=1);minimum_sq[start]=-1.
+    while len(picked)<128:
+        candidate=min(ranks,key=lambda i:(-minimum_sq[i],names[i]))
+        picked.append(candidate)
+        minimum_sq=np.minimum(minimum_sq,np.sum((head-head[candidate])**2,axis=1));minimum_sq[picked]=-1.
+    write_json(source/'01_montage/template_nominal_subsets.json',dict(
+        policy='original greatest-Z anchor, lexicographic ties, nested farthest-point picks; template HEAD geometry',
+        subsets={str(n):[names[i] for i in picked[:n]] for n in [32,64,128]},
+        all_good='all EEG channels not marked bad; no waveform loading in Script01',
+        bad_replacement='reserve healthy nominal channels; nearest unused good channel in template geometry; lexicographic ties',
+        reference_policy_change='reference identities retained for parameter transfer; one template geometry for all identities'))
+    return provenance
+
+
+def main(argv=None):
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--frozen-design-root',type=Path,default=FS/'outputs/01_prepare_experiment/source_configurations')
+    parser.add_argument('--resolved-configurations',type=Path,default=FS/'outputs/05_reconstruct_sub03_exploratory/05_resolved_configurations.json')
+    parser.add_argument('--montage-kind',choices=['GSN-HydroCel-256','EGI_256'],default='GSN-HydroCel-256')
+    parser.add_argument('--mapping-evidence',type=Path)
+    parser.add_argument('--fsaverage-root',type=Path,default=Path.home()/'mne_data/MNE-fsaverage-data/fsaverage')
+    parser.add_argument('--source-root',type=Path,default=VARIANT/'source')
+    parser.add_argument('--output-root',type=Path,default=VARIANT/'outputs/01_prepare_experiment')
+    args=parser.parse_args(argv)
+    args.frozen_design_root=args.frozen_design_root.expanduser().resolve()
+    args.resolved_configurations=args.resolved_configurations.expanduser().resolve()
+    if args.mapping_evidence is not None:
+        args.mapping_evidence=args.mapping_evidence.expanduser().resolve()
+    source,out=args.source_root.expanduser().resolve(),args.output_root.expanduser().resolve()
+    for path in [source,out]:
+        require(VARIANT in path.parents,'All writable paths must be strictly inside this variant')
+    require(not (source==out or source in out.parents or out in source.parents),'Source/output roots overlap')
+    require(not out.exists() or not any(p.name!='.gitkeep' for p in out.iterdir()),'Output directory is not empty; choose a new --output-root')
+    # Committed README placeholders are allowed; runtime snapshot reuse is not.
+    require(not source.exists() or not any(p.is_file() and p.name not in {'README.md','.gitkeep'} for p in source.rglob('*')), 'Source snapshots already exist; choose a new --source-root')
+    source.mkdir(parents=True,exist_ok=True);out.mkdir(parents=True,exist_ok=True)
+    inventory=[];reasons=[];schedule=None;geometry=None;catalog=pd.DataFrame();mapping=pd.DataFrame()
+    fsaverage_resources=[]
+    for role,name in [('source_space','fsaverage-ico-5-src.fif'),
+                      ('bem_solution','fsaverage-5120-5120-5120-bem-sol.fif'),
+                      ('scalp','outer_skin.surf'),('fiducials','fsaverage-fiducials.fif'),
+                      ('predefined_transform','fsaverage-trans.fif')]:
+        path=args.fsaverage_root.expanduser().resolve()/'bem'/name
+        present=path.is_file()
+        fsaverage_resources.append(dict(role=role,path=str(path),present=present,
+            sha256=sha(path) if present else None))
+        if not present:
+            reasons.append(f'Missing local fsaverage resource (no download attempted): {path}')
+    try:
+        schedule=freeze_design(args,source,inventory)
+        schedule.to_csv(out/'02_planned_reconstruction_schedule.csv',index=False)
+    except (OSError,ValueError,KeyError,TypeError) as exc:
+        reasons.append(f'Frozen design blocked: {type(exc).__name__}: {exc}')
+    try:
+        catalog,montages,paths=montage_catalog(source,inventory)
+        catalog.to_csv(out/'04_template_montage_availability.csv',index=False)
+        require(args.montage_kind in montages and args.montage_kind in paths,'Selected candidate resource unavailable')
+        mapping,mapping_reasons=validate_mapping(args,montages[args.montage_kind],paths[args.montage_kind],source,inventory)
+        reasons.extend(mapping_reasons)
+        mapping.to_csv(out/'05_channel_mapping_validation.csv',index=False)
+        if not mapping_reasons:
+            geometry=template_geometry(args,montages[args.montage_kind],mapping,source,inventory,out)
+            if geometry['numerical_status']!='PASS_NUMERICAL_REVIEW_REQUIRED':
+                reasons.append('Fixed template exceeds unchanged scalp-distance numerical QA gates; do not optimize it to pass.')
+    except (OSError,ValueError,KeyError,TypeError,RuntimeError) as exc:
+        reasons.append(f'Template validation blocked: {type(exc).__name__}: {exc}')
+    if mapping.empty:
+        pd.DataFrame({'dataset_channel':CHANNELS,'template_channel':'','validation_status':'BLOCKED_TEMPLATE_UNAVAILABLE'}).to_csv(out/'05_channel_mapping_validation.csv',index=False)
+    if catalog.empty:
+        pd.DataFrame([dict(montage=args.montage_kind,available=False,reason='See readiness report')]).to_csv(out/'04_template_montage_availability.csv',index=False)
+    pd.DataFrame(inventory,columns=['role','original_path','copy_path','sha256','size_bytes']).to_csv(out/'03_frozen_configuration_inventory.csv',index=False)
+    ready=not reasons
+    readiness=dict(status='PASS_NUMERICAL_REVIEW_REQUIRED' if ready else 'BLOCKED',blockers=reasons,
+        independent_channel_mapping_validated=bool(not mapping.empty and mapping.validation_status.eq('VALIDATED_DOCUMENTARY_REVIEW').all()),
+        geometry_evaluated=geometry is not None,scientific_anatomical_validity_established=False,
+        forward_modeling_authorized=False,
+        next_step='Review Script01 evidence and geometry before separately implementing Script02; no forward work is executed here.')
+    write_json(out/'08_readiness_report.json',readiness)
+    manifest=dict(created_utc=datetime.now(timezone.utc).isoformat(),script_sha256=sha(Path(__file__)),
+        dataset='Localize-MI',counts=dict(subjects=7,runs=61,methods=12,loso=732,single_reference=4392,total=5124),
+        design_schedule_written=schedule is not None,selected_template_candidate=args.montage_kind,
+        source_inventory=inventory,readiness=readiness,
+        fsaverage_resources=fsaverage_resources,
+        EEG_channel_inventory=dict(expected_channels=CHANNELS,actual_recording_headers_inspected=False,
+            later_requirement='Validate EEG header channel identities without loading digitization or anatomy before modeling.'),
+        software_versions={name:importlib.metadata.version(name) for name in ['numpy','pandas','scipy','mne']},
+        reconstruction_constraints=dict(individual_mri=False,individual_digitization=False,test_sensor_coordinates=False,
+            individual_icp=False,affine_or_syn=False,ground_truth_for_montage_selection=False),
+        preprocessing_policy=dict(windows=WINDOWS,average_reference='all loaded good channels before subset selection',
+            noise_covariance='original auto method',filters_baseline_epochs='preserve frozen original loader behavior; no processing in Script01',
+            peak_selection='original known-hemisphere cortical peak; max-GOF Continuous-ECD/RAP-MUSIC',
+            ground_truth_caveat='known stimulation hemisphere is an explicit extra prior; any later blinded/whole-brain variant must be separately labeled',
+            future_loader_adapter='Do not invoke original load_run/Engine.prepare unchanged: they read individual forwards/anatomy. Implement EEG-only adapter in a later reviewed stage.'),
+        channel_policy='frozen montage sizes and algorithm; geometry source becomes common template, not reference/test digitization',
+        compatibility_limits=['Both anatomy and sensor geometry differ from old no-warp; not an anatomy-only contrast.',
+            'No nominal subset is scientifically usable until channel correspondence and template geometry are reviewed.',
+            'Transferred parameters are frozen; their optimality under changed geometry is not guaranteed.',
+            'Unregistered coordinate separation is diagnostic, not validated anatomical localization error.',
+            'Evidence review is documentary human attestation; SHA-256 establishes integrity, not truth of its claims.',
+            'No solver compatibility shim is executed or implied; future SESAME capacity handling needs explicit provenance.'],
+        expensive_operations_executed=False)
+    write_json(out/'01_experiment_manifest.json',manifest)
+    (out/'README.md').write_text('# Template montage preparation\n\n'
+        'Read 08_readiness_report.json first. BLOCKED is an expected successful audit outcome when evidence is missing.\n\n'
+        '01_experiment_manifest.json: assumptions, counts, policies, hashes and limitations.\n'
+        '02_planned_reconstruction_schedule.csv: 5,124 identities/configurations, when frozen design validates.\n'
+        '03_frozen_configuration_inventory.csv: original/snapshot paths, sizes and SHA-256.\n'
+        '04_template_montage_availability.csv: installed candidate counts/frames/fiducials, not a numbering proof.\n'
+        '05_channel_mapping_validation.csv: explicit documentary validation or blocked channels.\n'
+        '06_sensor_scalp_geometry_qa.csv, 07_coordinate_transform_provenance.json and '
+        '09_fiducial_alignment_qa.csv: only attempted after documentary mapping acceptance; inspect for geometry failures.\n'
+        'source/ snapshots preserve original files. Geometry is never projected, fitted to a participant, or selected using outcomes.\n'
+        'Numerical PASS still requires scientific review; no Script02 is implemented or executed.\n')
+    print(f'{readiness["status"]}: {out}')
+    for reason in reasons:print(f'BLOCKED: {reason}')
+    return 0 if ready else 3
+
+
+if __name__=='__main__':
+    try:
+        raise SystemExit(main())
+    except (ValueError,OSError) as exc:
+        print(f'ERROR: {exc}',file=sys.stderr)
+        raise SystemExit(2)

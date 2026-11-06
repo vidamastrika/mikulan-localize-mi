@@ -1,0 +1,111 @@
+{
+  "created_utc": "2026-11-06T06:03:11.488325+00:00",
+  "phase": "build",
+  "status": "PASS_EXPLORATORY_FORWARD_NUMERICAL_ONLY",
+  "script_sha256": "2736d053742583620700c4f1f97d36c276520a3fc5147a7022cf2d330e418ddb",
+  "input_sha256": {
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/01_experiment_manifest.json": "284050e1e6925d2419bc8fbdaedd47f263c0af9edcd730c0bec6c8faf3bce1ee",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_bem_sensor_audit_assumed_v1/04_bem_interpolation_audit.json": "3ff7fd2afc2db0ec2e164e0a308c8033e207a1cc18e2b0e3b7ed6d331fdeea62",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/06_sensor_scalp_geometry_qa.csv": "53d0d17a9f6b0bdda7afc52a99fc2d5d345b4802107642573749a33d44d34ced",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/07_coordinate_transform_provenance.json": "904e8df139a6bb7c97a15cf55dde3fc66e3a649631b171ec196330d83c4e1551",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/08_readiness_report.json": "1603d85d815c7739d697875b8c52b9e60afd2c36f9d51ed9fc79ed47f69bcd26",
+    "/home/girvi949/mne_data/MNE-fsaverage-data/fsaverage/bem/fsaverage-5120-5120-5120-bem-sol.fif": "ad6a6edd2a3793e7a0d916bafe149690ec9f95e0a591dbeaf86ff5ab2150360f",
+    "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/surface.py": "a4dda0b58c38f6aa0751df42117be7d7f7d0a1c6f2d50738ccc3a0e6c8525257",
+    "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/forward/_compute_forward.py": "a1c36cd6592be7c61ece9a31c91fdba205e5d91cc3e364fb66954486eddebfce",
+    "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/forward/_make_forward.py": "4df4f30d93aeb7797c406d38bffb035207f8099d2b0648055b87aa9af2f7dedd",
+    "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/_fiff/tag.py": "42997f3d784dd58d7f30316baeb153f6777d9a19d493dac6fa7a2887f4f86117",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/test_runs.csv": "00af2541f19a4a90239ce01ee6a5c924264a11dd8ef4d8a1ee6db779671947c9",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/loso_folds.csv": "e492fd4ecaee1ef41f91c9f9f218401a688423287c08e70395178ed8fe181fed",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/single_schedule.csv": "bf548832d14b3a61b809a5d7f9bd9ce5f018a43821d05f736a6f3e45fe0859b7",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/loso_selection.csv": "77369c7a046e55fad23e2b13590c4106c7f0868e9abae63430e261dc6f0e02d5",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/single_selection.csv": "c0f56ba5b1fa00be5cfd9559e7634b03c8b714e4aef7199b710aca2afef8ac56",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/loso_selection_manifest.json": "9315347088278cf0ff6c7c3f60dee43da3e97d9480e9f89523b99bcbd310d04f",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/single_selection_manifest.json": "3b93f25e119d46d631605baf547a6c772416b749038d543e7333e4116dac89a8",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/resolved_configurations.json": "7cda90640a9a1da0778c0507dae9e5a2fa714f1386707715745f5ef9d025d9ca",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/original_fsaverage_job_schedule.csv": "55dfab0f74866c2231227364143d6a55479f09036b3a545ae9ec06fa2979375e",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/policy_code/cross_subject_no_warp/scripts/03_run_localization.py": "38227ffb12d04441616947f9b2d6b348cc52dc0d96f28aa84d8b75b7a5924e4a",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/policy_code/src/localize_mi/io.py": "4a613f50dc6f6d976f453a4ed6fe53b107171801df167ef3658b5bf57b18258e",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/policy_code/cross_subject_no_warp/source/03_solver_code/scripts/09_full_parameter_grid.py": "540651730a1e54985ee4d9c380928b4ea0eee1cc927f2ff865f45da7fc9311f9",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/policy_code/cross_subject_no_warp/source/03_solver_code/src/localize_mi/io.py": "4a613f50dc6f6d976f453a4ed6fe53b107171801df167ef3658b5bf57b18258e",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/policy_code/cross_subject_no_warp/source/03_solver_code/src/localize_mi/inverse.py": "3988664745a34789884d11ba29944e4c9ebdc6705c1916b2960e98ceee723b5c",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/02_frozen_configurations/policy_code/cross_subject_no_warp/source/03_solver_code/scripts/19_next_method_pilot.py": "f94573eedf590c294e5149de3a6e7e4d14044c9215530e3d5d9418abeca2bf10",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/candidate_resources/EGI_256.csd": "e2ce1ebcbe8cdd2aaf77c536faea67e5a1a2c601eb327407ee4034a9d33a078e",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/candidate_resources/GSN-HydroCel-128.sfp": "edd0bd8e690ed4ff6bbdafd73342c69d1ad39096c1ed7f0c76bd6dd997d767a2",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/candidate_resources/GSN-HydroCel-129.sfp": "9751d2e6407ed091a42249fc41b4aee9cef44cc3666db0f0be7e94eae0e4ffa1",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/candidate_resources/GSN-HydroCel-256.sfp": "63d3de763f3bd36bb9096989a828068edcb60fea81607ddb96022d3bd2126e1c",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/candidate_resources/GSN-HydroCel-257.sfp": "70d629847d9053491237d1f52e4a9fc2e56bfd68a2929ee2ace546daf2c92f91",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/candidate_resources/GSN-HydroCel-32.sfp": "057297752812a986a0fc5d72791ccb6a24da812544939c1de2b92225aa8ac5cd",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/candidate_resources/GSN-HydroCel-64_1.0.sfp": "fb3834991fc06b297ccbedef907d408df74bba48caa8b077008ab33de21f1a51",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/candidate_resources/GSN-HydroCel-65_1.0.sfp": "64e08a26b38867982acf6e0976653661ff69a11c5da4eea40df6d439b8cf96ab",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/candidate_resources/biosemi256.txt": "3cc6adf82abe2d32e8d6485543a45b3f62a40fc54ca1a26421ddc4168bdd4380",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/candidate_resources/standard_1005.elc": "1ee59197946d62de872db2ac7f2243a596662c231427366f6dc5d84ed237f853",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/MNE_code/channels/_standard_montage_utils.py": "9e9b535bdc21d49abc0470427f7467378e050ce2ff1742e4aa5d5035a806cffe",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/MNE_code/channels/montage.py": "8b2a7af11989731998cae4b553780405fc7edbe91201f9a77b2a86e64409ae5f",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/assumptions/decision.json": "278b50e210f6d68411305a7345c77bcb761fdccb301ca501c1e306e928da188e",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/fsaverage_geometry/fsaverage-trans.fif": "a30002293d88c1a38b5a6998b5287b6dfe60196c6ca7c9e4081faabd77e5010b",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/fsaverage_geometry/fsaverage-fiducials.fif": "0043895fd3167871a947a43019228ee30060c0335967df63f571c0e71bf344a3",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/fsaverage_geometry/outer_skin.surf": "a66fcfdf3fb4bef0c5cbf546ca9161459474fb37a25af7129e285fdb7707d736",
+    "/home/girvi949/mne_data/MNE-fsaverage-data/fsaverage/bem/fsaverage-ico-5-src.fif": "7e772329b88a5741c824e46dc37678717bba8812a7d9ed09ca66380408ded125",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/02_planned_reconstruction_schedule.csv": "8ee0ccb9f1d205ce44b35e353793313eed2f0e921f0e134acfae7626e590ca42"
+  },
+  "policy": {
+    "mapping": "ASSUMED_UNVERIFIED",
+    "coordinates": "fixed original template HEAD coordinates",
+    "transform": "predefined fsaverage HEAD to MRI; no individual fit",
+    "interpolation": "standard MNE 1.12.1 unconstrained triangle-plane weights; no clipping",
+    "user_authorization": "continue after actual-BEM interpolation review",
+    "individual_geometry_used": false,
+    "manual_projection": false,
+    "QA_thresholds_changed": false,
+    "anatomical_validity_established": false,
+    "preprocessing_executed": false,
+    "inverse_executed": false
+  },
+  "counts": {
+    "shared_forwards": 1,
+    "channels": 256,
+    "subjects": 7,
+    "runs": 61,
+    "methods": 12,
+    "loso": 732,
+    "single_reference": 4392,
+    "total": 5124
+  },
+  "forward_parameters": {
+    "meg": false,
+    "eeg": true,
+    "mindist_mm": 0.0,
+    "n_jobs": 1
+  },
+  "software_versions": {
+    "mne": "1.12.1",
+    "numpy": "2.5.2",
+    "scipy": "1.18.1",
+    "pandas": "3.0.5"
+  },
+  "interpolation_audit_summary": {
+    "displacement_mm": {
+      "median": 6.705053743397096,
+      "p95": 14.76955374058181,
+      "maximum": 16.32162432429787
+    },
+    "extrapolated_electrode_count": 14,
+    "maximum_effective_point_surface_residual_mm": 0.08521756169650777
+  },
+  "forward_path": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/02_template_forward_assumed_v1/forwards/template_fsaverage-fwd.fif",
+  "forward_sha256": "566403dc5a9c8ea486d6b556b97ca96d934b799c68b2ab59d2ac211a97bcd289",
+  "runtime_seconds": 21.17118418798782,
+  "limitations": [
+    "Template channel correspondence remains assumed, not independently verified.",
+    "Original template/scalp mismatch remains; standard BEM interpolation is not anatomical validation.",
+    "Both anatomy and sensor geometry differ from no-warp.",
+    "One common full forward; later subsets and bad-channel handling must use frozen template policies.",
+    "No localization error has been calculated by this stage."
+  ],
+  "n_sources": 20484,
+  "leadfield_shape": [
+    256,
+    61452
+  ],
+  "leadfield_rank_not_evaluated": true
+}

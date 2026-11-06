@@ -1,0 +1,17 @@
+{
+  "created_utc": "2026-11-06T05:08:42.506130+00:00",
+  "status": "BLOCKED_PENDING_ACQUISITION_IDENTITY_CONFIRMATION",
+  "public_default_branch_revisions_inspected": 16,
+  "acquisition_exporter_found": false,
+  "geometry_executed": false,
+  "script01_reexecuted": false,
+  "script02_implemented": false,
+  "external_message_sent": false,
+  "source_document_url": "https://www.egi.com/images/stories/manuals/amp-server-pro-sdk-3-0-network-apis-user-guide-rev-01.pdf",
+  "original_audit_readiness_sha256": "0eef727c93e55533f76ed03a64dbb7303df3af8efee603bd46dd9dc9ecc93e45",
+  "files": {
+    "README.md": "4f1deb8a18ad910658c3824b26f9875d3d14e5378200dcb49807ab77434370fb",
+    "repository_history_audit.json": "2c455b12f7b573ba55bbd2a94456cdf05220f37ec55d2795e1681ffd8e55198e",
+    "vendor_ampserver_network_api_8200031-01_2024.pdf": "e1b5c4898f49ffe32e9f7cda8eb640e00c0049f6269be1e6ec59531b4905f374"
+  }
+}

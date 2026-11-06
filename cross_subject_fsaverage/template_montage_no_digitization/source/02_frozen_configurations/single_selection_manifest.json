@@ -1,0 +1,47 @@
+{
+  "status": "COMPLETE",
+  "expected_selections": 84,
+  "actual_selections": 84,
+  "source_manifest_sha256": "7770dd644ac61b41cb5da3a5568ad517674ff063c4bbf3914a35bb9284c052a0",
+  "script02_sha256": "bf5eb32a9dd3024a4854038f02a922bfe9b2778204098458bcb17769ca626316",
+  "script04_sha256": "319d31e0b6eb1f00a875353f6eb613f45716b216f0cbdc6edf665536108dba75",
+  "reliability": "primary-all-pass",
+  "score": "reference-subject median localization error",
+  "tie_breaks": [
+    "reference-subject mean",
+    "configuration key"
+  ],
+  "reference_subjects": [
+    "sub-01",
+    "sub-02",
+    "sub-03",
+    "sub-04",
+    "sub-05",
+    "sub-06",
+    "sub-07"
+  ],
+  "methods": [
+    "MNE",
+    "dSPM",
+    "sLORETA",
+    "eLORETA",
+    "Continuous-ECD",
+    "RAP-MUSIC",
+    "LCMV",
+    "MxNE",
+    "irMxNE",
+    "Gamma-MAP",
+    "Champagne",
+    "SESAME"
+  ],
+  "excluded_test_outcomes": true,
+  "parameter_source": "historical within-subject grids",
+  "historical_montage_template": "fixed sub-01",
+  "intended_reconstruction_montage_template": "reference subject",
+  "inherited_hemisphere_peak_policy": true,
+  "selected_csv_sha256": "c0f56ba5b1fa00be5cfd9559e7634b03c8b714e4aef7199b710aca2afef8ac56",
+  "warnings": [
+    "Historical grid/search-space development involved the same dataset; not independent prospective validation.",
+    "Parameter selection based on historical montage policy, not newly optimized for reference-derived montage."
+  ]
+}

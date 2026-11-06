@@ -1,0 +1,41 @@
+{
+  "created_utc": "2026-11-06T05:25:13.327083+00:00",
+  "status": "ASSUMED_UNVERIFIED",
+  "authorization": "User explicitly requested proceeding without author contact using an assumption or published practice.",
+  "montage_kind": "GSN-HydroCel-256",
+  "template_resource_sha256": "63d3de763f3bd36bb9096989a828068edcb60fea81607ddb96022d3bd2126e1c",
+  "subjects_covered": [
+    "sub-01",
+    "sub-02",
+    "sub-03",
+    "sub-04",
+    "sub-05",
+    "sub-06",
+    "sub-07"
+  ],
+  "mapping_convention": "eN -> EN for N=1..256",
+  "physical_channel_correspondence_verified": false,
+  "author_confirmation_obtained": false,
+  "reference_convention": "e256 maps to E256; no synthetic Cz acquisition channel is added.",
+  "template_head_size": "MNE head_size=auto, predefined 0.095 m spherical normalization",
+  "fiducial_convention": "Use MNE template FidNz/FidT9/FidT10 aliases for nasion/LPA/RPA as an explicit model assumption.",
+  "accepted_for_exploratory_geometry_only": true,
+  "independent_of_individual_geometry_and_localization_outcomes": true,
+  "rationale": "Original Localize-MI publication identifies HydroCel CleanLeads; the public importer preserves ascending row labels and all 61 released channel tables contain e1..e256. Installed MNE HydroCel records match the EGI-origin FieldTrip resource. Exact acquisition/export row-to-physical-sensor correspondence remains unconfirmed.",
+  "limitations": [
+    "This is a model assumption, not a validated physical sensor map.",
+    "General template-modeling publications do not validate this specific dataset numbering.",
+    "No template selection, scale search or sensor projection uses localization outcomes or individual digitization.",
+    "Numerical geometry QA may fail; its original thresholds remain unchanged.",
+    "Both anatomy and sensor geometry differ from the previous no-warp experiment.",
+    "Anatomical localization-error validity is not established."
+  ],
+  "supporting_sources": [
+    "https://www.nature.com/articles/s41597-020-0467-x",
+    "https://github.com/iTCf/mikulan_et_al_2020/blob/master/fx_preprocess.py",
+    "https://www.fieldtriptoolbox.org/template/electrode/",
+    "https://mne.tools/1.12/auto_tutorials/forward/35_eeg_no_mri.html",
+    "https://doi.org/10.1016/j.neuroimage.2023.120259"
+  ],
+  "previous_script_sha256": "885b9e6c4a8aa862aa53a8130b9b76dff4050318e1f606b5f80281f025136cd6"
+}
