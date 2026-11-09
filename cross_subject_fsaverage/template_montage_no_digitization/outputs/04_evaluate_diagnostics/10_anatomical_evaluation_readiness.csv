@@ -1,0 +1,8 @@
+test_subject,prior_registration_status,prior_registration_reason,anatomical_evaluation_status,valid_anatomical_errors,diagnostic_reference_policy,reconstruction_uses_individual_geometry
+sub-01,FAIL_REGISTRATION,ANTs exit 0,BLOCKED_NO_VALIDATED_COMMON_FRAME_MAPPING,0,individual HEAD coordinates only; no anatomy mapping applied,False
+sub-02,FAIL_REGISTRATION,ANTs exit 0,BLOCKED_NO_VALIDATED_COMMON_FRAME_MAPPING,0,individual HEAD coordinates only; no anatomy mapping applied,False
+sub-03,FAIL_REGISTRATION,ANTs exit 0,BLOCKED_NO_VALIDATED_COMMON_FRAME_MAPPING,0,individual HEAD coordinates only; no anatomy mapping applied,False
+sub-04,FAIL_REGISTRATION,ANTs exit 0,BLOCKED_NO_VALIDATED_COMMON_FRAME_MAPPING,0,individual HEAD coordinates only; no anatomy mapping applied,False
+sub-05,FAIL_REGISTRATION,ANTs exit 0,BLOCKED_NO_VALIDATED_COMMON_FRAME_MAPPING,0,individual HEAD coordinates only; no anatomy mapping applied,False
+sub-06,FAIL_REGISTRATION,ANTs exit 0,BLOCKED_NO_VALIDATED_COMMON_FRAME_MAPPING,0,individual HEAD coordinates only; no anatomy mapping applied,False
+sub-07,FAIL_REGISTRATION,ANTs exit 0,BLOCKED_NO_VALIDATED_COMMON_FRAME_MAPPING,0,individual HEAD coordinates only; no anatomy mapping applied,False

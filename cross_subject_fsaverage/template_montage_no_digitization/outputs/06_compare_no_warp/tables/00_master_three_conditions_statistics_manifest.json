@@ -1,0 +1,30 @@
+{
+  "created_utc": "2026-11-08T23:00:06.512297+00:00",
+  "figures": [
+    "figures/07_loso_baseline_context.png",
+    "figures/08_single-reference_baseline_context.png"
+  ],
+  "source_csv": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/06_compare_no_warp/tables/13_baseline_context_unique_runs.csv",
+  "source_sha256": "d0314c83e8119c973a36284fe9172c8fe4e408e3ec95d044bbf8b40df6b2125e",
+  "filter": "strategy in ['LOSO', 'Single-reference'] and common_run_available == True",
+  "conditions": {
+    "Baseline": "baseline_localization_error_mm",
+    "No-warp": "no_warp_run_diagnostic_mm",
+    "Template/fsaverage": "template_run_diagnostic_mm"
+  },
+  "schema_source": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_no_warp/outputs/09_visualize_results/00_master_three_strategies_statistics.csv",
+  "schema_sha256": "3dd01918a19ce72a8425ea661e107e8f9db9f3a434d458a790b3887e349edc12",
+  "export_script_sha256": "ae590bfcdd878fdedf4e8dfda9c51471d81a4f33d5d92a8fdb09cf4ab5cbfaa6",
+  "statistics_rows": 72,
+  "plot_value_rows": 4389,
+  "SD_definition": "sample SD, ddof=1",
+  "quartiles": "NumPy linear percentile convention",
+  "CSV_decimal_places": 3,
+  "N_definition": "unique test-run observations per method/condition after paired-reference median reduction, not reference jobs",
+  "baseline_metric": "within-subject localization error; in-sample selected configurations",
+  "other_metrics": "unregistered HEAD-coordinate distances; not validated anatomical errors",
+  "output_sha256": {
+    "tables/00_master_three_conditions_statistics.csv": "3f6bab761778c14731826d3405af876d84c807e42a144da777aaafac9976c7a7",
+    "tables/00_master_three_conditions_plot_values.csv": "768d5548950c3b837d222b8a129d3f3e4f997d773161ee2edfbc874fb1e7aef9"
+  }
+}

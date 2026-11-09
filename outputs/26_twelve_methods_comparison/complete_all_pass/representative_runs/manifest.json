@@ -1,0 +1,103 @@
+{
+  "created_utc": "2026-11-07T02:32:45.829306+00:00",
+  "report_mode": "complete_all_pass",
+  "cases": [
+    [
+      "sub-01",
+      "run-01"
+    ],
+    [
+      "sub-05",
+      "run-06"
+    ],
+    [
+      "sub-07",
+      "run-05"
+    ],
+    [
+      "sub-07",
+      "run-07"
+    ],
+    [
+      "sub-04",
+      "run-08"
+    ]
+  ],
+  "methods": [
+    "MNE",
+    "dSPM",
+    "sLORETA",
+    "eLORETA",
+    "Continuous-ECD",
+    "MxNE",
+    "RAP-MUSIC",
+    "LCMV",
+    "irMxNE",
+    "Champagne",
+    "Gamma-MAP",
+    "SESAME"
+  ],
+  "n_results": 60,
+  "dpi": 300,
+  "selection": "Existing Script 26 per-method best fixed configuration across 61 runs; no per-case optimization",
+  "inverse_reconstruction_executed": false,
+  "selection_recomputed": false,
+  "coordinate_frame": "individual native surface",
+  "coordinate_units": "metres",
+  "maximum_coordinate_error_check_mm": 7.016609515630989e-14,
+  "input_sha256": {
+    "/home/girvi949/projects/mikulan-localize-mi/outputs/26_twelve_methods_comparison/complete_all_pass/tables/01_selected_configuration_definitions.csv": "8257a13025476148afe7d8befac36c05540d292d305bb58715c529e72a6b9ebb",
+    "/home/girvi949/projects/mikulan-localize-mi/outputs/26_twelve_methods_comparison/complete_all_pass/tables/13_selected_configuration_results_long.csv": "c86fca51e38f6ac61565adea3a1ae0f62075880c4242e540747245efa6f7ebe5",
+    "/home/girvi949/projects/mikulan-localize-mi/outputs/07_anatomical_inspection/run_anatomical_geometry.csv": "3a2a24d940f018ba1fcf4e97173374de11531205f0d796472f8d486141f4e82f",
+    "/home/girvi949/projects/mikulan-localize-mi/outputs/26_twelve_methods_comparison/all_methods_all_pass_configurations.csv": "bbbdc1991a8f447b618ce643be1c5fafa445c0b99ad14f1ac62e28454d5efbcd",
+    "/home/girvi949/projects/mikulan-localize-mi/scripts/07_inspect_anatomical_locations.py": "778922d99bf437a0171a82b965086f6fbe173bc39cce50bb3e51b54244b4925f",
+    "/home/girvi949/projects/mikulan-localize-mi/scripts/script26_representative_figures.py": "d7f9d90a936ab683f5c5db4c9a02d923513634993bbc9661c77cbd1a3b3bb722",
+    "/home/girvi949/projects/mikulan-localize-mi/scripts/26_compare_twelve_methods.py": "b642f6ad9c40c9c585688dc1a62850674817e3b53c063c1163815a7811f40c5d",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/ieeg/sub-01_task-seegstim_space-surface_electrodes.tsv": "ad52db40e94c30ef1fd44907735cfcde655da3f76ab0ebd08c0bb029161692ce",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-01/anat/sub-01_hemi-L_pial.surf.gii": "da3f3da537fb9ed60009f68b05398f47cfbfdd33cf61f5116874a2f08d8e230f",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-01/anat/sub-01_hemi-R_pial.surf.gii": "ae754d28eca7a9c5b2d12d84b73ba40be715b1fda51127c8e5363b6cf221bff1",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-01/anat/sub-01_outer_skin.surf.gii": "237e4b6386186a8ccd5ab0918e8c6e6602c2950ecc67c0c34190a666bd617b4c",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/ieeg/sub-05_task-seegstim_space-surface_electrodes.tsv": "de474b57b17852346cb0d34c7da31947397050a72d6ba5c520475b8aabc14e80",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-05/anat/sub-05_hemi-L_pial.surf.gii": "e4cc11cea246e8960065eb5e14f7f83f4dbc7d781252dc8a2ee3d0ce8d3b25f8",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-05/anat/sub-05_hemi-R_pial.surf.gii": "8a9bd90367e58bd64fc092e7596fd718428933e1a52122e8b10f3ad82589705f",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-05/anat/sub-05_outer_skin.surf.gii": "583c180591ccab19f8cad378f64c0be8b59a1a24b654879c95ce70e72c28c7fe",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/ieeg/sub-07_task-seegstim_space-surface_electrodes.tsv": "873a060dedc1cb2c26e34f349bfd50c466540ab4145b887221e33f1f2a97514a",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-07/anat/sub-07_hemi-L_pial.surf.gii": "ebee4b72a1c80eb9f75ae2e6eca9484f62c7c99d659f823792cf0eb9a16641c8",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-07/anat/sub-07_hemi-R_pial.surf.gii": "8385a70abc51a7f5def86670cc0047965ac85487582cdd943dba08324011d3d0",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-07/anat/sub-07_outer_skin.surf.gii": "39024c7ab3e63d4bff1432c53645bc2e0dc2071e28b75014ad5227cb1dd7fc13",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/ieeg/sub-04_task-seegstim_space-surface_electrodes.tsv": "387a7311efa237d1919fd4e30a9cc8e2fca61dab8db868928b17e6334212f781",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-04/anat/sub-04_hemi-L_pial.surf.gii": "8f1cc084e0c0ec866a309c8064ec054b4bf762ac62b81984286a43375714a2dd",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-04/anat/sub-04_hemi-R_pial.surf.gii": "39c0676e99eb752598e4368157dfbec8b59fbe826a554cf6d073e2a9a5e5daaf",
+    "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/sourcemodelling/sub-04/anat/sub-04_outer_skin.surf.gii": "4a2755b9146e1fc50e53d4cd12faa01013afaccb4a107d970c6c5664852e8e69"
+  },
+  "figures": [
+    "figures/anatomical_geometry_sub-01_run-01.png",
+    "figures/localization_errors_sub-01_run-01.png",
+    "figures/anatomical_geometry_sub-05_run-06.png",
+    "figures/localization_errors_sub-05_run-06.png",
+    "figures/anatomical_geometry_sub-07_run-05.png",
+    "figures/localization_errors_sub-07_run-05.png",
+    "figures/anatomical_geometry_sub-07_run-07.png",
+    "figures/localization_errors_sub-07_run-07.png",
+    "figures/anatomical_geometry_sub-04_run-08.png",
+    "figures/localization_errors_sub-04_run-08.png"
+  ],
+  "figure_sha256": {
+    "figures/anatomical_geometry_sub-01_run-01.png": "e012ce1517ab6fa4d8ab0c306501cbf69016df20b04cc38eaf55f7a4cc999bd3",
+    "figures/localization_errors_sub-01_run-01.png": "7246e540a3fd5486981b07cf63edeb344bcc1832fa08d049421d4cfbbb8af209",
+    "figures/anatomical_geometry_sub-05_run-06.png": "9dcb71fd65fa74bc851754a6104b2dc6521f5b61a9545bb6993878fc774c4cf2",
+    "figures/localization_errors_sub-05_run-06.png": "c091c8219e404f3d433f6ae2009a9221b4d4c6f25a8c2219be760a8b9e0256c5",
+    "figures/anatomical_geometry_sub-07_run-05.png": "8fe0ea2b603b5bb61746b1ca306bc5940a7d2deebb58f01cc241497d491ca838",
+    "figures/localization_errors_sub-07_run-05.png": "9f83f92c077eb6ac6dfa811de6c1804b4a6028bb9834e846df79a307e57fb71c",
+    "figures/anatomical_geometry_sub-07_run-07.png": "281d3ff166c0b2705f8bf5f24dfc404d12eca0283968da0020caf6bb7cb05559",
+    "figures/localization_errors_sub-07_run-07.png": "2a5ec1e5ff3eb949d1c72e62629447231e5fb1cb938f6e8371d9599a50cf42bc",
+    "figures/anatomical_geometry_sub-04_run-08.png": "d2350bfd7989892b927a8299c151a8fa01b6beca3583c5c796e20fafd5ee926e",
+    "figures/localization_errors_sub-04_run-08.png": "3c43c1abe687d48815cc9da07b9db0d008910161c62f8fa12be7972dd4b5e251"
+  },
+  "limitations": [
+    "In-sample descriptive selection, not held-out validation.",
+    "Coincident method estimates overlap in 3D; error bars and coordinate table retain all methods.",
+    "Anatomical reference geometry is reused from Script 07, with midpoint agreement checked.",
+    "Native-surface coordinates are used; no estimated MNI positions or atlas labels are invented."
+  ]
+}

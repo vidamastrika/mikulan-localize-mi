@@ -1,0 +1,10 @@
+montage,fiducial,residual_mm,interpretation
+GSN-HydroCel-256,nasion,12.544866834949136,"convention diagnostic, not a fit or anatomical PASS"
+GSN-HydroCel-256,lpa,5.008983412864837,"convention diagnostic, not a fit or anatomical PASS"
+GSN-HydroCel-256,rpa,5.008988561570303,"convention diagnostic, not a fit or anatomical PASS"
+EGI_256,nasion,19.814340030033176,"convention diagnostic, not a fit or anatomical PASS"
+EGI_256,lpa,2.5380427415287867,"convention diagnostic, not a fit or anatomical PASS"
+EGI_256,rpa,2.5380478902344605,"convention diagnostic, not a fit or anatomical PASS"
+standard_1005,nasion,0.0,"convention diagnostic, not a fit or anatomical PASS"
+standard_1005,lpa,0.0,"convention diagnostic, not a fit or anatomical PASS"
+standard_1005,rpa,0.0,"convention diagnostic, not a fit or anatomical PASS"

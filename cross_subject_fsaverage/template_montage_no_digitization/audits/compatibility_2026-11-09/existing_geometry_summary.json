@@ -1,0 +1,282 @@
+{
+  "scalp_triangle_QA": {
+    "created_utc": "2026-11-06T05:36:12.327859+00:00",
+    "review_script_sha256": "7d6503e561d034d88c3e15d4c29797d6ded3770b2f4deb83393d2009f8c2e1c2",
+    "status": "PLACEMENT_CONCERN_REVIEW_REQUIRED",
+    "mapping_policy": "documented-assumption",
+    "mapping_status": [
+      "ASSUMED_UNVERIFIED"
+    ],
+    "physical_channel_mapping_verified": false,
+    "concerns": [
+      "Template electrodes lie inside the closed scalp mesh; review signed depths before forward modeling.",
+      "Some electrodes lie outside the scalp; review separation from the modeled boundary."
+    ],
+    "counts": {
+      "INSIDE": 191,
+      "OUTSIDE": 65,
+      "ON_SURFACE": 0,
+      "AMBIGUOUS": 0
+    },
+    "mesh": {
+      "vertices": 10242,
+      "triangles": 20480,
+      "unique_edges": 30720,
+      "boundary_edges": 0,
+      "nonmanifold_edges": 0,
+      "inconsistent_oriented_edges": 0,
+      "connected_components": 1,
+      "euler_characteristic": 2,
+      "self_intersections_checked": false,
+      "closed_oriented_connected_mesh": true
+    },
+    "classification_tolerances": {
+      "on_surface_mm": 0.001,
+      "winding_number": 1e-05
+    },
+    "unsigned_triangle_distance_mm": {
+      "median": 6.691084029265239,
+      "p95": 14.805354064493525,
+      "maximum": 16.42588000840953
+    },
+    "maximum_inside_depth_mm": 16.42588000840953,
+    "maximum_outside_gap_mm": 15.177131002946387,
+    "previous_nearest_vertex_QA": {
+      "median_scalp_distance_mm": 6.82742970729555,
+      "p95_scalp_distance_mm": 14.897398360485424,
+      "max_scalp_distance_mm": 16.50165593492252,
+      "gates": {
+        "median_mm": 10.0,
+        "p95_mm": 20.0,
+        "rigidity_tolerance": 1e-05
+      }
+    },
+    "fiducial_residuals_mm": {
+      "nasion": 12.544866834949138,
+      "lpa": 5.008983412864837,
+      "rpa": 5.008988561570303
+    },
+    "input_sha256": {
+      "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/01_experiment_manifest.json": "284050e1e6925d2419bc8fbdaedd47f263c0af9edcd730c0bec6c8faf3bce1ee",
+      "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/06_sensor_scalp_geometry_qa.csv": "53d0d17a9f6b0bdda7afc52a99fc2d5d345b4802107642573749a33d44d34ced",
+      "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/07_coordinate_transform_provenance.json": "904e8df139a6bb7c97a15cf55dde3fc66e3a649631b171ec196330d83c4e1551",
+      "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/08_readiness_report.json": "1603d85d815c7739d697875b8c52b9e60afd2c36f9d51ed9fc79ed47f69bcd26",
+      "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/09_fiducial_alignment_qa.csv": "a473762deeae9048a7ec73c0d7692730e6594dcbfb13a66b542de83734ecbc40",
+      "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/fsaverage_geometry/outer_skin.surf": "a66fcfdf3fb4bef0c5cbf546ca9161459474fb37a25af7129e285fdb7707d736"
+    },
+    "software_versions": {
+      "numpy": "2.5.2",
+      "pandas": "3.0.5",
+      "scipy": "1.18.1",
+      "mne": "1.12.1",
+      "matplotlib": "3.11.1"
+    },
+    "plotting_units": "fsaverage surface RAS millimetres",
+    "electrode_coordinates_modified": false,
+    "sensors_projected_to_scalp": false,
+    "individual_geometry_used": false,
+    "forward_modeling_executed": false,
+    "forward_modeling_authorized": false,
+    "preparation_status_modified": false,
+    "limitations": [
+      "Inside/outside assumes the supplied closed mesh has no self-intersections; self-intersections were not tested.",
+      "This is an independent placement diagnostic, not a new or relaxed preparation threshold.",
+      "Template anatomical assumptions and channel correspondence uncertainty remain."
+    ]
+  },
+  "coordinate_conventions": {
+    "source_frame": "MNE template native unknown frame",
+    "source_units": "metres after fixed MNE auto normalization",
+    "mapping_policy": "documented-assumption",
+    "mapping_status": "ASSUMED_UNVERIFIED",
+    "native_to_head": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.9860038757324219,
+        0.16672228276729584,
+        0.0017765370627332855
+      ],
+      [
+        0.0,
+        -0.16672228276729584,
+        0.9860038757324219,
+        0.03745483643658691
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "head_to_fsaverage_mri": [
+      [
+        0.9999938011169434,
+        -0.003557611256837845,
+        -5.701684813175234e-07,
+        0.0018733639735728502
+      ],
+      [
+        0.0035518724471330643,
+        0.9983890652656555,
+        -0.05662653595209122,
+        -0.028795761987566948
+      ],
+      [
+        0.0002020396786974743,
+        0.056625932455062866,
+        0.9983953833580017,
+        -0.04129410162568092
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "native_to_fsaverage_mri": [
+      [
+        0.9999938011169434,
+        -0.0035077234278006403,
+        -0.0005936952582710335,
+        0.0018670223897530717
+      ],
+      [
+        0.0035518724471330643,
+        0.9938563931799432,
+        0.11061972013293353,
+        -0.029143024452150956
+      ],
+      [
+        0.0002020396786974743,
+        -0.11062136855012117,
+        0.9938625222270816,
+        -0.0037987677752452306
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "scalp_file_units": "FreeSurfer surface RAS mm; divided by 1000 for comparisons",
+    "template_fiducial_origin": "resource FidNz/FidT9/FidT10, documentary interpretation required",
+    "transform_policy": "template fiducial coordinate definition + predefined fsaverage transform; no subject registration",
+    "individual_subject_geometry_used": false,
+    "optimized_parameters": [],
+    "projection_or_scaling_search": false,
+    "mne_template_scaling": "head_size=auto; fixed 0.095m spherical convention; not a physical unit conversion",
+    "distance_metric": "nearest scalp vertex (upper bound on triangle-surface distance)",
+    "median_scalp_distance_mm": 6.82742970729555,
+    "p95_scalp_distance_mm": 14.897398360485424,
+    "max_scalp_distance_mm": 16.50165593492252,
+    "gates": {
+      "median_mm": 10.0,
+      "p95_mm": 20.0,
+      "rigidity_tolerance": 1e-05
+    },
+    "fiducial_residuals_mm": {
+      "nasion": 12.544866834949138,
+      "lpa": 5.008983412864837,
+      "rpa": 5.008988561570303
+    },
+    "fiducial_acceptance": "reported for independent review; no fitted landmark residual minimization",
+    "local_normal_offset_min_mm": -16.480465590445554,
+    "local_normal_offset_max_mm": 15.162244195905128,
+    "negative_local_normal_offsets": 191,
+    "numerical_status": "PASS_NUMERICAL_REVIEW_REQUIRED",
+    "surface_topology_signed_distance_not_verified": true
+  },
+  "BEM_interpolation_QA": {
+    "created_utc": "2026-11-06T05:53:41.760192+00:00",
+    "status": "BEM_INTERPOLATION_AUDIT_REVIEW_REQUIRED",
+    "audit_script_sha256": "424bd3e6e6d775021ca64fe730a36cbf10da97982a4593576a5643868a823bf6",
+    "input_sha256": {
+      "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/01_experiment_manifest.json": "284050e1e6925d2419bc8fbdaedd47f263c0af9edcd730c0bec6c8faf3bce1ee",
+      "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/06_sensor_scalp_geometry_qa.csv": "53d0d17a9f6b0bdda7afc52a99fc2d5d345b4802107642573749a33d44d34ced",
+      "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/07_coordinate_transform_provenance.json": "904e8df139a6bb7c97a15cf55dde3fc66e3a649631b171ec196330d83c4e1551",
+      "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/08_readiness_report.json": "1603d85d815c7739d697875b8c52b9e60afd2c36f9d51ed9fc79ed47f69bcd26",
+      "/home/girvi949/mne_data/MNE-fsaverage-data/fsaverage/bem/fsaverage-5120-5120-5120-bem-sol.fif": "ad6a6edd2a3793e7a0d916bafe149690ec9f95e0a591dbeaf86ff5ab2150360f",
+      "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/surface.py": "a4dda0b58c38f6aa0751df42117be7d7f7d0a1c6f2d50738ccc3a0e6c8525257",
+      "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/forward/_compute_forward.py": "a1c36cd6592be7c61ece9a31c91fdba205e5d91cc3e364fb66954486eddebfce",
+      "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/forward/_make_forward.py": "4df4f30d93aeb7797c406d38bffb035207f8099d2b0648055b87aa9af2f7dedd",
+      "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/_fiff/tag.py": "42997f3d784dd58d7f30316baeb153f6777d9a19d493dac6fa7a2887f4f86117"
+    },
+    "mapping_policy": "documented-assumption",
+    "mapping_status": [
+      "ASSUMED_UNVERIFIED"
+    ],
+    "actual_bem_surface": {
+      "id": 4,
+      "coordinate_frame": "MRI surface RAS",
+      "units": "metres",
+      "mesh": {
+        "vertices": 2562,
+        "triangles": 5120,
+        "unique_edges": 7680,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "inconsistent_oriented_edges": 0,
+        "connected_components": 1,
+        "euler_characteristic": 2,
+        "self_intersections_checked": false,
+        "closed_oriented_connected_mesh": true
+      }
+    },
+    "original_sensor_relation_to_actual_bem": {
+      "INSIDE": 190,
+      "OUTSIDE": 66,
+      "ON_SURFACE": 0,
+      "AMBIGUOUS": 0
+    },
+    "displacement_mm": {
+      "median": 6.705053743397096,
+      "p95": 14.76955374058181,
+      "maximum": 16.32162432429787
+    },
+    "maximum_discrepancy_from_independent_triangle_distance_mm": 0.05735735537857867,
+    "discrepancy_from_nearest_triangle_is_acceptance_gate": false,
+    "extrapolated_electrode_count": 14,
+    "interpolation_weight_minimum": -0.11821476111646789,
+    "interpolation_weight_maximum": 1.0225229048502884,
+    "maximum_independent_triangle_plane_projection_error_mm": 2.7758963540648015e-14,
+    "maximum_effective_point_surface_residual_mm": 0.08521756169650777,
+    "effective_points_off_surface_count": 14,
+    "numerical_comparison_tolerance_mm": 0.001,
+    "interpolation_implementation": "MNE 1.12.1 _project_onto_surface accurate: selects closest triangle then reproject=True recomputes unconstrained triangle-plane weights; same query used by _bem_specify_els",
+    "integration_point_assumption": "One unit-weight monopolar EEG location per channel; future Info must contain no separate reference-electrode location in loc[3:6]. Average reference is applied separately.",
+    "solver_interpolation_projection_simulated": true,
+    "input_electrode_coordinates_modified": false,
+    "effective_coordinates_are_audit_only": true,
+    "original_QA_thresholds_changed": false,
+    "preparation_files_changed": false,
+    "source_selection_changed": false,
+    "individual_geometry_used": false,
+    "forward_model_computed": false,
+    "forward_modeling_authorized": false,
+    "software_versions": {
+      "numpy": "2.5.2",
+      "pandas": "3.0.5",
+      "scipy": "1.18.1",
+      "mne": "1.12.1",
+      "matplotlib": "3.11.1"
+    },
+    "limitations": [
+      "This audits the interpolation-location step, not the complete forward calculation.",
+      "Original template placement concerns and unverified channel correspondence remain.",
+      "BEM topology was inspected but self-intersections were not tested.",
+      "Negative/out-of-range weights represent plane extrapolation; effective locations need not lie on the finite triangle or actual scalp surface. No clipping was applied.",
+      "Projection/interpolation is documented solver behavior, not a coordinate correction to obtain a geometry PASS.",
+      "Future forward construction requires an explicit modeling-policy decision about this interpolation behavior."
+    ]
+  },
+  "note": "Read-only reuse of previous assumed-v1 audits; no new geometry or solver computations executed"
+}

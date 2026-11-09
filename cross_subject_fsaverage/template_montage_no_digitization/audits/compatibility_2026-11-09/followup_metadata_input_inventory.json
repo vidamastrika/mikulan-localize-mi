@@ -1,0 +1,632 @@
+[
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-01_epochs.json",
+    "sha256": "402b732c10ce9a676ebc1276a4824e3d75617e55b56274eec781b4ddba29163a",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-02_epochs.json",
+    "sha256": "ff86d623f92df07cc627274c0015bd4bd70163d920a5da51d6457df8d212b67f",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-03_epochs.json",
+    "sha256": "9db6f6c86e91a4594233d683bfdfc84c0fdb3113fa16c2106d828f57c5c1beab",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-04_epochs.json",
+    "sha256": "ade13c1138ef74f892e06f2d749de19adcb8b525ef0c71fbe6f0546b237fd7d0",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-05_epochs.json",
+    "sha256": "cf5516824d497ddcc7061534b2ce6ce5c21555c5a5bffa9a46fa7e5d8e745ee8",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-06_epochs.json",
+    "sha256": "c9e06a2fd0a0e4db8d218a4296150613cea9de42e7c34aa2dbfe2dc6e956fa49",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-07_epochs.json",
+    "sha256": "399417d5667eb50b8d40ec2fe84fc8081f70d5d7893e621bb20f9e3e779a5c0b",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-08_epochs.json",
+    "sha256": "964f9251b2baf19564034db1d04408214eae3fda28c8e4ce894ff95d132ffc49",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-09_epochs.json",
+    "sha256": "1e20982fb67ef5c0f1f4d62ac99f7723af9ac49a715163b78beed1145ee574ee",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-10_epochs.json",
+    "sha256": "a0d243e4b23f6c22285efcd21fa4217d31256bf2f5e36a4b6dc1862e21f7daf0",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-11_epochs.json",
+    "sha256": "cb5825dac7f0c36f8faebcd1a3e51ee2c57b1b4d44838607aa7197e5fe52aac6",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-01_epochs.json",
+    "sha256": "e73f525d3cc2cddc12f1a7de5b14653745072ef473cadb3748ae338c7a81962c",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-02_epochs.json",
+    "sha256": "59445f72b31a4ca100f0d4d295f85ee9474fceddce46cdd430c995da957c5d7e",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-03_epochs.json",
+    "sha256": "958d3a3f4f549c6f4d682fb57f4a148a5fa4f1d663153837fe7a61fd8ee5da14",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-04_epochs.json",
+    "sha256": "94fef5a07d3a5b3a8448b395a95aac83976d2bb6a4b63ca36eaeb6b66ae884d3",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-05_epochs.json",
+    "sha256": "c288f1974d9e20a02d611d569a3cb31ecafb4ccb43b984bcf0584c37fa53a045",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-06_epochs.json",
+    "sha256": "6ef4296b36f272b8e544478adf6e93fa6dd00aa4c88ce085984fe8371cc23999",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-01_epochs.json",
+    "sha256": "349db786ae3fb11f469129e7ea9d19c964b37d98ee7d62517395ff640d26ce01",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-02_epochs.json",
+    "sha256": "cb4e4dcb74926bca359a7cdf33fd02fa100062e18392f9b86352bd7ef57a28ff",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-03_epochs.json",
+    "sha256": "b947c806766a93ae7a6bf791258c7d6ce7b332b0f1d2fa64a4a1dc82463419e2",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-04_epochs.json",
+    "sha256": "37b18d8f07a7ba51f74e7bdda95be6371a321307d4aa216b6693017dff10b58c",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-05_epochs.json",
+    "sha256": "ac2c1502f5468a414692d2322c48e5f3bdb0aad267dd03c22872086b281d185d",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-06_epochs.json",
+    "sha256": "f9dbbc15aa1fb6e03b2d1e8e8ccc2a07ac52d4d8170458473f3e26ec3d0a3a9e",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-07_epochs.json",
+    "sha256": "e801f8be6166aa5b6111ee0c9790a36aaecfad73f71215c0fde9f8d5c664ab54",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-01_epochs.json",
+    "sha256": "15a6da80eb6d3af83c9b438c4302aef2e0e23f402ea3d54cc61913712149b1b5",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-02_epochs.json",
+    "sha256": "f76c3ba7f61983372e822a952df889a0fc8559baa4eb7806cd6f8ed56ef24a6c",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-03_epochs.json",
+    "sha256": "22298b861221479df6d89ed94ccdf89ac0969314eb5eab269b1028007390e6bf",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-04_epochs.json",
+    "sha256": "aaaa9ecedf51fc5d92ba14d63c0cc1b48a39958043570aeae15c5035b5211f95",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-05_epochs.json",
+    "sha256": "8de27aea00f4e9bb85ecec8d5cea7313330aa068ce14eb72dd70ce4234e9f31a",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-06_epochs.json",
+    "sha256": "318026b9071dd9423ca94032389e76b34e56fbc6e78e0e64d60e2ba566c496be",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-07_epochs.json",
+    "sha256": "8c570b7d3697e2fbff948df1c46229cc5bd74c9ce2bb0af38d59d598cef8add6",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-08_epochs.json",
+    "sha256": "d490be694d308789abe5e63587e44270dd3146259b96f683262362e54ed38a5a",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-09_epochs.json",
+    "sha256": "cec9ad04aaef8dd0fa4e0c502d27864b40d5a849a446b57cff4edb2cd65ba3fe",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-01_epochs.json",
+    "sha256": "d8f863fab42d33b9318e344632ee0aea713dcdc6d5143c44afa2fee7196da31c",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-02_epochs.json",
+    "sha256": "e86f7a25935fe724a4f9ba8f7053bde2738915db5d967c3309615a210bab7304",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-03_epochs.json",
+    "sha256": "53e65b4fb379d0510d4e2bfd2d96e17119932a0ceadb259768cc5ea905e3b4d0",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-04_epochs.json",
+    "sha256": "1b5e62abc2103d4692d5a04eb99b9bd0811eab1508a9eec8011278d47a01926f",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-05_epochs.json",
+    "sha256": "7f301b881e099e5d717022012fedc30421fecf89618403fce4f30f7b5e18db80",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-06_epochs.json",
+    "sha256": "47065be86e095c8235ff1da685ba6b06e5893543def50d5e2931fc4a84160c5d",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-07_epochs.json",
+    "sha256": "e07e30eaa5fd6d13974e852943b7378287e7a02749ceaffea1d3c8c0755e1c64",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-08_epochs.json",
+    "sha256": "46b97f14d6f0ab8a3f4f487ccef9d94de36eb6a687288c6f476f07c930501bd7",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-09_epochs.json",
+    "sha256": "81f9b3592b6755fb6b2eddad2bf5eb134df6db251129ec4d09e727f41d520028",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-10_epochs.json",
+    "sha256": "4b6bfce25f95bbd3249163786e15373bd51bfbafad3fab4449c152004fad4304",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-11_epochs.json",
+    "sha256": "dc3a85707bfe23a117514dc2e9384fcb72b71c0c54509c4b6f2982e042a488b7",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-12_epochs.json",
+    "sha256": "9dbc2462a8d24ced74c0d5b60f635dc23d38b946de2beb6fc742c2549d7078df",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-13_epochs.json",
+    "sha256": "27ac6036388d9b5c6323cba4d4e48ea067746f0ff2f1b3198ef2840654580665",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-14_epochs.json",
+    "sha256": "cc4c940c12c86b9bfed7a0c9da7fa973ba7b5b6b8d83e6ff20d9129d6870ca6a",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-01_epochs.json",
+    "sha256": "74b597c6771bc860d28c058921b8d90551d3d2854fb643c9ba74384e1e6e0a40",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-02_epochs.json",
+    "sha256": "950176c7db83cae8f852fda91b0588402b58ee7614aeca25020daca0b3e80187",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-03_epochs.json",
+    "sha256": "033d2e6b96100e27fa7d5e0acc1bc377286f75c1206d3f842756a224a4a393ce",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-04_epochs.json",
+    "sha256": "d6926d904d546be35b6e20afe6a15deb0fc0a48b45d975e31534c3a27d2f4d97",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-05_epochs.json",
+    "sha256": "d0f53a2ab52678e4702c866be3f104c760e39d4eefd4ba2ed11131b07b829ad9",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-06_epochs.json",
+    "sha256": "7a967abc366eb62184f8513a9b12f4bc016fb44911c4deefc07280ee84020258",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-07_epochs.json",
+    "sha256": "fa768b80cfd9d22f880c4500b1a11f5111eed01a87ec740b2195fd0d404d4303",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-01_epochs.json",
+    "sha256": "827574ced89f76b90cc1c12afa330edd845ebc6d5cfb82980655bbb92a1abed8",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-02_epochs.json",
+    "sha256": "764b586ecae9bf069e8ecd3bb26bff5053d19ea5f44b69280c304a03a852c208",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-03_epochs.json",
+    "sha256": "c6d21202d92b968153ce8d3158f24080dc3a3449c50897653339ae09f5292025",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-04_epochs.json",
+    "sha256": "41773c0b4e8725c0dfa7190c8d0da764e66f10eaedf7fac906797191d7fc595c",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-05_epochs.json",
+    "sha256": "ea51f6900bb58d333a2ae0a9aaa4dbc0a6eac9b35e924bbd57bfb90c50a21cc0",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-06_epochs.json",
+    "sha256": "b83e53ed92a47372bf278d3a4f4060da4791862b8eedde0fae0cee606114117c",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-07_epochs.json",
+    "sha256": "bc02a4b0259db6a18a2fddd831acea6903304a77c25ef51074978085cc553f6f",
+    "inspection": "EEG metadata field names/source reference only; no outcome or geometry analysis"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-01_channels.tsv",
+    "sha256": "2c51fe3670c270d5c4aee43a0c08ba2a3299f6569ead627a5193e0ff2a70345a",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-02_channels.tsv",
+    "sha256": "c6a53efb078f0052e7bd1e2c4a27e9757b7e52bab852c5ab003e75dffb2bed72",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-03_channels.tsv",
+    "sha256": "2c51fe3670c270d5c4aee43a0c08ba2a3299f6569ead627a5193e0ff2a70345a",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-04_channels.tsv",
+    "sha256": "101ded28107b525928f5b19e856e18cc35805d61887720bc17fe30797710cedc",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-05_channels.tsv",
+    "sha256": "2c51fe3670c270d5c4aee43a0c08ba2a3299f6569ead627a5193e0ff2a70345a",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-06_channels.tsv",
+    "sha256": "f9ba44b260fccc5c295df0da26f910f4c87849169b41572e02d41b2f462bd6e3",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-07_channels.tsv",
+    "sha256": "922b5d9bf96b79cf82860afb0b8693d70efea84b67cd0ed067bfe54f845380ad",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-08_channels.tsv",
+    "sha256": "2c51fe3670c270d5c4aee43a0c08ba2a3299f6569ead627a5193e0ff2a70345a",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-09_channels.tsv",
+    "sha256": "922b5d9bf96b79cf82860afb0b8693d70efea84b67cd0ed067bfe54f845380ad",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-10_channels.tsv",
+    "sha256": "2c51fe3670c270d5c4aee43a0c08ba2a3299f6569ead627a5193e0ff2a70345a",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-11_channels.tsv",
+    "sha256": "eb191ce218b3c49c81b0aa9f7672b13bfb6067260512aa89c4f3226c9de63215",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-01_channels.tsv",
+    "sha256": "54922f8e51614fe5d43b28b5ae5e3bc02d289a9efd6bc383d6984d0b0cc8998f",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-02_channels.tsv",
+    "sha256": "3551793249b5746015cff694eb42fa877560bd687208dd24d5aa7cecc5014ab5",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-03_channels.tsv",
+    "sha256": "3f11c0dafb89145b7db9fab92fe45509a5fca2a06ec230e05ed0b1a2c4023455",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-04_channels.tsv",
+    "sha256": "7da3f1b3471c444df8668799f38c3627b0c406e3d8dafa541cace046306cca09",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-05_channels.tsv",
+    "sha256": "d46acce82f7f8f13ae6414cd300d2b5562398af4069bbb67160b9e937a525535",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-06_channels.tsv",
+    "sha256": "6569eb3629e424aecade6d82a85296dc69a3665c51880cbc31e5f49ce4e44a7e",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-01_channels.tsv",
+    "sha256": "cd03377976befa6c2192f4a16fda699586e5cdc498300e05ea0283f1e7b1c999",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-02_channels.tsv",
+    "sha256": "cd6d922042e1170ba4b91e30541dfde8fb631acd5cbe85d2dc07c38e67e5b3e6",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-03_channels.tsv",
+    "sha256": "778cf66b321f94106283b71d4a253d97222861a77443519ea74dc46f8a17ad91",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-04_channels.tsv",
+    "sha256": "338cd7bd6c71dbaf15e390d8743be1bb1328c21b808bc45aed36285ad6a01170",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-05_channels.tsv",
+    "sha256": "05a1fa6acbcbb57619a4ddc5aae8e5b4eb49bd2bc4b79012255d20a306b9b8ca",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-06_channels.tsv",
+    "sha256": "ce16310d79f01e9f90ebd0400140f06250989b45f2031bebcc9a3c7f929c5c6f",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-07_channels.tsv",
+    "sha256": "6de9991e07b6502cf7c318ac6560e09d4137ab23936824775acc2965c9db1cbf",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-01_channels.tsv",
+    "sha256": "a91c026e25ea38f60f9d97408cb14f87bcad7f3d41c9c3a43d5509c2b03cd810",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-02_channels.tsv",
+    "sha256": "64a516cc30b453dc0648045f4781a45b4043e9af9fa8d5ee36bd2d276d75c16e",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-03_channels.tsv",
+    "sha256": "5316eb85704aade3971579e111b209cdb4bc6e9894a02f131bf14d97f3471a63",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-04_channels.tsv",
+    "sha256": "78c424cfa5f775187792ed80f740113b3b559702aee068b871490f29429cfda0",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-05_channels.tsv",
+    "sha256": "8556656db0f9cd4bede33357bb4e4cb0edd47fcee8241f4b09493c2fcd22b059",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-06_channels.tsv",
+    "sha256": "6d07dc623ceda2a2e4e2fec114efe75247c8ec39ec5d2a30ae660f7d1745aef3",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-07_channels.tsv",
+    "sha256": "3521228d2aae7fc9065ae524a82037b735f29619a93533ebbd8c803e9bd0c9e6",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-08_channels.tsv",
+    "sha256": "87d6c6dad856694abfdcddd9c355819edde4cf9084616f1269e25465e71c5c57",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-09_channels.tsv",
+    "sha256": "e156fda1824fa9e4b30015db8bcebf4a4cb0f9addce3c3bf71467aabad58b262",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-01_channels.tsv",
+    "sha256": "8f9a10bc3eeab9fb9af7c7409e7226f874defe4f0efbdcaa7bb2ebca99f90ae1",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-02_channels.tsv",
+    "sha256": "4878bf5a1a7306255145f1398da72a2bcc70579dab42cadf5c68ae84af4b5958",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-03_channels.tsv",
+    "sha256": "6c7d10f17d2afadaabc5b06399dfbb2049c050c0a4eaa1c7564c1b6c7a022573",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-04_channels.tsv",
+    "sha256": "1dc0373231ba7d48e4a8702e2f31a8e27d592a679f6b4466646bea2c189a0929",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-05_channels.tsv",
+    "sha256": "caa97eec3927c07115a9c8963742773573c96a015bbc1b90ad69181531448494",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-06_channels.tsv",
+    "sha256": "8452e01db2a2a53cf29960edc81915609c98a17757afe97eb0c72a3d37be1a74",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-07_channels.tsv",
+    "sha256": "6e3bdbb8a31bcf3584d830c4e31b1c19422987049d5c7b19277bc372a111f659",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-08_channels.tsv",
+    "sha256": "0f8ae75bd7b55c77f663b3c0d99624f4f0f66e081ca6bd954e467d28ef732309",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-09_channels.tsv",
+    "sha256": "f7e14ad3d79a737231531b951479e93d99e83a00de48c19968bc28d1a1eda9f0",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-10_channels.tsv",
+    "sha256": "98ab096cc93aa02b93c5006729632cb24d9689a310a5443044ecff9a6e68e952",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-11_channels.tsv",
+    "sha256": "423be1a3fac421be37d587575deba1dd06fc4e0524b69f64e449a7d5d106e9de",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-12_channels.tsv",
+    "sha256": "395289196c3e3296dc1f3b2482da30e9d05a7bc2ae2f61f31bcb580030514691",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-13_channels.tsv",
+    "sha256": "ccdfd37b704864c204684c302187455b0267380a6ca40eccdb7813d70fe44629",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-14_channels.tsv",
+    "sha256": "4c0bac5d7735fd1f974067c10896fc0183a7afb45d424df6aac524199b7481e1",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-01_channels.tsv",
+    "sha256": "16a3946af889d585e2a09fd2b0127aadc4b1fa080e347254cf025ec519335ce8",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-02_channels.tsv",
+    "sha256": "6c6ad4bec5f6159b2feaecff6179d09f52baf063be7662c3222f4260534bf403",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-03_channels.tsv",
+    "sha256": "e70b0a406da5137f03167669058caaec50fde3eda9c973c53112f406e639c47a",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-04_channels.tsv",
+    "sha256": "625f7cc6f268bd0547eb2a778525d26385c694a593cf5c3cb250efd32270e920",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-05_channels.tsv",
+    "sha256": "06c9bb0eb09f000e4cdf4ce18be701cc0f0088663f748f8afe0d47f9b167714b",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-06_channels.tsv",
+    "sha256": "250a3faa43346a4f789143322063f5a0bf341a4710ee6ff5ce28b5e4019f3817",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-07_channels.tsv",
+    "sha256": "9bb52b7c8d9426d8f3e29378ef359af77615ee072a8d033eadcd266ffc28eaef",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-01_channels.tsv",
+    "sha256": "a9aac2182849d302ddf767c49c3cb427a797695e9fc862f02be1f96b8c6ce6fc",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-02_channels.tsv",
+    "sha256": "649630de861a7f79e6a9bdd399b9d2ea53fe0da4e326027bb0d5053cd5f60a9e",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-03_channels.tsv",
+    "sha256": "3b96b67c8193e9c94a22ab4e7133641d781ac5857949608d6691c2e4eb016a78",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-04_channels.tsv",
+    "sha256": "89f0039c13e916589127729857fa536db664e37f2c9f3ab7ddbc6efbef3d791c",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-05_channels.tsv",
+    "sha256": "baa87a0eb0a39ffc657e433ec7f4f707c641b93f533fbaa03cee62ddecea4f8a",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-06_channels.tsv",
+    "sha256": "241a235074b557634611d060da8a7b0d63e9336dd5f42281a09f623207390e9c",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-07_channels.tsv",
+    "sha256": "1ef7a5501339f9b430c0d13f06625bd8b1e88b57e161bef7b557bf42d2a47546",
+    "inspection": "channel metadata column names only; no coordinates read"
+  },
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/fx_preprocess.py",
+    "sha256": "c3c32cde6feb8a0fbd83d8d56ac19b8c3753cf4ea1080123d0414218cbf30b46",
+    "inspection": "static acquisition/export source or dataset documentation"
+  },
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/fx_bids.py",
+    "sha256": "aed30071bde21cd8919ea4584ec20cd54fc347a23e60f67e1d672490d4117a35",
+    "inspection": "static acquisition/export source or dataset documentation"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/README.md",
+    "sha256": "7a1265ef7f964b304a0620ee77d00839df7d8598a7251267eaffe4f9f8a426fb",
+    "inspection": "static acquisition/export source or dataset documentation"
+  },
+  {
+    "path": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/dataset_description.json",
+    "sha256": "f7d46ce0f0f39419316753a2d1f03d4ab4f520562bed435c37095fe06865d1f1",
+    "inspection": "static acquisition/export source or dataset documentation"
+  }
+]

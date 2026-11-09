@@ -1,0 +1,13 @@
+method,year,family,color,marker,linestyle
+MNE,1994,Minimum-norm,#4C78A8,o,-
+dSPM,2002,Minimum-norm,#E45756,s,-
+sLORETA,2002,Minimum-norm,#54A24B,^,-
+eLORETA,2011,Minimum-norm,#8E5C99,D,-
+Continuous-ECD,1990,Dipole / Beamformer,#F58518,v,-
+RAP-MUSIC,2001,Dipole / Beamformer,#B279A2,X,-
+LCMV,1997,Dipole / Beamformer,#ECA82C,h,-
+MxNE,2011,Sparse,#72B7B2,P,-
+irMxNE,2018,Sparse,#2D6A9F,o,--
+Gamma-MAP,2008,Bayesian,#8561A8,^,--
+Champagne,2016,Bayesian,#D65A31,s,--
+SESAME,2020,SESAME,#299C87,D,--

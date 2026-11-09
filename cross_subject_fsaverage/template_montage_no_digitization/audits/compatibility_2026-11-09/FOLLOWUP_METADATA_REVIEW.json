@@ -1,0 +1,363 @@
+{
+  "status": "BLOCKED_NO_INDEPENDENT_ACQUISITION_LOOKUP",
+  "EEG_metadata_files": 61,
+  "channel_metadata_files": 61,
+  "EEG_metadata_field_counts": {
+    "Description": 61,
+    "Sources": 61,
+    "BaselineCorrection": 61,
+    "BaselineCorrectionMethod": 61,
+    "BaselinePeriod": 61
+  },
+  "channel_metadata_field_counts": {
+    "name": 61,
+    "type": 61,
+    "units": 61,
+    "low_cutoff": 61,
+    "high_cutoff": 61,
+    "sampling_frequency": 61,
+    "status": 61
+  },
+  "raw_acquisition_format_candidates": [],
+  "released_source_reference_counts": {
+    "total": 61,
+    "present": 0
+  },
+  "source_references": [
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-01_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-01_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-02_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-02_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-03_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-03_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-04_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-04_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-05_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-05_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-06_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-06_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-07_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-07_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-08_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-08_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-09_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-09_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-10_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-10_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-01/eeg/sub-01_task-seegstim_run-11_epochs.json",
+      "source_reference": "/sub-01/eeg/sub-01_task-seegstim_run-11_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-01_epochs.json",
+      "source_reference": "/sub-02/eeg/sub-02_task-seegstim_run-01_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-02_epochs.json",
+      "source_reference": "/sub-02/eeg/sub-02_task-seegstim_run-02_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-03_epochs.json",
+      "source_reference": "/sub-02/eeg/sub-02_task-seegstim_run-03_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-04_epochs.json",
+      "source_reference": "/sub-02/eeg/sub-02_task-seegstim_run-04_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-05_epochs.json",
+      "source_reference": "/sub-02/eeg/sub-02_task-seegstim_run-05_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-02/eeg/sub-02_task-seegstim_run-06_epochs.json",
+      "source_reference": "/sub-02/eeg/sub-02_task-seegstim_run-06_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-01_epochs.json",
+      "source_reference": "/sub-03/eeg/sub-03_task-seegstim_run-01_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-02_epochs.json",
+      "source_reference": "/sub-03/eeg/sub-03_task-seegstim_run-02_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-03_epochs.json",
+      "source_reference": "/sub-03/eeg/sub-03_task-seegstim_run-03_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-04_epochs.json",
+      "source_reference": "/sub-03/eeg/sub-03_task-seegstim_run-04_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-05_epochs.json",
+      "source_reference": "/sub-03/eeg/sub-03_task-seegstim_run-05_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-06_epochs.json",
+      "source_reference": "/sub-03/eeg/sub-03_task-seegstim_run-06_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-03/eeg/sub-03_task-seegstim_run-07_epochs.json",
+      "source_reference": "/sub-03/eeg/sub-03_task-seegstim_run-07_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-01_epochs.json",
+      "source_reference": "/sub-04/eeg/sub-04_task-seegstim_run-01_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-02_epochs.json",
+      "source_reference": "/sub-04/eeg/sub-04_task-seegstim_run-02_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-03_epochs.json",
+      "source_reference": "/sub-04/eeg/sub-04_task-seegstim_run-03_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-04_epochs.json",
+      "source_reference": "/sub-04/eeg/sub-04_task-seegstim_run-04_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-05_epochs.json",
+      "source_reference": "/sub-04/eeg/sub-04_task-seegstim_run-05_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-06_epochs.json",
+      "source_reference": "/sub-04/eeg/sub-04_task-seegstim_run-06_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-07_epochs.json",
+      "source_reference": "/sub-04/eeg/sub-04_task-seegstim_run-07_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-08_epochs.json",
+      "source_reference": "/sub-04/eeg/sub-04_task-seegstim_run-08_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-04/eeg/sub-04_task-seegstim_run-09_epochs.json",
+      "source_reference": "/sub-04/eeg/sub-04_task-seegstim_run-09_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-01_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-01_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-02_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-02_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-03_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-03_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-04_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-04_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-05_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-05_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-06_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-06_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-07_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-07_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-08_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-08_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-09_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-09_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-10_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-10_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-11_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-11_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-12_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-12_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-13_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-13_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-05/eeg/sub-05_task-seegstim_run-14_epochs.json",
+      "source_reference": "/sub-05/eeg/sub-05_task-seegstim_run-14_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-01_epochs.json",
+      "source_reference": "/sub-06/eeg/sub-06_task-seegstim_run-01_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-02_epochs.json",
+      "source_reference": "/sub-06/eeg/sub-06_task-seegstim_run-02_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-03_epochs.json",
+      "source_reference": "/sub-06/eeg/sub-06_task-seegstim_run-03_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-04_epochs.json",
+      "source_reference": "/sub-06/eeg/sub-06_task-seegstim_run-04_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-05_epochs.json",
+      "source_reference": "/sub-06/eeg/sub-06_task-seegstim_run-05_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-06_epochs.json",
+      "source_reference": "/sub-06/eeg/sub-06_task-seegstim_run-06_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-06/eeg/sub-06_task-seegstim_run-07_epochs.json",
+      "source_reference": "/sub-06/eeg/sub-06_task-seegstim_run-07_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-01_epochs.json",
+      "source_reference": "/sub-07/eeg/sub-07_task-seegstim_run-01_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-02_epochs.json",
+      "source_reference": "/sub-07/eeg/sub-07_task-seegstim_run-02_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-03_epochs.json",
+      "source_reference": "/sub-07/eeg/sub-07_task-seegstim_run-03_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-04_epochs.json",
+      "source_reference": "/sub-07/eeg/sub-07_task-seegstim_run-04_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-05_epochs.json",
+      "source_reference": "/sub-07/eeg/sub-07_task-seegstim_run-05_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-06_epochs.json",
+      "source_reference": "/sub-07/eeg/sub-07_task-seegstim_run-06_eeg.npy",
+      "present_in_local_tree": false
+    },
+    {
+      "metadata": "/home/girvi949/Documents/DATASETS SOURCE LOCALIZATION/Localize-MI/derivatives/epochs/sub-07/eeg/sub-07_task-seegstim_run-07_epochs.json",
+      "source_reference": "/sub-07/eeg/sub-07_task-seegstim_run-07_eeg.npy",
+      "present_in_local_tree": false
+    }
+  ],
+  "code_findings": [
+    {
+      "file": "fx_preprocess.py",
+      "function": "import_egi_sdk",
+      "finding": "EEG labels are generated as e1..e256 after data transpose/trigger separation"
+    },
+    {
+      "file": "fx_preprocess.py",
+      "function": "make_dig_files",
+      "finding": "Original digitizer IDs are parsed, but output channel names are constructed from expected ordering instead of a physical-ID lookup"
+    },
+    {
+      "file": "fx_bids.py",
+      "function": "make_electrodes_eeg_tsv",
+      "finding": "HydroCel CleanLeads material is a literal assigned by exporter; not an acquisition-header net identifier"
+    },
+    {
+      "file": "fx_bids.py",
+      "function": "export_data_bids",
+      "finding": "Channel table inherits epoch channel names; no separate sensor-hardware identity column is added"
+    }
+  ],
+  "limitations": [
+    "Absence of these raw formats concerns this local released-data tree only; it does not prove no acquisition archive exists elsewhere.",
+    "Coordinate-system metadata inspected separately provides frame/landmark information, not an acquisition net code; no landmark values were used to fit or verify the template.",
+    "No individual forward, MRI image, waveform, stimulation outcome or sensor-coordinate matching was used."
+  ],
+  "forward_modeling_authorized": false,
+  "existing_results_changed": false,
+  "code_or_experiments_executed": false
+}

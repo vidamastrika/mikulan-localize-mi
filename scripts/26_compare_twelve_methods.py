@@ -20,14 +20,23 @@ values are within-run medians across eligible PASS solutions, as in Script 17.
 This is an in-sample descriptive comparison, not unseen-subject validation.
 Script 25's 06/07 CSVs supply complete comparison rows. Script 24's unfiltered
 master supplies reliability evidence before incomplete configurations are removed.
+
+Redraw only participant figures from saved summaries (no grid recomputation):
+  .venv/bin/python scripts/26_compare_twelve_methods.py \
+      --participant-figures-only --overwrite
+Script 07-style overlays for representative runs, all 12 fixed best methods:
+  .venv/bin/python scripts/26_compare_twelve_methods.py \
+      --representative-figures-only --dpi 300
 """
 from __future__ import annotations
 import argparse
+import hashlib
 import importlib.util
 import json
 import re
 from pathlib import Path
 import sys
+from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
 
@@ -43,6 +52,16 @@ COLORS = {
     'Continuous-ECD':'#F58518', 'RAP-MUSIC':'#B279A2', 'LCMV':'#ECA82C',
     'Gamma-MAP':'#8561A8', 'Champagne':'#D65A31', 'SESAME':'#299C87',
 }
+BOX_ALPHA = .82
+# Color remains identical to the boxplot; marker/line patterns distinguish
+# methods whose established palette shades are close to one another.
+PARTICIPANT_STYLES = dict(zip(METHODS, [
+    ('o','-'), ('s','-'), ('^','-'), ('D','-'),
+    ('v','-'), ('P','-'), ('X','-'), ('h','-'),
+    ('o','--'), ('s','--'), ('^','--'), ('D','--'),
+]))
+REPRESENTATIVE_CASES = [('sub-01','run-01'), ('sub-05','run-06'),
+                        ('sub-07','run-05'), ('sub-07','run-07'), ('sub-04','run-08')]
 METHOD_GROUPS = [
     ('Distributed / minimum-norm',['MNE','dSPM','sLORETA','eLORETA']),
     ('Sparse',['MxNE','irMxNE']),
@@ -103,6 +122,17 @@ def arguments():
     a.add_argument('--expected-runs', type=int, default=61)
     a.add_argument('--dpi', type=int, default=240)
     a.add_argument('--no-figures', action='store_true')
+    a.add_argument('--participant-figures-only', action='store_true',
+                   help='Redraw only figures 05/07 for both cohorts from existing summary CSVs; no grid analysis.')
+    a.add_argument('--representative-figures-only', action='store_true',
+                   help='Plot Script-07 anatomical overlays and error bars using saved Script-26 selected configurations; no inverses.')
+    a.add_argument('--report-mode', choices=['complete_all_pass','complete_any_status'], default='complete_all_pass',
+                   help='Saved cohort supplying the fixed per-method best configurations for representative figures.')
+    a.add_argument('--representative-case', nargs=2, action='append', metavar=('SUBJECT','RUN'),
+                   help='Override the default four Script-07 cases plus sub-04 run-08; repeat for multiple cases.')
+    a.add_argument('--dataset', type=Path, default=ROOT/'data/Localize-MI')
+    a.add_argument('--anatomical-geometry', type=Path, default=ROOT/'outputs/07_anatomical_inspection/run_anatomical_geometry.csv',
+                   help='Existing Script-07 geometry; midpoint and coordinate-error agreement are rechecked.')
     a.add_argument('--overwrite', action='store_true')
     return a.parse_args()
 
@@ -117,6 +147,61 @@ def script17_module(path):
     mod.METHOD_ORDER = METHODS[:]
     mod.METHOD_COLORS.update(COLORS)
     return mod
+
+
+def save_participant(participant, path, title, dpi):
+    """Use boxplot RGBA colors and separate marker/line identities per method."""
+    import matplotlib.pyplot as plt
+    pivot = participant.pivot(index='subject', columns='method', values='median_mm')
+    pivot = pivot.reindex(columns=METHODS)
+    fig, ax = plt.subplots(figsize=(13, 7))
+    x = np.arange(len(pivot.index))
+    for method in METHODS:
+        marker, linestyle = PARTICIPANT_STYLES[method]
+        ax.plot(x, pivot[method].to_numpy(float), color=COLORS[method],
+                alpha=BOX_ALPHA, marker=marker, linestyle=linestyle,
+                markersize=7, linewidth=1.6, label=method)
+    ax.set_xticks(x, pivot.index)
+    ax.set_xlabel('Participant')
+    ax.set_ylabel('Median localization error (mm)')
+    ax.set_title(title)
+    ax.grid(axis='y', alpha=.25)
+    ax.legend(frameon=False, ncol=4, bbox_to_anchor=(.5, -.16), loc='upper center')
+    fig.tight_layout(rect=(0, .08, 1, 1))
+    add_year_labels_to_figure(fig)
+    fig.savefig(path, dpi=dpi, bbox_inches='tight')
+    plt.close(fig)
+
+
+def redraw_participant_figures(args, mod):
+    """Redraw saved summaries only; never load grids or rewrite results."""
+    if args.no_figures:
+        raise ValueError('--participant-figures-only conflicts with --no-figures')
+    jobs = []
+    for mode in ['complete_any_status', 'complete_all_pass']:
+        root = args.output_root / mode
+        for table, figure, title in [
+            ('07_selected_configuration_participant_summary.csv',
+             '05_selected_configuration_by_participant.png',
+             'Selected fixed configurations: median error by participant'),
+            ('08_overall_grid_participant_summary.csv',
+             '07_overall_grid_by_participant.png',
+             'Typical within-grid run values by participant'),
+        ]:
+            source, target = root/'tables'/table, root/'figures'/figure
+            if not source.is_file():
+                raise FileNotFoundError(source)
+            if target.exists() and not args.overwrite:
+                raise FileExistsError(f'{target} exists; pass --overwrite')
+            data = pd.read_csv(source)
+            if set(data.method) != set(METHODS):
+                raise ValueError(f'Incomplete method set: {source}')
+            jobs.append((data, target, title))
+    mod.setup_plot_style()
+    for data, target, title in jobs:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        save_participant(data, target, title, args.dpi)
+        print(f'Redrawn: {target}')
 
 
 def reference_keys(frame):
@@ -590,10 +675,10 @@ def make_report(mod, grid, audit, ref, root, args, mode,
             'Within-run median localization error (mm)',args.dpi)
         mod.save_selected_vs_overall(compare,figures/'03_selected_vs_overall_method_medians.png',args.dpi)
         mod.save_pairwise_heatmap(pair,figures/'04_selected_pairwise_median_differences.png',args.dpi)
-        mod.save_participant(participant,figures/'05_selected_configuration_by_participant.png',
+        save_participant(participant,figures/'05_selected_configuration_by_participant.png',
             'Selected fixed configurations: median error by participant',args.dpi)
         mod.save_lowest_counts(lowest,figures/'06_selected_configuration_lowest_error_counts.png',args.dpi)
-        mod.save_participant(overall_participant,figures/'07_overall_grid_by_participant.png',
+        save_participant(overall_participant,figures/'07_overall_grid_by_participant.png',
             'Typical within-grid run values by participant',args.dpi)
         mod.save_run_difficulty(run,figures/'08_selected_run_difficulty.png',args.dpi)
         mod.save_methods_by_run(wide,figures/'09_selected_configuration_by_run.png',
@@ -645,7 +730,7 @@ def save_grouped_distribution(long_table, path, title, subtitle, ylabel, dpi):
         flierprops={'marker':'o','markerfacecolor':'white','markeredgecolor':'#333333',
                     'markersize':4.5,'linestyle':'none'})
     for patch,method in zip(boxes['boxes'],METHODS):
-        patch.set_facecolor(COLORS[method]); patch.set_alpha(.82)
+        patch.set_facecolor(COLORS[method]); patch.set_alpha(BOX_ALPHA)
         patch.set_edgecolor('#555555'); patch.set_linewidth(.9)
     labels=[f'{m}\n({METHOD_YEARS[m]})' for m in METHODS]
     ax.set_xticks(positions,labels,rotation=35,ha='right',rotation_mode='anchor')
@@ -670,7 +755,16 @@ def save_grouped_distribution(long_table, path, title, subtitle, ylabel, dpi):
 
 def main():
     args=arguments()
+    if args.representative_figures_only:
+        if args.participant_figures_only or args.no_figures:
+            raise ValueError('Choose one figure-only mode, without --no-figures')
+        from script26_representative_figures import render
+        render(args,METHODS,COLORS,PARTICIPANT_STYLES,REPRESENTATIVE_CASES)
+        return
     mod=script17_module(args.script17)
+    if args.participant_figures_only:
+        redraw_participant_figures(args,mod)
+        return
     old=old_grid(args,mod)
     old=prepare_old(old,reference_keys(old.loc[old.method.eq('MNE')]))
     ref=reference_keys(old.loc[old.method.eq('MNE')])

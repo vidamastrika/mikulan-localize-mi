@@ -1,0 +1,70 @@
+{
+  "review_date": "2026-11-09",
+  "status": "BLOCKED",
+  "acquisition_family": "256-channel Geodesic Sensor Net, HydroCel CleanLeads, EGI NA-400; custom C++/MATLAB AmpServerPro-based acquisition",
+  "exact_acquisition_net_revision_verified": false,
+  "physical_channel_mapping_verified": false,
+  "public_importer_scope": "Assigns ascending e1..e256 after transpose and trigger removal; preceding acquisition export correspondence is not independently established",
+  "pinned_hydrocel_sha256": "63d3de763f3bd36bb9096989a828068edcb60fea81607ddb96022d3bd2126e1c",
+  "pinned_mne_version": "1.12.1",
+  "fsaverage_1005_added_in_mne": "1.13",
+  "blockers": [
+    "No independently reviewed acquisition net revision/cap configuration and saved-row-to-physical-sensor lookup covering all participants.",
+    "eN->EN remains a documented hypothesis, not validated physical correspondence.",
+    "Template fiducial interpretation and fixed normalization remain modeling conventions; existing scalp QA shows appreciable mismatch."
+  ],
+  "sources": [
+    {
+      "id": "paper",
+      "url": "https://www.nature.com/articles/s41597-020-0467-x",
+      "supports": "Acquisition family, count, amplifier and custom acquisition software; no exporter permutation proof"
+    },
+    {
+      "id": "author_importer",
+      "url": "https://github.com/iTCf/mikulan_et_al_2020/blob/master/fx_preprocess.py",
+      "supports": "Public import_egi_sdk labeling step"
+    },
+    {
+      "id": "author_exporter",
+      "url": "https://github.com/iTCf/mikulan_et_al_2020/blob/master/fx_bids.py",
+      "supports": "BIDS metadata export; not a hardware channel map"
+    },
+    {
+      "id": "mne_montage_parser",
+      "url": "https://github.com/mne-tools/mne-python/blob/v1.12.1/mne/channels/_standard_montage_utils.py",
+      "supports": "Distinct EGI/HydroCel parsers and fiducial definitions"
+    },
+    {
+      "id": "mne_standard_loader",
+      "url": "https://mne.tools/1.12/generated/mne.channels.make_standard_montage.html",
+      "supports": "Automatic spherical 95 mm convention; units"
+    },
+    {
+      "id": "mne_fsaverage_example",
+      "url": "https://mne.tools/1.12/auto_tutorials/forward/35_eeg_no_mri.html",
+      "supports": "Predefined fsaverage transform; template placement needs QA"
+    },
+    {
+      "id": "mne_release_1_13",
+      "url": "https://mne.tools/dev/changes/v1.13.html",
+      "supports": "fsaverage_1005 added in 1.13; old standard_1005 naming clarified as Colin27"
+    },
+    {
+      "id": "fieldtrip_resource_lineage",
+      "url": "https://www.fieldtriptoolbox.org/template/electrode/",
+      "supports": "EGI FTP origin; even/odd HydroCel vertex-reference convention"
+    },
+    {
+      "id": "manufacturer",
+      "url": "https://www.magstim.com/3d-sensor-position-files-for-visualizing-data-in-third-party-software/",
+      "supports": "Separate average resource choices; not dataset exporter correspondence"
+    }
+  ],
+  "supplementary_context_not_mapping_proof": [
+    {
+      "url": "https://mne.discourse.group/t/egi-256-and-hydrocel-256-montages/11677",
+      "note": "Localize-MI-specific MNE discussion reports legacy GSN versus HydroCel distinction. It is corroborative context, not the acquisition record for these subjects."
+    }
+  ],
+  "retrieval_limitations": "Nature full-page/PDF open redirected to inaccessible authentication in this session; indexed original PDF methods text and earlier archived review were available. No author contact was attempted."
+}

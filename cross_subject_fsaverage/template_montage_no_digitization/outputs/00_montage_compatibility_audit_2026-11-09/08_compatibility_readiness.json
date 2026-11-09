@@ -1,0 +1,298 @@
+{
+  "created_utc": "2026-11-09T00:21:52.832826+00:00",
+  "status": "BLOCKED",
+  "forward_modeling_authorized": false,
+  "independent_physical_channel_mapping_verified": false,
+  "exact_acquisition_net_revision_verified": false,
+  "blockers": [
+    "No independently reviewed acquisition net revision/cap configuration and saved-row-to-physical-sensor lookup covering all participants.",
+    "eN->EN remains a documented hypothesis, not validated physical correspondence.",
+    "Template fiducial interpretation and fixed normalization remain modeling conventions; existing scalp QA shows appreciable mismatch."
+  ],
+  "evidence": {
+    "review_date": "2026-11-09",
+    "status": "BLOCKED",
+    "acquisition_family": "256-channel Geodesic Sensor Net, HydroCel CleanLeads, EGI NA-400; custom C++/MATLAB AmpServerPro-based acquisition",
+    "exact_acquisition_net_revision_verified": false,
+    "physical_channel_mapping_verified": false,
+    "public_importer_scope": "Assigns ascending e1..e256 after transpose and trigger removal; preceding acquisition export correspondence is not independently established",
+    "pinned_hydrocel_sha256": "63d3de763f3bd36bb9096989a828068edcb60fea81607ddb96022d3bd2126e1c",
+    "pinned_mne_version": "1.12.1",
+    "fsaverage_1005_added_in_mne": "1.13",
+    "blockers": [
+      "No independently reviewed acquisition net revision/cap configuration and saved-row-to-physical-sensor lookup covering all participants.",
+      "eN->EN remains a documented hypothesis, not validated physical correspondence.",
+      "Template fiducial interpretation and fixed normalization remain modeling conventions; existing scalp QA shows appreciable mismatch."
+    ],
+    "sources": [
+      {
+        "id": "paper",
+        "url": "https://www.nature.com/articles/s41597-020-0467-x",
+        "supports": "Acquisition family, count, amplifier and custom acquisition software; no exporter permutation proof"
+      },
+      {
+        "id": "author_importer",
+        "url": "https://github.com/iTCf/mikulan_et_al_2020/blob/master/fx_preprocess.py",
+        "supports": "Public import_egi_sdk labeling step"
+      },
+      {
+        "id": "author_exporter",
+        "url": "https://github.com/iTCf/mikulan_et_al_2020/blob/master/fx_bids.py",
+        "supports": "BIDS metadata export; not a hardware channel map"
+      },
+      {
+        "id": "mne_montage_parser",
+        "url": "https://github.com/mne-tools/mne-python/blob/v1.12.1/mne/channels/_standard_montage_utils.py",
+        "supports": "Distinct EGI/HydroCel parsers and fiducial definitions"
+      },
+      {
+        "id": "mne_standard_loader",
+        "url": "https://mne.tools/1.12/generated/mne.channels.make_standard_montage.html",
+        "supports": "Automatic spherical 95 mm convention; units"
+      },
+      {
+        "id": "mne_fsaverage_example",
+        "url": "https://mne.tools/1.12/auto_tutorials/forward/35_eeg_no_mri.html",
+        "supports": "Predefined fsaverage transform; template placement needs QA"
+      },
+      {
+        "id": "mne_release_1_13",
+        "url": "https://mne.tools/dev/changes/v1.13.html",
+        "supports": "fsaverage_1005 added in 1.13; old standard_1005 naming clarified as Colin27"
+      },
+      {
+        "id": "fieldtrip_resource_lineage",
+        "url": "https://www.fieldtriptoolbox.org/template/electrode/",
+        "supports": "EGI FTP origin; even/odd HydroCel vertex-reference convention"
+      },
+      {
+        "id": "manufacturer",
+        "url": "https://www.magstim.com/3d-sensor-position-files-for-visualizing-data-in-third-party-software/",
+        "supports": "Separate average resource choices; not dataset exporter correspondence"
+      }
+    ],
+    "supplementary_context_not_mapping_proof": [
+      {
+        "url": "https://mne.discourse.group/t/egi-256-and-hydrocel-256-montages/11677",
+        "note": "Localize-MI-specific MNE discussion reports legacy GSN versus HydroCel distinction. It is corroborative context, not the acquisition record for these subjects."
+      }
+    ],
+    "retrieval_limitations": "Nature full-page/PDF open redirected to inaccessible authentication in this session; indexed original PDF methods text and earlier archived review were available. No author contact was attempted."
+  },
+  "input_sha256": {
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/audits/compatibility_2026-11-09/EVIDENCE.json": "fbb9f330e6129e6dd2fbce96dae5d21076d28d0be455e85166312ecaddda8aef",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/audits/compatibility_2026-11-09/audit_montage_compatibility.py": "dc94a28b2aa21139957bb9c949e857e62b8725429e0d62d21820a21621089957",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/01_experiment_manifest.json": "284050e1e6925d2419bc8fbdaedd47f263c0af9edcd730c0bec6c8faf3bce1ee",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/fsaverage_geometry/outer_skin.surf": "a66fcfdf3fb4bef0c5cbf546ca9161459474fb37a25af7129e285fdb7707d736",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/fsaverage_geometry/fsaverage-trans.fif": "a30002293d88c1a38b5a6998b5287b6dfe60196c6ca7c9e4081faabd77e5010b",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/source_assumed_v1/01_montage/fsaverage_geometry/fsaverage-fiducials.fif": "0043895fd3167871a947a43019228ee30060c0335967df63f571c0e71bf344a3",
+    "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/channels/montage.py": "8b2a7af11989731998cae4b553780405fc7edbe91201f9a77b2a86e64409ae5f",
+    "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/channels/_standard_montage_utils.py": "9e9b535bdc21d49abc0470427f7467378e050ce2ff1742e4aa5d5035a806cffe",
+    "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/transforms.py": "df8f849000e408adb26730837228e6e305113b40aa095c61c445eee5d53276e3",
+    "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/channels/data/montages/GSN-HydroCel-256.sfp": "63d3de763f3bd36bb9096989a828068edcb60fea81607ddb96022d3bd2126e1c",
+    "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/channels/data/montages/EGI_256.csd": "e2ce1ebcbe8cdd2aaf77c536faea67e5a1a2c601eb327407ee4034a9d33a078e",
+    "/home/girvi949/projects/mikulan-localize-mi/.venv/lib/python3.14/site-packages/mne/channels/data/montages/standard_1005.elc": "1ee59197946d62de872db2ac7f2243a596662c231427366f6dc5d84ed237f853"
+  },
+  "mne_version": "1.12.1",
+  "coordinate_units": "metres internally; distance summaries in mm",
+  "head_to_fsaverage_mri": [
+    [
+      0.9999938011169434,
+      -0.003557611256837845,
+      -5.701684813175234e-07,
+      0.0018733639735728502
+    ],
+    [
+      0.0035518724471330643,
+      0.9983890652656555,
+      -0.05662653595209122,
+      -0.028795761987566948
+    ],
+    [
+      0.0002020396786974743,
+      0.056625932455062866,
+      0.9983953833580017,
+      -0.04129410162568092
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "candidate_transforms": {
+    "GSN-HydroCel-256": {
+      "native_to_mri": [
+        [
+          0.9999938011169434,
+          -0.0035077234278006403,
+          -0.0005936952582710335,
+          0.0018670223897530717
+        ],
+        [
+          0.0035518724471330643,
+          0.9938563931799432,
+          0.11061972013293353,
+          -0.029143024452150956
+        ],
+        [
+          0.0002020396786974743,
+          -0.11062136855012117,
+          0.9938625222270816,
+          -0.0037987677752452306
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "native_frame": "unknown",
+      "policy": "template fiducial native->HEAD then predefined fsaverage HEAD->MRI; no fitting"
+    },
+    "EGI_256": {
+      "native_to_mri": [
+        [
+          0.9999938011169434,
+          -0.00343482085998478,
+          -0.0009266087845929725,
+          0.0018416300957069015
+        ],
+        [
+          0.0035518724471330643,
+          0.9787115528073649,
+          0.2052096162887101,
+          -0.02226238921959954
+        ],
+        [
+          0.0002020396786974743,
+          -0.2052118436021676,
+          0.9787174960029968,
+          0.0009185137947226168
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "native_frame": "unknown",
+      "policy": "template fiducial native->HEAD then predefined fsaverage HEAD->MRI; no fitting"
+    },
+    "standard_1005": {
+      "native_to_mri": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "native_frame": "mri",
+      "policy": "MRI-labelled resource shown as supplied; 10-05 control only, no EEG mapping or additional fit"
+    }
+  },
+  "geometry_summaries": [
+    {
+      "montage": "GSN-HydroCel-256",
+      "n_electrodes": 256,
+      "vertex_median_mm": 6.827429707295553,
+      "vertex_p95_mm": 14.897398360485424,
+      "triangle_median_mm": 6.691084029265218,
+      "triangle_p95_mm": 14.805354064493438,
+      "triangle_maximum_mm": 16.42588000840946,
+      "n_inside": 191,
+      "n_outside": 65,
+      "original_vertex_gates_pass": true,
+      "anatomical_validation": "NOT_ESTABLISHED",
+      "mesh": {
+        "vertices": 10242,
+        "triangles": 20480,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "orientation_errors": 0,
+        "connected_components": 1,
+        "closed_oriented_connected": true,
+        "self_intersections_checked": false
+      }
+    },
+    {
+      "montage": "EGI_256",
+      "n_electrodes": 256,
+      "vertex_median_mm": 6.442506519281904,
+      "vertex_p95_mm": 22.383145887429205,
+      "triangle_median_mm": 6.279178189657012,
+      "triangle_p95_mm": 22.272761326773796,
+      "triangle_maximum_mm": 33.76857872489614,
+      "n_inside": 202,
+      "n_outside": 54,
+      "original_vertex_gates_pass": false,
+      "anatomical_validation": "NOT_ESTABLISHED",
+      "mesh": {
+        "vertices": 10242,
+        "triangles": 20480,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "orientation_errors": 0,
+        "connected_components": 1,
+        "closed_oriented_connected": true,
+        "self_intersections_checked": false
+      }
+    },
+    {
+      "montage": "standard_1005",
+      "n_electrodes": 343,
+      "vertex_median_mm": 2.514884010487622,
+      "vertex_p95_mm": 5.09677133011574,
+      "triangle_median_mm": 1.9421859874655112,
+      "triangle_p95_mm": 4.929968688564055,
+      "triangle_maximum_mm": 13.833743811150496,
+      "n_inside": 254,
+      "n_outside": 89,
+      "original_vertex_gates_pass": true,
+      "anatomical_validation": "NOT_ESTABLISHED",
+      "mesh": {
+        "vertices": 10242,
+        "triangles": 20480,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "orientation_errors": 0,
+        "connected_components": 1,
+        "closed_oriented_connected": true,
+        "self_intersections_checked": false
+      }
+    }
+  ],
+  "no_subject_specific_registration": true,
+  "subject_digitization_used": false,
+  "individual_MRI_used": false,
+  "localization_outcomes_used": false,
+  "sensor_coordinate_correction": false,
+  "original_gate_median_mm": 10,
+  "original_gate_p95_mm": 20,
+  "original_schedules_and_parameters_changed": false,
+  "planned_evaluations": 5124,
+  "historical_exploratory_results_status": "ASSUMED_UNVERIFIED; preserved, not retroactively validated",
+  "next_step": "Review documentary channel mapping and template anatomy QA; do not start forward modeling from this audit"
+}

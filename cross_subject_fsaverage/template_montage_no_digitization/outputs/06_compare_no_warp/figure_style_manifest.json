@@ -1,0 +1,154 @@
+{
+  "created_utc": "2026-11-08T22:50:42.396553+00:00",
+  "status": "FIGURES_RESTYLED_NO_WARP_YEARS_AND_FAMILIES",
+  "source_sha256": {
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_no_warp/scripts/09_visualize_results.py": "1bcb545389b9a7b088e117e37f99a73e467e95f0b02b81565c2361b194323e54",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/scripts/06_compare_no_warp.py": "0f3e7aa068af2ac477683613206a7c7b6e1f1a7602a2637d3341ebc72081e1c1",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/scripts/comparison_baseline_context.py": "362a8de449243deda76b0e47b49dbea69eaa151b561ab98739bf852d4ba35eb6",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/scripts/07_style_figures_like_no_warp.py": "f3260b54c9f0af0bb34fda454eab575e895c91b0712da027a61bc0364c93f093",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/06_compare_no_warp/tables/01_paired_jobs.csv": "d77f11a012273c88ee23b07430e119edb68009bb220ee71413f2e79222837fef",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/06_compare_no_warp/tables/02_method_summary.csv": "584e54c23b269899b80c711c516ef55d81ee5ce6770d14d28aa1e441617c7ede",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/06_compare_no_warp/tables/03_participant_summary.csv": "49af0fa81c494c869e6048319154d65bba37b3f181e98e985af40fbdb065a812",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/06_compare_no_warp/tables/13_baseline_context_unique_runs.csv": "d0314c83e8119c973a36284fe9172c8fe4e408e3ec95d044bbf8b40df6b2125e",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/06_compare_no_warp/tables/14_baseline_context_method_summary.csv": "a37f3728b97644e5573a3fc9233f077fa3c3bacbe4829c83a027d85502659146",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/06_compare_no_warp/tables/15_baseline_context_participant_summary.csv": "451657939ab62d2d8ecafa69561b48c9b98ae01575e705a69608c38f8e9d0cda"
+  },
+  "method_order": [
+    "MNE",
+    "dSPM",
+    "sLORETA",
+    "eLORETA",
+    "Continuous-ECD",
+    "RAP-MUSIC",
+    "LCMV",
+    "MxNE",
+    "irMxNE",
+    "Gamma-MAP",
+    "Champagne",
+    "SESAME"
+  ],
+  "method_metadata": {
+    "MNE": {
+      "group": "Minimum-norm",
+      "year": "1994"
+    },
+    "dSPM": {
+      "group": "Minimum-norm",
+      "year": "2002"
+    },
+    "sLORETA": {
+      "group": "Minimum-norm",
+      "year": "2002"
+    },
+    "eLORETA": {
+      "group": "Minimum-norm",
+      "year": "2011"
+    },
+    "Continuous-ECD": {
+      "group": "Dipole / Beamformer",
+      "year": "1990"
+    },
+    "RAP-MUSIC": {
+      "group": "Dipole / Beamformer",
+      "year": "2001"
+    },
+    "LCMV": {
+      "group": "Dipole / Beamformer",
+      "year": "1997"
+    },
+    "MxNE": {
+      "group": "Sparse",
+      "year": "2011"
+    },
+    "irMxNE": {
+      "group": "Sparse",
+      "year": "2018"
+    },
+    "Gamma-MAP": {
+      "group": "Bayesian",
+      "year": "2008"
+    },
+    "Champagne": {
+      "group": "Bayesian",
+      "year": "2016"
+    },
+    "SESAME": {
+      "group": "SESAME",
+      "year": "2020"
+    }
+  },
+  "family_order": [
+    "Minimum-norm",
+    "Dipole / Beamformer",
+    "Sparse",
+    "Bayesian",
+    "SESAME"
+  ],
+  "year_policy": "Exact historical no-warp Script 09 display labels; not re-dated or claimed as first invention years",
+  "palette_policy": "Retain Script 26 method colors and marker styles from completed comparison",
+  "figures": [
+    "01_loso_paired_distributions.png",
+    "02_single-reference_paired_distributions.png",
+    "03_paired_median_differences.png",
+    "04_participant_paired_differences.png",
+    "05_failure_counts.png",
+    "06_sub03_paired_differences.png",
+    "07_loso_baseline_context.png",
+    "08_single-reference_baseline_context.png",
+    "09_baseline_context_by_participant.png"
+  ],
+  "dpi": 300,
+  "artist_checks": [
+    {
+      "method_axis_years": true,
+      "grouped_family_legend": false
+    },
+    {
+      "method_axis_years": true,
+      "grouped_family_legend": false
+    },
+    {
+      "method_axis_years": true,
+      "grouped_family_legend": false
+    },
+    {
+      "method_axis_years": false,
+      "grouped_family_legend": true
+    },
+    {
+      "method_axis_years": true,
+      "grouped_family_legend": false
+    },
+    {
+      "method_axis_years": true,
+      "grouped_family_legend": false
+    },
+    {
+      "method_axis_years": true,
+      "grouped_family_legend": false
+    },
+    {
+      "method_axis_years": true,
+      "grouped_family_legend": false
+    },
+    {
+      "method_axis_years": false,
+      "grouped_family_legend": true
+    }
+  ],
+  "original_backup": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/06_compare_no_warp/figures_before_no_warp_style",
+  "comparison_tables_changed": false,
+  "metrics_changed": false,
+  "MRI_alignment_used": false,
+  "output_sha256": {
+    "figures/01_loso_paired_distributions.png": "f8cc7a9403deca385bf46785585d9dfd8b5feb338fa5f7f42b6819ca33b44ba1",
+    "figures/02_single-reference_paired_distributions.png": "eaed9d4c445e6d874ae78c47691b85f0c924e771a236ccc34fbd44f32389ef99",
+    "figures/03_paired_median_differences.png": "3edb45e60d00cdfc6666223c4c134f86cda94732964b9cb5d93d1e7717e5d3f6",
+    "figures/04_participant_paired_differences.png": "e5f265ba0da34aabe8ea3ecddd7d04687abdaa6e83bb005c432640a3e1b56e7f",
+    "figures/05_failure_counts.png": "5d169548badee8382bc4b52abb610ad5c326776a53105cef05e48d89af4d5e3c",
+    "figures/06_sub03_paired_differences.png": "9973fcf15c7b8ad25d118eb4b13417520285f96b966c724fe1cd965e41558796",
+    "figures/07_loso_baseline_context.png": "0a6d1674c406a79fc7237534a163958927608a0f0542abb2a6dbb0e76b87de05",
+    "figures/08_single-reference_baseline_context.png": "52bb0f17ce6b2b0baa438ea50564328615c2720db4d7b51d773083c900596b0c",
+    "figures/09_baseline_context_by_participant.png": "eb89da5f7eacbfd5f581e3ea68484cf328f2501ee4cb3f6d22c6d180e93b0662"
+  }
+}

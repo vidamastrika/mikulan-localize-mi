@@ -1,0 +1,47 @@
+[
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/scripts/01_prepare_experiment.py",
+    "sha256": "424bd3e6e6d775021ca64fe730a36cbf10da97982a4593576a5643868a823bf6",
+    "size_bytes": 78653
+  },
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment/08_readiness_report.json",
+    "sha256": "0eef727c93e55533f76ed03a64dbb7303df3af8efee603bd46dd9dc9ecc93e45",
+    "size_bytes": 454
+  },
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment/04_template_montage_availability.csv",
+    "sha256": "bad999c7af01bc438f24dce744feeb26a79688f0998270991635068f4dd06d44",
+    "size_bytes": 4734
+  },
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_geometry_review_assumed_v1/04_geometry_review.json",
+    "sha256": "22e1d11b9993434aa5d10e4be8a5346136a7ae97cc048f3f9b0aecc82c0d0814",
+    "size_bytes": 3995
+  },
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/07_coordinate_transform_provenance.json",
+    "sha256": "904e8df139a6bb7c97a15cf55dde3fc66e3a649631b171ec196330d83c4e1551",
+    "size_bytes": 2824
+  },
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_prepare_experiment_assumed_v1/09_fiducial_alignment_qa.csv",
+    "sha256": "a473762deeae9048a7ec73c0d7692730e6594dcbfb13a66b542de83734ecbc40",
+    "size_bytes": 556
+  },
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_bem_sensor_audit_assumed_v1/04_bem_interpolation_audit.json",
+    "sha256": "3ff7fd2afc2db0ec2e164e0a308c8033e207a1cc18e2b0e3b7ed6d331fdeea62",
+    "size_bytes": 5078
+  },
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/assumptions/numbered_hydrocel_v1/decision.json",
+    "sha256": "278b50e210f6d68411305a7345c77bcb761fdccb301ca501c1e306e928da188e",
+    "size_bytes": 2384
+  },
+  {
+    "path": "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/01_geometry_review_assumed_v1/01_scalp_overlay_views.png",
+    "sha256": "661fb5ce7bb0b3cfa38ac71818fe8e88ad5fdf67f28d44515415e62810f0f1ad",
+    "size_bytes": 2688462
+  }
+]

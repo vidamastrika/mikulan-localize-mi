@@ -1,0 +1,27 @@
+{
+  "policy": "primary_comparison_without_MRI_registration",
+  "user_instruction": "Calculate without MRI alignment, consistent with the no-warp experiment.",
+  "template_input": "cross_subject_fsaverage/template_montage_no_digitization/outputs/04_evaluate_diagnostics/01_run_level_diagnostics.csv",
+  "template_metric": "diagnostic_distance_mm",
+  "no_warp_input": "cross_subject_no_warp/outputs/06_evaluate_localization/08_raw_head_diagnostic.csv",
+  "no_warp_metric": "raw_head_separation_mm",
+  "no_warp_scenario": "primary",
+  "paired_job_keys": [
+    "strategy",
+    "method",
+    "reference_subject",
+    "test_subject",
+    "run"
+  ],
+  "matched_planned_jobs": 5124,
+  "MRI_registration_used_in_primary_metric": false,
+  "Script05_MRI_mapping_role": "supplementary_only_excluded_from_primary",
+  "interpretation": "Unregistered model/template HEAD minus individual HEAD reference, Euclidean mm; not validated anatomical error",
+  "individual_ground_truth_references_retained": true,
+  "failure_policy": "missing distances retained; report failure rates and paired PASS comparison separately",
+  "sensitivity_policy": "do not substitute mixed-peak-policy sensitivity results into primary",
+  "input_sha256": {
+    "cross_subject_fsaverage/template_montage_no_digitization/outputs/04_evaluate_diagnostics/01_run_level_diagnostics.csv": "e23ebb6cf5c85a06f16b4f5267874b4711b0d0ddf27f95f1d727f6775fdf7ecf",
+    "cross_subject_no_warp/outputs/06_evaluate_localization/08_raw_head_diagnostic.csv": "c3b34c1b6f5bd77c691da7b527b5eaf081f40508b2f0326c8368a78916c37b54"
+  }
+}

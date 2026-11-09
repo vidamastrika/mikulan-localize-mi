@@ -47,6 +47,10 @@ METHOD_COLORS = {
     "sLORETA": "#59A14F",
     "eLORETA": "#8E5A9E",
 }
+# Optional reporting overrides; original Script 07 defaults remain unchanged.
+METHOD_MARKERS = {}
+METHOD_LINESTYLES = {}
+LEGEND_ANCHOR = (1.01, 0.015)
 
 
 def compact_number(value):
@@ -981,6 +985,7 @@ def save_run_geometry_figure(
         axis.scatter(
             *estimate,
             color=METHOD_COLORS[method],
+            marker=METHOD_MARKERS.get(method, 'o'),
             s=105,
             edgecolor="white",
             linewidth=0.7,
@@ -989,7 +994,7 @@ def save_run_geometry_figure(
         axis.plot(
             *np.vstack([stimulation, estimate]).T,
             color=METHOD_COLORS[method],
-            linestyle="--",
+            linestyle=METHOD_LINESTYLES.get(method, '--'),
             linewidth=1.4,
             alpha=0.8,
         )
@@ -1050,15 +1055,15 @@ def save_run_geometry_figure(
         if not subset.empty:
             distance = subset.iloc[0]["localization_distance_mm"]
             handles.append(
-                Line2D([0], [0], marker="o", color=METHOD_COLORS[method],
+                Line2D([0], [0], marker=METHOD_MARKERS.get(method, 'o'), color=METHOD_COLORS[method],
                        markerfacecolor=METHOD_COLORS[method], markersize=9,
-                       linestyle="--", label=f"{method}: {distance:.2f} mm")
+                       linestyle=METHOD_LINESTYLES.get(method, '--'), label=f"{method}: {distance:.2f} mm")
             )
     axis.legend(
         handles=handles,
         title="Distances from stimulation midpoint",
         loc="lower left",
-        bbox_to_anchor=(1.01, 0.015),
+        bbox_to_anchor=LEGEND_ANCHOR,
         borderaxespad=0,
         framealpha=0.96,
         fontsize=11,

@@ -1,0 +1,22 @@
+{
+  "experiment": "fsaverage with fixed HydroCel template, no individual electrode placement",
+  "total_jobs": 5124,
+  "n_distances": 5119,
+  "n_failures": 5,
+  "definition": "Euclidean norm of saved template HEAD estimate minus audited individual HEAD ground truth, mm; unregistered diagnostic",
+  "individual_electrode_positions_used": false,
+  "MRI_alignment_used": false,
+  "montage_mapping": "ASSUMED_UNVERIFIED",
+  "valid_anatomical_localization_error": false,
+  "input_sha256": {
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/04_evaluate_diagnostics/12_evaluation_manifest.json": "3032c294d3672791a23141d3be781cfa195d287dae7107d7a894c4f0590f869e",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/02_template_forward_assumed_v1/01_forward_manifest.json": "aa15e5a86c46c4112f0144537d294efc93c3e71d5a535d8a6af82d9badc39d3a",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/scripts/09_export_template_distances.py": "48f7d534cbbe7faaa0516dfb53d46a93f7c3cc0d84a2e4ebe3fbd1638d8d4119",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/04_evaluate_diagnostics/01_run_level_diagnostics.csv": "e23ebb6cf5c85a06f16b4f5267874b4711b0d0ddf27f95f1d727f6775fdf7ecf",
+    "/home/girvi949/projects/mikulan-localize-mi/cross_subject_fsaverage/template_montage_no_digitization/outputs/04_evaluate_diagnostics/03_method_summary.csv": "36b35918f278f4ee59d5e5d82394e1db7b33688664ec670cefca9dea0d5bd12d"
+  },
+  "output_sha256": {
+    "tables/00_template_fsaverage_method_summary.csv": "b0df3dbf335ee58ddbd8874747a0a30ca5c1b4e759cbb96c973cd4b77375f26e",
+    "tables/00_template_fsaverage_distances.csv": "4ee442527200c9bc381b842f140d895e22184973685d6ce91831d5ba433d3614"
+  }
+}

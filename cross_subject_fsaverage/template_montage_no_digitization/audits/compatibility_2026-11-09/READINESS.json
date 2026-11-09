@@ -1,0 +1,19 @@
+{
+  "status": "BLOCKED",
+  "basis": "Documentary evidence and existing template-only geometry QA; no new audit execution",
+  "physical_channel_mapping_verified": false,
+  "exact_net_revision_verified": false,
+  "forward_modeling_authorized": false,
+  "Script01_modified": false,
+  "Script01_executed": false,
+  "later_stages_executed": false,
+  "existing_exploratory_results": "preserved ASSUMED_UNVERIFIED; not validated by this audit",
+  "missing_evidence": [
+    "No independently reviewed acquisition net revision/cap configuration and saved-row-to-physical-sensor lookup covering all participants.",
+    "eN->EN remains a documented hypothesis, not validated physical correspondence.",
+    "Template fiducial interpretation and fixed normalization remain modeling conventions; existing scalp QA shows appreciable mismatch."
+  ],
+  "new_audit_output_exists": false,
+  "visual": "existing_hydrocel_fsaverage_visual_QA.png; copied existing measured QA, not rerendered",
+  "command": ".venv/bin/python cross_subject_fsaverage/template_montage_no_digitization/audits/compatibility_2026-11-09/audit_montage_compatibility.py"
+}
