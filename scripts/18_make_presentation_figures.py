@@ -32,6 +32,15 @@ Figure options:
     --surface-alpha FLOAT     Brain-surface transparency; default 0.10
     --overwrite               Replace only this subject-run output folder
 
+Real-recording ambiguity figure only (preserves figures 1–5):
+    python scripts/18_make_presentation_figures.py \
+        --illposed-only --illposed-recorded \
+        --subject sub-05 --run run-06 --overwrite
+
+Separate forward-model ambiguity demonstration (refuses existing output folders):
+    python scripts/18_make_presentation_figures.py \
+        --source-ambiguity-demo --subject sub-01 --run run-01
+
 OUTPUT STRUCTURE
 ----------------
 Each subject-run gets its own child folder:
@@ -43,9 +52,12 @@ Each subject-run gets its own child folder:
             figures/
             csv/
 
-The script does NOT modify Script 07 and does NOT rerun source localization.
+The default figures do NOT modify Script 07 or rerun source localization.
 It reconstructs the same selected fixed configurations used by Script 17 while
 preserving full-grid coordinate columns for the presentation figures.
+The optional recorded-EEG ambiguity figure performs new descriptive single-dipole
+fits, independently of the selected-method comparisons. It uses the released
+baseline-corrected trial average and the run's usable electrodes.
 
 Figures
 -------
@@ -54,6 +66,8 @@ Figures
 3. Localization-error bars for the representative run.
 4. Colorful boxplots of selected fixed configurations across 61 runs.
 5. Colorful boxplots of overall within-grid run medians across 61 runs.
+6. Optional forward-model illustration of spatial ambiguity (--include-illposed).
+   Use --illposed-only to generate it without rebuilding figures 1–5.
 """
 from __future__ import annotations
 
@@ -152,6 +166,15 @@ def parse_args():
     parser.add_argument("--dpi", type=int, default=400)
     parser.add_argument("--surface-alpha", type=float, default=0.10)
     parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--include-illposed", action="store_true")
+    parser.add_argument("--illposed-only", action="store_true")
+    parser.add_argument("--illposed-recorded", action="store_true",
+                        help="Use recorded trial-average EEG for the ambiguity figure; implies --include-illposed.")
+    parser.add_argument("--illposed-min-separation-mm", type=float, default=40.)
+    parser.add_argument("--source-ambiguity-demo", action="store_true",
+                        help="Run only the separate forward-model ambiguity demonstration.")
+    parser.add_argument("--ambiguity-max-sources", type=int, default=2048)
+    parser.add_argument("--ambiguity-seed", type=int, default=2026)
     return parser.parse_args()
 
 
@@ -1083,6 +1106,20 @@ def save_color_box_distribution(
 def main():
     args = parse_args()
 
+    if args.source_ambiguity_demo:
+        if args.illposed_only or args.illposed_recorded or args.include_illposed:
+            raise ValueError('Choose only one ambiguity demonstration mode')
+        from script18_source_ambiguity_demo.analysis import run_demo
+        run_demo(args.dataset, args.subject, args.run,
+                 args.output_root / 'source_ambiguity_demo' / f'{args.subject}_{args.run}',
+                 dpi=args.dpi, max_sources=args.ambiguity_max_sources, seed=args.ambiguity_seed)
+        return
+
+    if args.illposed_only:
+        from script18_illposed import render
+        render(args, load_subject_surfaces, load_surface_transform_matrix)
+        return
+
     dataset = args.dataset.expanduser().resolve()
     original_grid_path = require_file(args.original_grid, "Original Script-09 grid")
     script10_top_path = require_file(args.script10_top, "Script-10 top configurations")
@@ -1166,6 +1203,10 @@ def main():
         "Within-run median localization error across grid (mm)",
         args.dpi,
     )
+
+    if args.include_illposed or args.illposed_recorded:
+        from script18_illposed import render
+        render(args, load_subject_surfaces, load_surface_transform_matrix)
 
     print("=" * 78)
     print("SCRIPT 18 — PRESENTATION FIGURES")
