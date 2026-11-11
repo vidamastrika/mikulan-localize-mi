@@ -226,7 +226,7 @@ def save_grouped_distribution(data, output_path, title, ylabel, mod, dpi):
     """Draw original-colored method boxes in families; change visualization only."""
     import matplotlib.pyplot as plt
 
-    positions, samples, names, boundaries, centers = [], [], [], [], []
+    positions, samples, names, boundaries, centers, spans = [], [], [], [], [], []
     x = 1.0
     for group_name, methods in PLOT_GROUPS:
         start = x
@@ -243,10 +243,11 @@ def save_grouped_distribution(data, output_path, title, ylabel, mod, dpi):
             x += 1.0
         centers.append((group_name, (start + x - 1.0) / 2.0))
         boundaries.append(x - 0.5)
+        spans.append((start - 0.5, x - 0.5))
         x += 0.9
 
     fig, ax = plt.subplots(figsize=(19, 8))
-    bp = ax.boxplot(samples, positions=positions, widths=0.65,
+    bp = ax.boxplot(samples, positions=positions, widths=0.22,
                     patch_artist=True, showfliers=True,
                     medianprops={'color': 'black', 'linewidth': 1.7})
     for artist, method in zip(bp['boxes'], names):
@@ -255,17 +256,71 @@ def save_grouped_distribution(data, output_path, title, ylabel, mod, dpi):
 
     ax.set_xticks(positions)
     ax.set_xticklabels([f'{m}\n({METHOD_YEARS[m]})' for m in names],
-                       rotation=35, ha='right')
+                       fontsize=14, rotation=35, ha='right')
     ax.set_ylabel(ylabel)
     ax.set_title(title)
     ax.grid(axis='y', alpha=0.25)
-    for boundary in boundaries[:-1]:
-        ax.axvline(boundary, color='gray', linestyle=':', alpha=0.35)
-    for group_name, center in centers:
+    for group_index, ((left, right), (group_name, center)) in enumerate(zip(spans, centers)):
+        if group_index % 2 == 0:
+            ax.axvspan(left, right, color='#f5f6f8', zorder=-1)
+        if group_index < len(boundaries) - 1:
+            ax.axvline(boundaries[group_index], color='#c8cbd0', linewidth=.9)
         ax.text(center, -0.34, group_name, transform=ax.get_xaxis_transform(),
-                ha='center', va='top', fontsize=10, fontweight='bold',
+                ha='center', va='top', fontsize=14, fontweight='bold',
                 clip_on=False)
-    fig.subplots_adjust(left=0.08, right=0.99, top=0.92, bottom=0.40)
+    ax.set_axisbelow(True)
+    fig.subplots_adjust(left=0.08, right=0.99, top=0.88, bottom=0.43)
+    fig.savefig(output_path, dpi=dpi, bbox_inches='tight')
+    plt.close(fig)
+
+
+def save_grouped_selected_vs_overall(summary, output_path, mod, dpi):
+    """Draw Script 03 with the same families and shades as figures 01/02."""
+    import matplotlib.pyplot as plt
+    working = summary.copy()
+    working['method'] = working['method'].astype(str)
+    x, methods, centers, boundaries, spans = [], [], [], [], []
+    cursor = 1.0
+    for group, members in PLOT_GROUPS:
+        start = cursor
+        for method in members:
+            x.append(cursor)
+            methods.append(method)
+            cursor += 1
+        centers.append((group, (start + cursor - 1) / 2))
+        boundaries.append(cursor - .5)
+        spans.append((start - .5, cursor - .5))
+        cursor += .9
+    indexed = working.set_index('method')
+    fig, ax = plt.subplots(figsize=(19, 8))
+    for position, method in zip(x, methods):
+        row = indexed.loc[method]
+        color = mod.METHOD_COLORS[method]
+        ax.plot([position, position], [row.overall_median_mm, row.selected_median_mm],
+                color='#999999', linewidth=1.4, zorder=1)
+        ax.scatter(position, row.overall_median_mm, marker='o', s=80,
+                   facecolor='white', edgecolor=color, linewidth=2, zorder=3)
+        ax.scatter(position, row.selected_median_mm, marker='D', s=65,
+                   color=color, zorder=4)
+    ax.set_xticks(x, [f'{m}\n({METHOD_YEARS[m]})' for m in methods],
+                  fontsize=14, rotation=35, ha='right')
+    ax.set_xlim(min(x) - .5, max(x) + .5)
+    ax.set_ylabel('Median localization error across 61 runs (mm)', fontsize=14)
+    ax.set_title('Selected configuration versus typical within-grid run value', fontsize=17)
+    ax.grid(axis='y', alpha=.25)
+    for i, ((left, right), (group, center)) in enumerate(zip(spans, centers)):
+        if i % 2 == 0:
+            ax.axvspan(left, right, color='#f5f6f8', zorder=-1)
+        if i < len(boundaries) - 1:
+            ax.axvline(boundaries[i], color='#c8cbd0', linewidth=.9)
+        ax.text(center, -.34, group, transform=ax.get_xaxis_transform(),
+                ha='center', va='top', fontsize=14, fontweight='bold', clip_on=False)
+    ax.scatter([], [], marker='D', s=65, color='#666666', label='Selected configuration')
+    ax.scatter([], [], marker='o', s=80, facecolor='white', edgecolor='#666666',
+               linewidth=2, label='Overall-run grid median')
+    ax.legend(frameon=False, loc='best', fontsize=13)
+    ax.set_axisbelow(True)
+    fig.subplots_adjust(left=.08, right=.99, top=.88, bottom=.43)
     fig.savefig(output_path, dpi=dpi, bbox_inches='tight')
     plt.close(fig)
 
@@ -353,7 +408,7 @@ def make_report(mod, grid, audit, ref, root, args, mode):
             overall_pass, figures/'02_overall_grid_run_distribution.png',
             'Typical localization error across tested parameter grids',
             'Within-run median localization error (mm)', mod, args.dpi)
-        mod.save_selected_vs_overall(compare,figures/'03_selected_vs_overall_method_medians.png',args.dpi)
+        save_grouped_selected_vs_overall(compare,figures/'03_selected_vs_overall_method_medians.png',mod,args.dpi)
         mod.save_pairwise_heatmap(pair,figures/'04_selected_pairwise_median_differences.png',args.dpi)
         mod.save_participant(participant,figures/'05_selected_configuration_by_participant.png',
             'Selected fixed configurations: median error by participant',args.dpi)
