@@ -1,0 +1,23 @@
+{
+  "status": "PREPARED_NOT_EXECUTED",
+  "branch": "experiment/localize-mi-average-seven",
+  "preserve_existing": true,
+  "thresholds_mm": {
+    "median": 10,
+    "p95": 20
+  },
+  "scaling": false,
+  "inverse": false,
+  "files": {
+    "README.md": "ae3c19e06a199f4835c06fcf6c62174c7c018671eec0305cf19bf2a92b26a595",
+    "REPORT.md": "bcede4105e3960eeaebfe98eed711c3887be8cfa0197833bbbe8ca4da0e22c76",
+    "diagnose.py": "01ac64ef2dffefce77d2541f9d8bee7b660271982eb7a9e34ac8f55bcc229cf7"
+  },
+  "validation": [
+    "AST syntax",
+    "analytic triangle cases",
+    "proper rigid validation",
+    "scale rejection"
+  ],
+  "runtime_validation": "Not executed; MNE full import blocked by read-only home config"
+}

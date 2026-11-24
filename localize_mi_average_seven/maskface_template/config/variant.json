@@ -1,0 +1,51 @@
+{
+  "variant": "average_seven_maskface",
+  "stage": "01_INPUT_FEASIBILITY_ONLY",
+  "stage2_authorized": false,
+  "participants": [
+    "sub-01",
+    "sub-02",
+    "sub-03",
+    "sub-04",
+    "sub-05",
+    "sub-06",
+    "sub-07"
+  ],
+  "dataset": "data/Localize-MI",
+  "original_configuration": "localize_mi_average_seven/config/experiment.json",
+  "original_configuration_sha256": "7317883b404dd400115c79d5190c8663677a22a8884b80ac2002aab3fe0c8fd9",
+  "maskface_pattern": "derivatives/epochs/{subject}/anat/{subject}_mod-T1w_maskface.nii",
+  "original_T1w_pattern": "{subject}/anat/{subject}_T1w.nii",
+  "original_registration_settings": {
+    "method": "ANTs unbiased iterative groupwise SyN",
+    "iterations": 4,
+    "metric": "CC",
+    "coordinate_convention": "ITK LPS physical millimetres; convert RAS explicitly",
+    "scope": "template construction only; transforms retained for provenance, never applied to estimates or ground truth"
+  },
+  "original_coregistration_settings": {
+    "procedure": "same rigid fiducial initialization and trimmed ICP in both arms",
+    "iterations": 40,
+    "trim_fraction": 0.15,
+    "median_limit_mm": 10,
+    "p95_limit_mm": 20,
+    "scaling": false
+  },
+  "original_anatomy_settings": {
+    "conductivity_s_per_m": [
+      0.3,
+      0.006,
+      0.3
+    ],
+    "bem_ico": 4,
+    "source_spacing": "ico5"
+  },
+  "constraints": [
+    "No original output or surface changes",
+    "No face reconstruction",
+    "No head scaling",
+    "No threshold relaxation",
+    "No construction or FreeSurfer in Stage 1",
+    "No forward or inverse computation"
+  ]
+}

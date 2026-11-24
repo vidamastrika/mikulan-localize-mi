@@ -1,0 +1,7 @@
+{
+  "n_warped": 7,
+  "interpretation": "retained warped inputs may precede final shape update; mismatch is not proof of averaging failure",
+  "same_grids": true,
+  "normalized_mean_correlation": 0.9769208747681111,
+  "normalized_rmse": 0.20369092330210692
+}

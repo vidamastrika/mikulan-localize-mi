@@ -1,0 +1,13 @@
+{
+  "status": "PATCHED_NOT_DATASET_EXECUTED",
+  "reason": "retain alternative FIF topology defects for audit",
+  "preserved_interrupted_output": "run_01",
+  "next_output": "run_02",
+  "tests": "check_geometry.py: all synthetic tests and defective-reader regressions passed",
+  "files": {
+    "diagnose.py": "8243c9717d9725c9c69860745dbceae1ae7e0bcc7dce9c16f4ed54c030326043",
+    "geometry.py": "43bc3ea0762f2875d680531e4721354d481333d138fc0597fe7f58735652c297",
+    "check_geometry.py": "22826d1f750fe11e81e7f606e5136b03f7fca1fae67b7bd621b0470027daad82",
+    "PATCH_NOTES.md": "ad5531dbcbee9778ff4a7f3543d9d97809f1a100e8ac562af3f63f1c32461bcb"
+  }
+}

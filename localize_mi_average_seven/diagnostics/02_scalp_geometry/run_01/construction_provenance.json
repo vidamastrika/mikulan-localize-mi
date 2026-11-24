@@ -1,0 +1,78 @@
+{
+  "command": "#!/usr/bin/env bash\nset -euo pipefail\nantsMultivariateTemplateConstruction2.sh -d 3 -o /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_ -i 4 -t SyN -m CC /home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-01/anat/sub-01_T1w.nii /home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-02/anat/sub-02_T1w.nii /home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-03/anat/sub-03_T1w.nii /home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-04/anat/sub-04_T1w.nii /home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-05/anat/sub-05_T1w.nii /home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-06/anat/sub-06_T1w.nii /home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-07/anat/sub-07_T1w.nii\n",
+  "excerpts": "01_construction_log_evidence.csv",
+  "construction_manifest": {
+    "status": "COMPLETE",
+    "input_sha256": {
+      "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-01/anat/sub-01_T1w.nii": "7bd2c0d26f8ff8dd1c8c480976f99c7fb3e08261085f930b284875ac5ece3d8a",
+      "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-02/anat/sub-02_T1w.nii": "2d1450acc7f4f96459f2f923ef4a96c271bda9c23e7e0a8f6cb17b68880bb7d6",
+      "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-03/anat/sub-03_T1w.nii": "74d9f60fb786dd682a7cc695e7562308cb79b3c118e83c91bd349e3abb1e8868",
+      "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-04/anat/sub-04_T1w.nii": "1af015984e45d923955d295f05e23baaf88e1086d2269fc5ca61618b29ba0bce",
+      "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-05/anat/sub-05_T1w.nii": "f2045da939e23f68ed02d6f495c6e9df8ede72ca067d488553511dd215322eac",
+      "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-06/anat/sub-06_T1w.nii": "86aac86310a00e87bda07d20da7301d86a0a7184793081ba15a98a7c8a2be148",
+      "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/sub-07/anat/sub-07_T1w.nii": "8a018bab740b19be8ed93487a5a20093dba3b9e0b42e150d0ec502d7348fcb9f"
+    },
+    "configuration": {
+      "baseline_commit": "11f6008805d82756d18806293189e7a435122bef",
+      "design": "within-cohort; all seven test MRIs contribute to the template",
+      "participants": [
+        "sub-01",
+        "sub-02",
+        "sub-03",
+        "sub-04",
+        "sub-05",
+        "sub-06",
+        "sub-07"
+      ],
+      "dataset": "data/Localize-MI",
+      "schedule": "cross_subject_fsaverage/outputs/01_prepare_experiment/02_fsaverage_reconstruction_plan.csv",
+      "frozen_settings": "cross_subject_fsaverage/outputs/01_prepare_experiment/source_configurations",
+      "fsaverage_results": "cross_subject_fsaverage/outputs/07_evaluate_localization/01_run_level_diagnostic.csv",
+      "arms": [
+        "average_seven",
+        "fsaverage"
+      ],
+      "registration": {
+        "method": "ANTs unbiased iterative groupwise SyN",
+        "iterations": 4,
+        "metric": "CC",
+        "coordinate_convention": "ITK LPS physical millimetres; convert RAS explicitly",
+        "scope": "template construction only; transforms retained for provenance, never applied to estimates or ground truth"
+      },
+      "anatomy": {
+        "conductivity_s_per_m": [
+          0.3,
+          0.006,
+          0.3
+        ],
+        "bem_ico": 4,
+        "source_spacing": "ico5"
+      },
+      "coregistration": {
+        "procedure": "same rigid fiducial initialization and trimmed ICP in both arms",
+        "iterations": 40,
+        "trim_fraction": 0.15,
+        "median_limit_mm": 10,
+        "p95_limit_mm": 20,
+        "scaling": false
+      },
+      "sensor_policy": "recorded participant geometry embedded in native forwards; released electrode TSV only for provenance audit",
+      "channels": "identical frozen reference-based nominal montage, bad-channel replacement and actual ordered channels in both arms",
+      "preprocessing": "reuse frozen no-warp engine; identical epoch data, average-reference scope, baseline and covariance intervals",
+      "peak_rule": "known_stimulation_hemisphere_original; identical frozen rule for both arms; label use of known hemisphere",
+      "reuse_policy": "deny unless per-job fingerprints and rigid alignment QA match; anatomical validation is not required for diagnostic distances",
+      "primary_difference": "average_seven_diagnostic_distance_mm minus fsaverage_diagnostic_distance_mm; paired only when both PASS and protocols match",
+      "comparison": "no_warp_diagnostic_head_distance",
+      "coordinate_policy": {
+        "estimate_frame": "model_head",
+        "reference_frame": "test_head",
+        "units": "mm",
+        "mri_warp_applied": false,
+        "localization_error_valid": false
+      }
+    },
+    "construction_only": true,
+    "registration_applied_to_estimates": false
+  },
+  "interpretation": "Logged operations describe the run. Missing log keywords do not prove an operation absent; original ANTs script/version may be unavailable."
+}

@@ -1,0 +1,28 @@
+model,pair,distance_mm,provenance
+sub-01,LPA-RPA,153.1713917930365,repeated released sidecar; anatomical convention unresolved
+sub-01,LPA-NAS,129.47835435752035,repeated released sidecar; anatomical convention unresolved
+sub-01,RPA-NAS,131.21649131193553,repeated released sidecar; anatomical convention unresolved
+sub-02,LPA-RPA,153.1713917930365,repeated released sidecar; anatomical convention unresolved
+sub-02,LPA-NAS,129.47835435752035,repeated released sidecar; anatomical convention unresolved
+sub-02,RPA-NAS,131.21649131193553,repeated released sidecar; anatomical convention unresolved
+sub-03,LPA-RPA,153.1713917930365,repeated released sidecar; anatomical convention unresolved
+sub-03,LPA-NAS,129.47835435752035,repeated released sidecar; anatomical convention unresolved
+sub-03,RPA-NAS,131.21649131193553,repeated released sidecar; anatomical convention unresolved
+sub-04,LPA-RPA,153.1713917930365,repeated released sidecar; anatomical convention unresolved
+sub-04,LPA-NAS,129.47835435752035,repeated released sidecar; anatomical convention unresolved
+sub-04,RPA-NAS,131.21649131193553,repeated released sidecar; anatomical convention unresolved
+sub-05,LPA-RPA,153.1713917930365,repeated released sidecar; anatomical convention unresolved
+sub-05,LPA-NAS,129.47835435752035,repeated released sidecar; anatomical convention unresolved
+sub-05,RPA-NAS,131.21649131193553,repeated released sidecar; anatomical convention unresolved
+sub-06,LPA-RPA,153.1713917930365,repeated released sidecar; anatomical convention unresolved
+sub-06,LPA-NAS,129.47835435752035,repeated released sidecar; anatomical convention unresolved
+sub-06,RPA-NAS,131.21649131193553,repeated released sidecar; anatomical convention unresolved
+sub-07,LPA-RPA,153.1713917930365,repeated released sidecar; anatomical convention unresolved
+sub-07,LPA-NAS,129.47835435752035,repeated released sidecar; anatomical convention unresolved
+sub-07,RPA-NAS,131.21649131193553,repeated released sidecar; anatomical convention unresolved
+average_seven,LPA-RPA,154.6114501953125,estimated unreviewed MRI landmarks
+average_seven,LPA-NAS,132.4247589111328,estimated unreviewed MRI landmarks
+average_seven,RPA-NAS,131.0638427734375,estimated unreviewed MRI landmarks
+fsaverage,LPA-RPA,164.98001098632812,estimated unreviewed MRI landmarks
+fsaverage,LPA-NAS,140.75238037109375,estimated unreviewed MRI landmarks
+fsaverage,RPA-NAS,140.75238037109375,estimated unreviewed MRI landmarks

@@ -1,0 +1,29 @@
+comparison,stage,in_fov_fraction,positive_intensity_fraction,interpretation
+facial_or_low_support,initial,1.0,0.5920293539046441,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+facial_or_low_support,SyN_iteration0_group_template0.nii,1.0,0.5429588205388917,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+facial_or_low_support,SyN_iteration1_group_template0.nii,1.0,0.5331668177095997,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+facial_or_low_support,SyN_iteration2_group_template0.nii,1.0,0.5301717468667801,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+facial_or_low_support,SyN_iteration3_group_template0.nii,1.0,0.5304701487588692,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+facial_or_low_support,final,1.0,0.5304701487588692,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+facial_or_low_support_registered,final template,1.0,0.5304701487588692,
+facial_or_low_support_registered,sub-01,1.0,0.5360845250989147,
+facial_or_low_support_registered,sub-02,1.0,0.5326584293008554,
+facial_or_low_support_registered,sub-03,1.0,0.5296523065361066,
+facial_or_low_support_registered,sub-04,1.0,0.5322716120333326,
+facial_or_low_support_registered,sub-05,1.0,0.5322274043456157,
+facial_or_low_support_registered,sub-06,1.0,0.5224243495943944,
+facial_or_low_support_registered,sub-07,1.0,0.5292986450343715,
+supported_left_cranial,initial,1.0,0.6794187425860023,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+supported_left_cranial,SyN_iteration0_group_template0.nii,1.0,0.6428744742801682,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+supported_left_cranial,SyN_iteration1_group_template0.nii,1.0,0.6461501132319638,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+supported_left_cranial,SyN_iteration2_group_template0.nii,1.0,0.6401649951472016,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+supported_left_cranial,SyN_iteration3_group_template0.nii,1.0,0.6428744742801682,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+supported_left_cranial,final,1.0,0.6428744742801682,same physical grid; earlier stages not anatomically registered to final by this diagnostic
+supported_left_cranial_registered,final template,1.0,0.6428744742801682,
+supported_left_cranial_registered,sub-01,1.0,0.6441281138790036,
+supported_left_cranial_registered,sub-02,1.0,0.6460153132750998,
+supported_left_cranial_registered,sub-03,1.0,0.6372802760703117,
+supported_left_cranial_registered,sub-04,1.0,0.6384799956864013,
+supported_left_cranial_registered,sub-05,1.0,0.6522430712822171,
+supported_left_cranial_registered,sub-06,1.0,0.6336137172436105,
+supported_left_cranial_registered,sub-07,1.0,0.6472554728782487,

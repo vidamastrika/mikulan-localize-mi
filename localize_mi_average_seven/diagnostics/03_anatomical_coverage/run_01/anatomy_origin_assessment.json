@@ -1,0 +1,15 @@
+{
+  "documented_pydeface_subjects": [
+    "sub-01",
+    "sub-02",
+    "sub-03",
+    "sub-04",
+    "sub-05",
+    "sub-06",
+    "sub-07"
+  ],
+  "release_README_original_surface_statement": "BEM, pial and inflated surfaces created with original MRIs; released MRIs anonymized",
+  "conclusion": "Facial removal is documented in source images before template construction. Averaging is not the sole origin. Additional registration/averaging effects remain possible.",
+  "upstream_unanonymized_images_used": false,
+  "exact_additional_template_coverage_loss_quantified": false
+}

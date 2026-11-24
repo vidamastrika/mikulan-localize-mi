@@ -1,0 +1,126 @@
+line,text
+6,"bigimage 4 maxSize [256, 256, 256]"
+7,Setting physical space of output average image based on largest image
+17,Sharpening method none
+26,Interpolation type: LinearInterpolateImageFunction
+36,Interpolation type: LinearInterpolateImageFunction
+46,Interpolation type: LinearInterpolateImageFunction
+56,Interpolation type: LinearInterpolateImageFunction
+66,Interpolation type: LinearInterpolateImageFunction
+76,Interpolation type: LinearInterpolateImageFunction
+86,Interpolation type: LinearInterpolateImageFunction
+88,"bigimage 4 maxSize [256, 256, 256]"
+89,Setting physical space of output average image based on largest image
+99,Sharpening method none
+130,Sharpening method:        1
+152,"padded image size:  [401, 401, 401]"
+905,Registration using 3 total stages.
+1356,Interpolation type: LinearInterpolateImageFunction
+1377,"padded image size:  [401, 401, 401]"
+2130,Registration using 3 total stages.
+2568,Interpolation type: LinearInterpolateImageFunction
+2589,"padded image size:  [401, 401, 401]"
+3342,Registration using 3 total stages.
+3789,Interpolation type: LinearInterpolateImageFunction
+3810,"padded image size:  [401, 401, 401]"
+4563,Registration using 3 total stages.
+5012,Interpolation type: LinearInterpolateImageFunction
+5033,"padded image size:  [401, 401, 401]"
+5786,Registration using 3 total stages.
+6342,Interpolation type: LinearInterpolateImageFunction
+6363,"padded image size:  [401, 401, 401]"
+7116,Registration using 3 total stages.
+7550,Interpolation type: LinearInterpolateImageFunction
+7571,"padded image size:  [401, 401, 401]"
+8324,Registration using 3 total stages.
+8771,Interpolation type: LinearInterpolateImageFunction
+8779,"bigimage 4 maxSize [256, 256, 256]"
+8780,Setting physical space of output average image based on largest image
+8797,AverageImages 3 /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz 0 /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0000-sub-01_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0001-sub-02_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0002-sub-03_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0003-sub-04_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0004-sub-05_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0005-sub-06_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0006-sub-07_T1w-1Warp.nii.gz
+8801,"bigimage 4 size [256, 256, 256]"
+8802,"bigimage 4 size [256, 256, 256]"
+8803,"bigimage 4 size [256, 256, 256]"
+8821,shapeupdatetotemplate---scale the averaged inverse warp field by the gradient step
+8830,"antsApplyTransforms -d 3 -e vector -i /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -o /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t [ /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0GenericAffine.mat,1 ] -r /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz --verbose 1"
+9224,Interpolation type: LinearInterpolateImageFunction
+9227,"Reorienting displacement vectors, output in physical space"
+9231,"antsApplyTransforms -d 3 --float 1 --verbose 1 -i /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz -o /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz -t [ /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0GenericAffine.mat,1 ] -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -r /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz"
+9245,Interpolation type: LinearInterpolateImageFunction
+9700,Registration using 3 total stages.
+10171,Interpolation type: LinearInterpolateImageFunction
+10625,Registration using 3 total stages.
+11007,Interpolation type: LinearInterpolateImageFunction
+11461,Registration using 3 total stages.
+11949,Interpolation type: LinearInterpolateImageFunction
+12403,Registration using 3 total stages.
+12818,Interpolation type: LinearInterpolateImageFunction
+13272,Registration using 3 total stages.
+13719,Interpolation type: LinearInterpolateImageFunction
+14173,Registration using 3 total stages.
+14652,Interpolation type: LinearInterpolateImageFunction
+15106,Registration using 3 total stages.
+15626,Interpolation type: LinearInterpolateImageFunction
+15634,"bigimage 4 maxSize [256, 256, 256]"
+15635,Setting physical space of output average image based on largest image
+15652,AverageImages 3 /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz 0 /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0000-sub-01_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0001-sub-02_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0002-sub-03_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0003-sub-04_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0004-sub-05_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0005-sub-06_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0006-sub-07_T1w-1Warp.nii.gz
+15656,"bigimage 4 size [256, 256, 256]"
+15657,"bigimage 4 size [256, 256, 256]"
+15658,"bigimage 4 size [256, 256, 256]"
+15676,shapeupdatetotemplate---scale the averaged inverse warp field by the gradient step
+15685,"antsApplyTransforms -d 3 -e vector -i /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -o /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t [ /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0GenericAffine.mat,1 ] -r /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz --verbose 1"
+16079,Interpolation type: LinearInterpolateImageFunction
+16082,"Reorienting displacement vectors, output in physical space"
+16086,"antsApplyTransforms -d 3 --float 1 --verbose 1 -i /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz -o /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz -t [ /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0GenericAffine.mat,1 ] -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -r /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz"
+16100,Interpolation type: LinearInterpolateImageFunction
+16555,Registration using 3 total stages.
+16943,Interpolation type: LinearInterpolateImageFunction
+17397,Registration using 3 total stages.
+17787,Interpolation type: LinearInterpolateImageFunction
+18241,Registration using 3 total stages.
+18711,Interpolation type: LinearInterpolateImageFunction
+19165,Registration using 3 total stages.
+19634,Interpolation type: LinearInterpolateImageFunction
+20088,Registration using 3 total stages.
+20502,Interpolation type: LinearInterpolateImageFunction
+20956,Registration using 3 total stages.
+21495,Interpolation type: LinearInterpolateImageFunction
+21949,Registration using 3 total stages.
+22424,Interpolation type: LinearInterpolateImageFunction
+22432,"bigimage 4 maxSize [256, 256, 256]"
+22433,Setting physical space of output average image based on largest image
+22450,AverageImages 3 /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz 0 /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0000-sub-01_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0001-sub-02_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0002-sub-03_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0003-sub-04_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0004-sub-05_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0005-sub-06_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0006-sub-07_T1w-1Warp.nii.gz
+22454,"bigimage 4 size [256, 256, 256]"
+22455,"bigimage 4 size [256, 256, 256]"
+22456,"bigimage 4 size [256, 256, 256]"
+22474,shapeupdatetotemplate---scale the averaged inverse warp field by the gradient step
+22483,"antsApplyTransforms -d 3 -e vector -i /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -o /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t [ /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0GenericAffine.mat,1 ] -r /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz --verbose 1"
+22877,Interpolation type: LinearInterpolateImageFunction
+22880,"Reorienting displacement vectors, output in physical space"
+22884,"antsApplyTransforms -d 3 --float 1 --verbose 1 -i /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz -o /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz -t [ /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0GenericAffine.mat,1 ] -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -r /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz"
+22898,Interpolation type: LinearInterpolateImageFunction
+23353,Registration using 3 total stages.
+23793,Interpolation type: LinearInterpolateImageFunction
+24247,Registration using 3 total stages.
+24759,Interpolation type: LinearInterpolateImageFunction
+25213,Registration using 3 total stages.
+25704,Interpolation type: LinearInterpolateImageFunction
+26158,Registration using 3 total stages.
+26705,Interpolation type: LinearInterpolateImageFunction
+27159,Registration using 3 total stages.
+27696,Interpolation type: LinearInterpolateImageFunction
+28150,Registration using 3 total stages.
+28662,Interpolation type: LinearInterpolateImageFunction
+29116,Registration using 3 total stages.
+29574,Interpolation type: LinearInterpolateImageFunction
+29582,"bigimage 4 maxSize [256, 256, 256]"
+29583,Setting physical space of output average image based on largest image
+29600,AverageImages 3 /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz 0 /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0000-sub-01_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0001-sub-02_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0002-sub-03_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0003-sub-04_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0004-sub-05_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0005-sub-06_T1w-1Warp.nii.gz /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_input0006-sub-07_T1w-1Warp.nii.gz
+29604,"bigimage 4 size [256, 256, 256]"
+29605,"bigimage 4 size [256, 256, 256]"
+29606,"bigimage 4 size [256, 256, 256]"
+29624,shapeupdatetotemplate---scale the averaged inverse warp field by the gradient step
+29633,"antsApplyTransforms -d 3 -e vector -i /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -o /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t [ /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0GenericAffine.mat,1 ] -r /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz --verbose 1"
+30027,Interpolation type: LinearInterpolateImageFunction
+30030,"Reorienting displacement vectors, output in physical space"
+30034,"antsApplyTransforms -d 3 --float 1 --verbose 1 -i /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz -o /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz -t [ /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0GenericAffine.mat,1 ] -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -t /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0warp.nii.gz -r /home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/02_template_retry1/group_template0.nii.gz"
+30048,Interpolation type: LinearInterpolateImageFunction

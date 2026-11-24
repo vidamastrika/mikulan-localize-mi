@@ -1,0 +1,8 @@
+subject,n_forward,forward_frames,eeg_units,eeg_sidecar_frame,sidecar_landmark_frame,intended_for_exists,tsv_order_matches_forward,released_run_channel_files,channel_order_mismatch_files,tsv_forward_rms_mm,rotation_identity_error,forward_translation_minus_cras_max_mm,h5_inverse_forward_max_abs,forward_dig_json,forward_dig_sidecar_comparison_json,independent_sensor_verification
+sub-01,256,[4],m (FIF contract),T1w,T1w,False,True,11,[],0.004919595049863652,0.0,3.109732246464603e-05,0.0,[],[],NOT_ESTABLISHED: exported TSV not original digitizer; channel metadata only
+sub-02,256,[4],m (FIF contract),T1w,T1w,False,True,6,[],34.30312722016445,0.0,4.500255203510051e-05,0.0,[],[],NOT_ESTABLISHED: exported TSV not original digitizer; channel metadata only
+sub-03,256,[4],m (FIF contract),T1w,T1w,False,True,7,[],24.039366445722756,0.0,3.969747662591061e-06,0.0,[],[],NOT_ESTABLISHED: exported TSV not original digitizer; channel metadata only
+sub-04,256,[4],m (FIF contract),T1w,T1w,False,True,9,[],16.90253093047025,0.0,3.079679489204068e-06,0.0,[],[],NOT_ESTABLISHED: exported TSV not original digitizer; channel metadata only
+sub-05,256,[4],m (FIF contract),T1w,T1w,False,True,14,[],43.18266119126458,0.0,4.166351795120704e-06,0.0,[],[],NOT_ESTABLISHED: exported TSV not original digitizer; channel metadata only
+sub-06,256,[4],m (FIF contract),T1w,T1w,False,True,7,[],25.19501084306598,0.0,4.161554813641999e-06,0.0,[],[],NOT_ESTABLISHED: exported TSV not original digitizer; channel metadata only
+sub-07,256,[4],m (FIF contract),T1w,T1w,False,True,7,[],48.32131545164281,0.0,4.5428676605396845e-05,0.0,[],[],NOT_ESTABLISHED: exported TSV not original digitizer; channel metadata only

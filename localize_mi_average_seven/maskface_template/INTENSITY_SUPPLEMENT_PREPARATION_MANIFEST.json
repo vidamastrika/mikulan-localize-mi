@@ -1,0 +1,12 @@
+{
+  "status": "INTENSITY_SUPPLEMENT_PREPARED_NOT_EXECUTED",
+  "stage2_authorized": false,
+  "preserved_original_run": "outputs/01_input_feasibility/run_01",
+  "purpose": "Account for observed approximately 255-fold intensity-convention difference in diagnostic display/metrics only",
+  "synthetic_tests": "PASS: calibration, held-out independence, immutable image adapter, regional metrics, corrected rendering",
+  "files": {
+    "scripts/01b_review_intensity_conventions.py": "2f33c02380e379be94378a069c8b94c641f782231847fd42f4bd5a7ca03dca7c",
+    "scripts/01b_check_intensity.py": "f3aab94311e52086eb255641f5235218968ae48a768fc7f7292f8bb4af9c5489",
+    "REVIEW_stage1_run_01.md": "5b83409951b8ece001282fb5e03337615b507cf516b2839437e1909ba1cd060e"
+  }
+}

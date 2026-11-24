@@ -1,0 +1,17 @@
+{
+  "stage": "02_TEMPLATE_AND_ANATOMICAL_QA",
+  "user_authorized": true,
+  "scope": [
+    "maskface-only four-iteration average template construction",
+    "FreeSurfer recon-all in a new subject directory",
+    "unmodified mri_watershed surface generation",
+    "MRI and surface diagnostic comparison"
+  ],
+  "constraints": [
+    "preserve all original and Stage 1 outputs",
+    "do not apply fitted Stage 1 intensity gains",
+    "do not alter surfaces or repair anatomy",
+    "do not construct a BEM solution or source space",
+    "do not run EEG alignment, forward or inverse calculations"
+  ]
+}

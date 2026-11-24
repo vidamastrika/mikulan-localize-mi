@@ -1,0 +1,5 @@
+region_proxy,vertices,changed_vertices,max_change_mm,mean_change_mm,interpretation
+cranial_proxy,6937,6937,3.3118229472266414,0.35145631201268557,existing repair candidate versus original; no adoption; geometric region proxies only
+facial_proxy,85,85,2.484723257157156,0.6034426610081298,existing repair candidate versus original; no adoption; geometric region proxies only
+inferior_lateral_proxy,1198,1198,8.10429264563103,1.612535950413542,existing repair candidate versus original; no adoption; geometric region proxies only
+transition_or_other_uncertain,2022,2022,8.221657003334226,1.4424741158745782,existing repair candidate versus original; no adoption; geometric region proxies only

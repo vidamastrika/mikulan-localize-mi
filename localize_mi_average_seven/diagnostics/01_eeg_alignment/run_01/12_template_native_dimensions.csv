@@ -1,0 +1,15 @@
+subject,template,x_extent_template_minus_native_mm,y_extent_template_minus_native_mm,z_extent_template_minus_native_mm,interpretation
+sub-01,fsaverage,12.991073608398438,-4.0274505615234375,-10.824356079101562,unregistered surface axes; coverage and orientation confounded
+sub-01,average_seven,-2.6236190795898438,-16.378883361816406,-29.27922821044922,unregistered surface axes; coverage and orientation confounded
+sub-02,fsaverage,7.886497497558594,3.52471923828125,11.773193359375,unregistered surface axes; coverage and orientation confounded
+sub-02,average_seven,-7.7281951904296875,-8.826713562011719,-6.681678771972656,unregistered surface axes; coverage and orientation confounded
+sub-03,fsaverage,4.4732818603515625,-4.589012145996094,-7.5876007080078125,unregistered surface axes; coverage and orientation confounded
+sub-03,average_seven,-11.141410827636719,-16.940444946289062,-26.04247283935547,unregistered surface axes; coverage and orientation confounded
+sub-04,fsaverage,8.466201782226562,-8.943077087402344,-5.3157196044921875,unregistered surface axes; coverage and orientation confounded
+sub-04,average_seven,-7.148490905761719,-21.294509887695312,-23.770591735839844,unregistered surface axes; coverage and orientation confounded
+sub-05,fsaverage,20.306365966796875,11.962959289550781,-4.631103515625,unregistered surface axes; coverage and orientation confounded
+sub-05,average_seven,4.691673278808594,-0.3884735107421875,-23.085975646972656,unregistered surface axes; coverage and orientation confounded
+sub-06,fsaverage,17.287384033203125,19.32958984375,-3.5643234252929688,unregistered surface axes; coverage and orientation confounded
+sub-06,average_seven,1.6726913452148438,6.978157043457031,-22.019195556640625,unregistered surface axes; coverage and orientation confounded
+sub-07,fsaverage,14.430831909179688,19.19500732421875,-3.78436279296875,unregistered surface axes; coverage and orientation confounded
+sub-07,average_seven,-1.1838607788085938,6.843574523925781,-22.239234924316406,unregistered surface axes; coverage and orientation confounded

@@ -1,0 +1,28 @@
+{
+  "status": "PREPARED_NOT_EXECUTED",
+  "previous_review": "localize_mi_average_seven/diagnostics/02_scalp_geometry/REVIEW_run_02.md",
+  "primary_channels_unchanged": true,
+  "scaling": false,
+  "refitting": false,
+  "reconstruction": false,
+  "surfaces_modified": false,
+  "forward": false,
+  "inverse": false,
+  "tests": [
+    "proxy definitions",
+    "MRI support ambiguity",
+    "inward patch geometry",
+    "residual plane coplanarity",
+    "mirror pairs",
+    "metric edge cases",
+    "synthetic MRI rendering",
+    "Python syntax"
+  ],
+  "files": {
+    "README.md": "259ae028f109e6e5d00e5884d366fe48c2377c7a300ed81145ea620e20f086e7",
+    "REPORT.md": "e23ca1517e148a7fffb8a91ee0554bdc47e57a25e5f4c7cce991a9c0394dc23a",
+    "coverage_math.py": "afaa3cdba660cb9d0b59f9c1cac2d6ed6368c78e6f2bd75aa01e9245eb4f34e1",
+    "diagnose.py": "6fd6f699cdbc4e8c8f47930746a82659ade8931fd014cab5ac8678bc0bec4c1f",
+    "check_coverage.py": "e319a6d9b79af705e6b1c31411895d23a7aac7734243a965cbf9c94a21a5171d"
+  }
+}

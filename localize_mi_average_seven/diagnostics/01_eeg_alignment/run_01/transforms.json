@@ -1,0 +1,884 @@
+[
+  {
+    "subject": "sub-01",
+    "model": "native",
+    "source": "inverse forward mri_head_t",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0020391501020640135
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.013726700097322464
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.0007914120214991271
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "verified_direction": "MRI to HEAD tag inverted"
+  },
+  {
+    "subject": "sub-01",
+    "model": "native",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/derivatives/sourcemodelling/sub-01/xfm/sub-01_from-head_to-surface.h5",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0020391501020640135
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.013726700097322464
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.0007914120214991271
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "forward_inverse_max_abs": 0.0
+  },
+  {
+    "subject": "sub-01",
+    "model": "fsaverage",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/fsaverage/sub-01-trans.fif",
+    "matrix_m": [
+      [
+        0.9986993670463562,
+        -0.0008719710749574006,
+        -0.050978340208530426,
+        0.0024520838633179665
+      ],
+      [
+        -0.005400966852903366,
+        0.9924187660217285,
+        -0.12278357148170471,
+        -0.006956375669687986
+      ],
+      [
+        0.05069892853498459,
+        0.12289920449256897,
+        0.9911233186721802,
+        -0.024896571412682533
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-01",
+    "model": "average_seven",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/average_seven/sub-01-trans.fif",
+    "matrix_m": [
+      [
+        0.9996156692504883,
+        -0.024863585829734802,
+        0.012259584851562977,
+        -0.00039861726691015065
+      ],
+      [
+        0.02674148418009281,
+        0.9814128279685974,
+        -0.19003619253635406,
+        0.0015682638622820377
+      ],
+      [
+        -0.007306732703000307,
+        0.19029100239276886,
+        0.9817005395889282,
+        -0.004783507902175188
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-02",
+    "model": "native",
+    "source": "inverse forward mri_head_t",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.0026676300913095474
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.009489850141108036
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.03651589900255203
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "verified_direction": "MRI to HEAD tag inverted"
+  },
+  {
+    "subject": "sub-02",
+    "model": "native",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/derivatives/sourcemodelling/sub-02/xfm/sub-02_from-head_to-surface.h5",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.0026676300913095474
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.009489850141108036
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.03651589900255203
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "forward_inverse_max_abs": 0.0
+  },
+  {
+    "subject": "sub-02",
+    "model": "fsaverage",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/fsaverage/sub-02-trans.fif",
+    "matrix_m": [
+      [
+        0.9995790719985962,
+        -0.026699157431721687,
+        0.01135263405740261,
+        -0.002049886854365468
+      ],
+      [
+        0.027756372466683388,
+        0.9939420223236084,
+        -0.10634288936853409,
+        -0.005841938313096762
+      ],
+      [
+        -0.008444595150649548,
+        0.10661323368549347,
+        0.9942647218704224,
+        -0.04889246076345444
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-02",
+    "model": "average_seven",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/average_seven/sub-02-trans.fif",
+    "matrix_m": [
+      [
+        0.9767004251480103,
+        -0.03526463732123375,
+        0.21169020235538483,
+        -0.013908364810049534
+      ],
+      [
+        0.08072837442159653,
+        0.9743291139602661,
+        -0.21015651524066925,
+        0.004444852005690336
+      ],
+      [
+        -0.19884483516216278,
+        0.2223493605852127,
+        0.9544744491577148,
+        -0.028670312836766243
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-03",
+    "model": "native",
+    "source": "inverse forward mri_head_t",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0036044500302523375
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.009367880411446095
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0011735199950635433
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "verified_direction": "MRI to HEAD tag inverted"
+  },
+  {
+    "subject": "sub-03",
+    "model": "native",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/derivatives/sourcemodelling/sub-03/xfm/sub-03_from-head_to-surface.h5",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0036044500302523375
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.009367880411446095
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0011735199950635433
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "forward_inverse_max_abs": 0.0
+  },
+  {
+    "subject": "sub-03",
+    "model": "fsaverage",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/fsaverage/sub-03-trans.fif",
+    "matrix_m": [
+      [
+        0.9996528029441833,
+        0.0003952210827264935,
+        0.02634665183722973,
+        0.0019578540232032537
+      ],
+      [
+        0.001607092097401619,
+        0.9971115589141846,
+        -0.0759342610836029,
+        -0.008064694702625275
+      ],
+      [
+        -0.026300562545657158,
+        0.07595023512840271,
+        0.9967646598815918,
+        -0.02255024015903473
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-03",
+    "model": "average_seven",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/average_seven/sub-03-trans.fif",
+    "matrix_m": [
+      [
+        0.9988256692886353,
+        -0.047916051000356674,
+        0.007163411937654018,
+        0.001690863398835063
+      ],
+      [
+        0.04841740429401398,
+        0.9819110035896301,
+        -0.18304787576198578,
+        0.0013582216342911124
+      ],
+      [
+        0.001737098442390561,
+        0.18317975103855133,
+        0.983077883720398,
+        -0.0036125353071838617
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-04",
+    "model": "native",
+    "source": "inverse forward mri_head_t",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.00013124800170771778
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.007414990104734898
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.001982700079679489
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "verified_direction": "MRI to HEAD tag inverted"
+  },
+  {
+    "subject": "sub-04",
+    "model": "native",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/derivatives/sourcemodelling/sub-04/xfm/sub-04_from-head_to-surface.h5",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.00013124800170771778
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.007414990104734898
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.001982700079679489
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "forward_inverse_max_abs": 0.0
+  },
+  {
+    "subject": "sub-04",
+    "model": "fsaverage",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/fsaverage/sub-04-trans.fif",
+    "matrix_m": [
+      [
+        0.9999709129333496,
+        0.0021929920185357332,
+        -0.007301214151084423,
+        0.0013618620578199625
+      ],
+      [
+        -0.003068039659410715,
+        0.9925148487091064,
+        -0.12208563834428787,
+        -0.01049251388758421
+      ],
+      [
+        0.00697883078828454,
+        0.12210449576377869,
+        0.9924927353858948,
+        -0.020993053913116455
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-04",
+    "model": "average_seven",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/average_seven/sub-04-trans.fif",
+    "matrix_m": [
+      [
+        0.9993833303451538,
+        -0.03475392609834671,
+        0.0050179134123027325,
+        0.00016491656424477696
+      ],
+      [
+        0.03491640463471413,
+        0.9684011340141296,
+        -0.24694152176380157,
+        -0.00024418404791504145
+      ],
+      [
+        0.003722834400832653,
+        0.2469644397497177,
+        0.9690173864364624,
+        -0.002563304267823696
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-05",
+    "model": "native",
+    "source": "inverse forward mri_head_t",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.005517160054296255
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.003611129941418767
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.005849880166351795
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "verified_direction": "MRI to HEAD tag inverted"
+  },
+  {
+    "subject": "sub-05",
+    "model": "native",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/derivatives/sourcemodelling/sub-05/xfm/sub-05_from-head_to-surface.h5",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.005517160054296255
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.003611129941418767
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.005849880166351795
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "forward_inverse_max_abs": 0.0
+  },
+  {
+    "subject": "sub-05",
+    "model": "fsaverage",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/fsaverage/sub-05-trans.fif",
+    "matrix_m": [
+      [
+        0.9993078708648682,
+        -0.0364900566637516,
+        -0.007230720017105341,
+        0.0025712589267641306
+      ],
+      [
+        0.0354624018073082,
+        0.993177592754364,
+        -0.11108851432800293,
+        -0.0033926910255104303
+      ],
+      [
+        0.011235015466809273,
+        0.11075521260499954,
+        0.9937841892242432,
+        -0.014388921670615673
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-05",
+    "model": "average_seven",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/average_seven/sub-05-trans.fif",
+    "matrix_m": [
+      [
+        0.996040940284729,
+        -0.08456505089998245,
+        -0.027408452704548836,
+        0.0019110748544335365
+      ],
+      [
+        0.08384238183498383,
+        0.9961259365081787,
+        -0.026524359360337257,
+        0.0022039057221263647
+      ],
+      [
+        0.02954530529677868,
+        0.0241213571280241,
+        0.999272346496582,
+        0.005394371692091227
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-06",
+    "model": "native",
+    "source": "inverse forward mri_head_t",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.0001929930003825575
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.004589839838445187
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.016677599400281906
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "verified_direction": "MRI to HEAD tag inverted"
+  },
+  {
+    "subject": "sub-06",
+    "model": "native",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/derivatives/sourcemodelling/sub-06/xfm/sub-06_from-head_to-surface.h5",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.0001929930003825575
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.004589839838445187
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.016677599400281906
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "forward_inverse_max_abs": 0.0
+  },
+  {
+    "subject": "sub-06",
+    "model": "fsaverage",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/fsaverage/sub-06-trans.fif",
+    "matrix_m": [
+      [
+        0.9998477101325989,
+        -0.016716673970222473,
+        -0.005013063084334135,
+        0.0032487420830875635
+      ],
+      [
+        0.016134126111865044,
+        0.9948908686637878,
+        -0.09965895861387253,
+        -0.017277490347623825
+      ],
+      [
+        0.006653416436165571,
+        0.09956289827823639,
+        0.9950090050697327,
+        -0.030755706131458282
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-06",
+    "model": "average_seven",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/average_seven/sub-06-trans.fif",
+    "matrix_m": [
+      [
+        0.9988003969192505,
+        -0.0359041728079319,
+        0.03329605609178543,
+        0.004574252292513847
+      ],
+      [
+        0.04011916741728783,
+        0.9898895621299744,
+        -0.13604837656021118,
+        -0.011098498478531837
+      ],
+      [
+        -0.028074711561203003,
+        0.13722099363803864,
+        0.9901425242424011,
+        -0.01233306247740984
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-07",
+    "model": "native",
+    "source": "inverse forward mri_head_t",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.007412610109895468
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.013388000428676605
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.036566298454999924
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "verified_direction": "MRI to HEAD tag inverted"
+  },
+  {
+    "subject": "sub-07",
+    "model": "native",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/data/Localize-MI/derivatives/sourcemodelling/sub-07/xfm/sub-07_from-head_to-surface.h5",
+    "matrix_m": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.007412610109895468
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.013388000428676605
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.036566298454999924
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "forward_inverse_max_abs": 0.0
+  },
+  {
+    "subject": "sub-07",
+    "model": "fsaverage",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/fsaverage/sub-07-trans.fif",
+    "matrix_m": [
+      [
+        0.9997561573982239,
+        0.020431125536561012,
+        0.00837638322263956,
+        0.010656177997589111
+      ],
+      [
+        -0.019971538335084915,
+        0.998462975025177,
+        -0.05169934779405594,
+        -0.025908520445227623
+      ],
+      [
+        -0.00941978394985199,
+        0.05151945352554321,
+        0.9986275434494019,
+        -0.05031827464699745
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "subject": "sub-07",
+    "model": "average_seven",
+    "source": "/home/girvi949/projects/mikulan-localize-mi/localize_mi_average_seven/outputs/04x_exploratory_alignment_retry1/average_seven/sub-07-trans.fif",
+    "matrix_m": [
+      [
+        0.9993690252304077,
+        0.012513584457337856,
+        0.03324031084775925,
+        0.01218727882951498
+      ],
+      [
+        -0.008393882773816586,
+        0.9925800561904907,
+        -0.12130295485258102,
+        -0.018093984574079514
+      ],
+      [
+        -0.03451160341501236,
+        0.12094740569591522,
+        0.9920588135719299,
+        -0.03278493881225586
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  }
+]

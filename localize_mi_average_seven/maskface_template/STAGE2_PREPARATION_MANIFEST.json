@@ -1,0 +1,28 @@
+{
+  "status": "PREPARED_RESTART_REQUIRED",
+  "preparation_run_03": "COMPLETE; seven staged inputs hash verified",
+  "construction_run_03": "INTERRUPTED before first groupwise iteration completed; partial files preserved; no running process",
+  "next_construction_output": "outputs/03_template/run_04",
+  "agent_launched_registration_or_reconstruction": false,
+  "validation": {
+    "syntax_compile": "passed"
+  },
+  "file_sha256": {
+    "localize_mi_average_seven/maskface_template/config/stage2.json": "6abd8b9b4dd97edfbc0698cfe7e18ed87cbff5986b9fdcacf83b5734120bb78b",
+    "localize_mi_average_seven/maskface_template/scripts/02_prepare_stage2.py": "719fcf27c08be8b65f1ea9ce640d62659fb5afc895e5b2dfcd24706c8c670354",
+    "localize_mi_average_seven/maskface_template/scripts/03_construct_template.py": "f6959cdb8e110cd9e66a9d0a3bccd7a904efd8a5a41ab91152345834eec20954",
+    "localize_mi_average_seven/maskface_template/scripts/04_compare_template_mri.py": "83e7a8c0c76702073c3ad88e538bf0235d47be5a698c457d63d669681b41273a",
+    "localize_mi_average_seven/maskface_template/scripts/05_run_freesurfer.py": "4779545cdf9f31c7f127e5c4b2a4118f7b6a0b01247e6c4f9bb7f81baece2288",
+    "localize_mi_average_seven/maskface_template/scripts/06_review_surfaces.py": "9fa84342e0c4fa807f3478833a7996ee28514f425d8557a0eeace03daddb09d7",
+    "localize_mi_average_seven/maskface_template/scripts/stage2_common.py": "5f2cbf2ee6e16225f7fdf3c7b99cfd2849834ea1b0b44f374d3efbb6fc3cb675",
+    "localize_mi_average_seven/maskface_template/scripts/stage2_qa.py": "8ec4a84695316cd6a4d55db54261c9e39139d6f85423f5719e44331d7c2fb000",
+    "localize_mi_average_seven/maskface_template/scripts/input_utils.py": "642b0a0dc7342c2c497693573c410b38480c91efa266f12e3f64811083a5fd71",
+    "localize_mi_average_seven/maskface_template/STAGE2_RUN.md": "0b3bdd81cf0906a312976233cd7fba360cbb69a3e69190997968208614eba939",
+    "localize_mi_average_seven/maskface_template/REPORT_stage2.md": "b074a5eace4979c99507bb9cf578fe119c9141d65e12b62f8ca6e30eec1ff2d2",
+    "localize_mi_average_seven/maskface_template/REVIEW_stage2_template_run_01.md": "ca1891470bf6f4a5e5b73aa347f9a89f569d3d0942506f70e6e2e511cd4b9ce7",
+    "localize_mi_average_seven/maskface_template/REVIEW_stage2_preparation_run_02.md": "ebb75f3522fa491042051b391db5613e568f310c1dab11b2247eda5ad983088c",
+    "localize_mi_average_seven/maskface_template/REVIEW_stage2_template_run_03.md": "de3287b7a064320c56b52f2fc5d7eb19f3bbbf6e9f93d86b604907795415a4e0",
+    "localize_mi_average_seven/maskface_template/README.md": "4b2591cb1416e3a0ea97df2fd22b5a9486e256a5025d056deef202eaa8f0b1c2",
+    "localize_mi_average_seven/maskface_template/docs/STAGES.md": "d3bb9aeff7e0991f322dd139063ff6df4e849516f155b90ad18ae240ba6450ea"
+  }
+}

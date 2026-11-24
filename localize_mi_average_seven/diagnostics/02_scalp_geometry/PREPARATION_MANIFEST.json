@@ -1,0 +1,27 @@
+{
+  "status": "PREPARED_NOT_EXECUTED",
+  "previous_run": "localize_mi_average_seven/diagnostics/01_eeg_alignment/run_01",
+  "output_policy": "fresh numbered directory; prior outputs immutable",
+  "scaling": false,
+  "refitting": false,
+  "forward": false,
+  "inverse": false,
+  "anatomy_modified": false,
+  "validation": [
+    "Python syntax",
+    "analytic closest triangle points",
+    "closed/open topology and orientation",
+    "winding and three ray parities",
+    "conditional sign ambiguity",
+    "plane intersections",
+    "FreeSurfer volume bridge",
+    "anisotropic physical MRI sampling and FOV handling"
+  ],
+  "files": {
+    "README.md": "e39ce1762168abd96e8f5a4297cfe3ca2024313282cb571a92c34a846ffeee68",
+    "REPORT.md": "0dfc497fcad473a608fd125aad53c69c972314954000c71b48e707cf4a8544df",
+    "geometry.py": "242e681d88d43079f5e6474818cd1b25cfc64a45c0eaf8e46dee962eb7684e85",
+    "check_geometry.py": "98b9bbcfcd80c9127d8ea28a7a2b9c12cb7cd069fc8a18258d223c594c5956a6",
+    "diagnose.py": "59639e9686c04f4119fa4f823c026f12c374b1f97315bb4918cbdc006622fa8f"
+  }
+}

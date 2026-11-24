@@ -1,0 +1,22 @@
+subject_a,subject_b,identical_landmarks,identical_tsv,forward_same_label_rms_mm,interpretation
+sub-01,sub-02,True,True,34.30315781351167,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-01,sub-03,True,True,24.03935627836492,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-01,sub-04,True,True,16.902467581056133,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-01,sub-05,True,True,43.1826076720555,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-01,sub-06,True,True,25.19490570913515,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-01,sub-07,True,True,48.321394777176806,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-02,sub-03,True,True,51.3737166549222,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-02,sub-04,True,True,42.87335146742317,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-02,sub-05,True,True,73.16080785545682,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-02,sub-06,True,True,26.352648410088406,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-02,sub-07,True,True,30.13952185189626,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-03,sub-04,True,True,27.285533607988388,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-03,sub-05,True,True,31.13213771589421,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-03,sub-06,True,True,40.24018726516484,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-03,sub-07,True,True,66.02461830968986,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-04,sub-05,True,True,40.647471628240034,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-04,sub-06,True,True,32.44773623548621,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-04,sub-07,True,True,52.403189992263904,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-05,sub-06,True,True,62.05274632782008,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-05,sub-07,True,True,85.45081978932129,raw declared-frame comparison; does not establish intersubject anatomical correspondence
+sub-06,sub-07,True,True,34.58438303991785,raw declared-frame comparison; does not establish intersubject anatomical correspondence

@@ -1,0 +1,306 @@
+[
+  {
+    "model": "average_seven",
+    "source": "actual T1.mgz affine @ inverse(vox2ras_tkr)",
+    "surface_to_scanner_ras_mm": [
+      [
+        1.0,
+        0.0,
+        3.725290298461914e-09,
+        -2.0391316413879395
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        13.726669311523438
+      ],
+      [
+        -3.725290298461914e-09,
+        0.0,
+        1.0,
+        0.7914128303527832
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "status": "HEADER_DERIVED",
+    "surface_volume_metadata_checked": [
+      "volume",
+      "voxelsize",
+      "xras",
+      "yras",
+      "zras",
+      "cras"
+    ],
+    "surface_header_cras_max_difference_mm": 4.768527831489067e-07
+  },
+  {
+    "model": "fsaverage",
+    "source": "actual T1.mgz affine @ inverse(vox2ras_tkr)",
+    "surface_to_scanner_ras_mm": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "status": "HEADER_DERIVED",
+    "surface_volume_metadata_checked": [
+      "volume",
+      "voxelsize",
+      "xras",
+      "yras",
+      "zras",
+      "cras"
+    ],
+    "surface_header_cras_max_difference_mm": 0.0
+  },
+  {
+    "model": "sub-01",
+    "source": "GIFTI VolGeom scanner affine @ inverse(tkr)",
+    "surface_to_scanner_ras_mm": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -2.0391460000000023
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        13.726669000000001
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.7914120000000082
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "volume_affine_max_difference_mm": 1.4835449221095587e-05,
+    "status": "GIFTI_AND_MRI_HEADERS_MATCH; anatomical provenance unverified"
+  },
+  {
+    "model": "sub-02",
+    "source": "GIFTI VolGeom scanner affine @ inverse(tkr)",
+    "surface_to_scanner_ras_mm": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        2.667632999999995
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        9.489852999999997
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        36.51585399999999
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "volume_affine_max_difference_mm": 1.537695311526477e-05,
+    "status": "GIFTI_AND_MRI_HEADERS_MATCH; anatomical provenance unverified"
+  },
+  {
+    "model": "sub-03",
+    "source": "GIFTI VolGeom scanner affine @ inverse(tkr)",
+    "surface_to_scanner_ras_mm": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -3.604454000000004
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        9.367881999999994
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -1.173523000000003
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "volume_affine_max_difference_mm": 7.669921870956387e-06,
+    "status": "GIFTI_AND_MRI_HEADERS_MATCH; anatomical provenance unverified"
+  },
+  {
+    "model": "sub-04",
+    "source": "GIFTI VolGeom scanner affine @ inverse(tkr)",
+    "surface_to_scanner_ras_mm": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.13124799999999937
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        7.4149929999999955
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -1.9826970000000017
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "volume_affine_max_difference_mm": 1.4972656245504368e-05,
+    "status": "GIFTI_AND_MRI_HEADERS_MATCH; anatomical provenance unverified"
+  },
+  {
+    "model": "sub-05",
+    "source": "GIFTI VolGeom scanner affine @ inverse(tkr)",
+    "surface_to_scanner_ras_mm": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        5.517158999999992
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.611130000000003
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -5.849875999999995
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "volume_affine_max_difference_mm": 1.4854980463496759e-05,
+    "status": "GIFTI_AND_MRI_HEADERS_MATCH; anatomical provenance unverified"
+  },
+  {
+    "model": "sub-06",
+    "source": "GIFTI VolGeom scanner affine @ inverse(tkr)",
+    "surface_to_scanner_ras_mm": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.1929930000000013
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        4.589843999999999
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        16.67759699999999
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "volume_affine_max_difference_mm": 1.5304687508432835e-05,
+    "status": "GIFTI_AND_MRI_HEADERS_MATCH; anatomical provenance unverified"
+  },
+  {
+    "model": "sub-07",
+    "source": "GIFTI VolGeom scanner affine @ inverse(tkr)",
+    "surface_to_scanner_ras_mm": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -7.412612999999993
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        13.387955000000005
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        36.566254000000015
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "volume_affine_max_difference_mm": 1.5546875005156835e-05,
+    "status": "GIFTI_AND_MRI_HEADERS_MATCH; anatomical provenance unverified"
+  }
+]

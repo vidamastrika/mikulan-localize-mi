@@ -1,0 +1,59 @@
+{
+  "baseline_commit": "11f6008805d82756d18806293189e7a435122bef",
+  "design": "within-cohort; all seven test MRIs contribute to the template",
+  "participants": [
+    "sub-01",
+    "sub-02",
+    "sub-03",
+    "sub-04",
+    "sub-05",
+    "sub-06",
+    "sub-07"
+  ],
+  "dataset": "data/Localize-MI",
+  "schedule": "cross_subject_fsaverage/outputs/01_prepare_experiment/02_fsaverage_reconstruction_plan.csv",
+  "frozen_settings": "cross_subject_fsaverage/outputs/01_prepare_experiment/source_configurations",
+  "fsaverage_results": "cross_subject_fsaverage/outputs/07_evaluate_localization/01_run_level_diagnostic.csv",
+  "arms": [
+    "average_seven",
+    "fsaverage"
+  ],
+  "registration": {
+    "method": "ANTs unbiased iterative groupwise SyN",
+    "iterations": 4,
+    "metric": "CC",
+    "coordinate_convention": "ITK LPS physical millimetres; convert RAS explicitly",
+    "scope": "template construction only; transforms retained for provenance, never applied to estimates or ground truth"
+  },
+  "anatomy": {
+    "conductivity_s_per_m": [
+      0.3,
+      0.006,
+      0.3
+    ],
+    "bem_ico": 4,
+    "source_spacing": "ico5"
+  },
+  "coregistration": {
+    "procedure": "same rigid fiducial initialization and trimmed ICP in both arms",
+    "iterations": 40,
+    "trim_fraction": 0.15,
+    "median_limit_mm": 10,
+    "p95_limit_mm": 20,
+    "scaling": false
+  },
+  "sensor_policy": "recorded participant geometry embedded in native forwards; released electrode TSV only for provenance audit",
+  "channels": "identical frozen reference-based nominal montage, bad-channel replacement and actual ordered channels in both arms",
+  "preprocessing": "reuse frozen no-warp engine; identical epoch data, average-reference scope, baseline and covariance intervals",
+  "peak_rule": "known_stimulation_hemisphere_original; identical frozen rule for both arms; label use of known hemisphere",
+  "reuse_policy": "deny unless per-job fingerprints and rigid alignment QA match; anatomical validation is not required for diagnostic distances",
+  "primary_difference": "average_seven_diagnostic_distance_mm minus fsaverage_diagnostic_distance_mm; paired only when both PASS and protocols match",
+  "comparison": "no_warp_diagnostic_head_distance",
+  "coordinate_policy": {
+    "estimate_frame": "model_head",
+    "reference_frame": "test_head",
+    "units": "mm",
+    "mri_warp_applied": false,
+    "localization_error_valid": false
+  }
+}
