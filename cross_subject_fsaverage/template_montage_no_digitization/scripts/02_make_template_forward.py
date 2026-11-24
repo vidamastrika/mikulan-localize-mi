@@ -82,12 +82,15 @@ def main(argv=None):
     parser.add_argument('--bem-audit-root', type=Path, default=VARIANT/'outputs/01_bem_sensor_audit_assumed_v1')
     parser.add_argument('--output-root', type=Path, default=VARIANT/'outputs/02_template_forward_audit_assumed_v1')
     parser.add_argument('--n-jobs', type=int, default=1)
+    parser.add_argument('--maskface-bem-root', type=Path,
+                        help='Completed Maskface BEM run for a shared template forward')
     args = parser.parse_args(argv)
     require(args.n_jobs > 0, '--n-jobs must be positive')
     prep, audit_root, out = [p.expanduser().resolve() for p in
                               (args.preparation_root,args.bem_audit_root,args.output_root)]
-    allowed = (VARIANT/'outputs').resolve()
-    require(allowed in out.parents and not out.exists(), 'Use a new directory within this variant/outputs')
+    experiment = VARIANT.parents[1]/'localize_mi_average_seven' if args.maskface_bem_root else VARIANT
+    allowed = (experiment/'outputs').resolve()
+    require(allowed in out.parents and not out.exists(), f'Use a new directory within {allowed}')
     for protected in (prep,audit_root):
         require(VARIANT in protected.parents, 'Input reports must belong to this variant')
         require(protected not in out.parents and out not in protected.parents, 'Output overlaps frozen inputs')
@@ -152,6 +155,41 @@ def main(argv=None):
     require(readiness['status']=='EXPLORATORY_NUMERICAL_REVIEW_REQUIRED' and not readiness['blockers'], 'Preparation numerical gate failed')
     import mne
     from mne.io.constants import FIFF
+    model_subject = 'fsaverage'
+    transform_policy = 'predefined fsaverage HEAD to MRI; no individual fit'
+    maskface_metadata = {}
+    if args.maskface_bem_root:
+        bem_root = args.maskface_bem_root.resolve()
+        document = json.loads(verify(bem_root/'manifest.json').read_text())
+        require(document['status']=='COMPLETE' and document['stage']=='08_BEM_AND_SOURCES',
+                'Completed Maskface BEM run required')
+        model_subject = document['subject']
+        require(model_subject=='average_seven_maskface', 'Unexpected Maskface subject')
+        for role, key in [('source_space','src'),('bem_solution','bem'),('scalp','scalp')]:
+            path = Path(document[key]).resolve()
+            anatomy[role] = verify(path, document['output_sha256'][str(path.relative_to(bem_root))])
+        subjects_dir = Path(document['subjects_dir'])
+        mri = subjects_dir/model_subject/'mri'
+        for filename in ('orig.mgz','transforms/talairach.xfm'):
+            path = (mri/filename).resolve()
+            verify(path, document['input_sha256'].get(str(path)))
+        fids = resources['fiducials']
+        points, frame = mne.io.read_fiducials(verify(fids['path'],fids['sha256']))
+        require(frame == FIFF.FIFFV_COORD_MRI and len(points)==3, 'Invalid fsaverage MRI fiducials')
+        source = np.array([point['r'] for point in points])
+        talairach = mne.read_talxfm(model_subject, subjects_dir)
+        target = mne.transforms.apply_trans(np.linalg.inv(talairach['trans']), source)
+        u, _, vt = np.linalg.svd((source-source.mean(0)).T @ (target-target.mean(0)))
+        correction = np.diag([1, 1, np.linalg.det(vt.T @ u.T)])
+        rotation = vt.T @ correction @ u.T
+        mri_to_maskface = np.eye(4)
+        mri_to_maskface[:3,:3] = rotation
+        mri_to_maskface[:3,3] = target.mean(0) - rotation @ source.mean(0)
+        matrix = mri_to_maskface @ matrix
+        transform_policy = 'fixed rigid fit of fsaverage fiducials to Talairach-estimated Maskface fiducials'
+        maskface_metadata = dict(anatomy_review=document['anatomy_review'],
+            fiducial_fit_residuals_mm=(1000*np.linalg.norm(
+                mne.transforms.apply_trans(mri_to_maskface,source)-target,axis=1)).tolist())
     info = mne.create_info(names,sfreq=1.0,ch_types='eeg')
     info.set_montage(mne.channels.make_dig_montage(ch_pos=dict(zip(names,positions)),coord_frame='head'))
 
@@ -176,11 +214,13 @@ def main(argv=None):
         target.parent.mkdir(parents=True,exist_ok=True)
         shutil.copy2(path,target)
         require(digest(target)==item['sha256'], 'Configuration snapshot copy changed')
-    mne.write_trans(out/'template_head_to_fsaverage-trans.fif',trans,overwrite=False,verbose=False)
+    mne.write_trans(out/f'template_head_to_{model_subject}-trans.fif',trans,overwrite=False,verbose=False)
     report = dict(created_utc=datetime.now(timezone.utc).isoformat(),phase=args.phase,
         status='READY_EXPLORATORY_FORWARD_BUILD',script_sha256=digest(Path(__file__)),input_sha256=hashes,
+        model_subject=model_subject, bem_solution=str(anatomy['bem_solution']),
+        head_to_model_mri=matrix.tolist(), **maskface_metadata,
         policy=dict(mapping='ASSUMED_UNVERIFIED',coordinates='fixed original template HEAD coordinates',
-            transform='predefined fsaverage HEAD to MRI; no individual fit',
+            transform=transform_policy,
             interpolation='standard MNE 1.12.1 unconstrained triangle-plane weights; no clipping',
             user_authorization='continue after actual-BEM interpolation review',
             individual_geometry_used=False,manual_projection=False,QA_thresholds_changed=False,
@@ -188,7 +228,7 @@ def main(argv=None):
         counts=dict(shared_forwards=1,channels=256,subjects=7,runs=61,methods=12,loso=732,single_reference=4392,total=5124),
         forward_parameters=dict(meg=False,eeg=True,mindist_mm=0.0,n_jobs=args.n_jobs),
         software_versions={p:importlib.metadata.version(p) for p in ['mne','numpy','scipy','pandas']},
-        interpolation_audit_summary={k:review[k] for k in ['displacement_mm','extrapolated_electrode_count','maximum_effective_point_surface_residual_mm']},
+        fsaverage_interpolation_audit_summary={k:review[k] for k in ['displacement_mm','extrapolated_electrode_count','maximum_effective_point_surface_residual_mm']},
         forward_path='',forward_sha256='',runtime_seconds=0.0,
         limitations=['Template channel correspondence remains assumed, not independently verified.',
             'Original template/scalp mismatch remains; standard BEM interpolation is not anatomical validation.',
@@ -204,14 +244,14 @@ def main(argv=None):
         ledger.to_csv(out/'03_job_forward_availability.csv',index=False)
         write_json(out/'01_forward_manifest.json',report)
 
-    (out/'README.md').write_text('Exploratory common fsaverage/template forward\n\n'
+    (out/'README.md').write_text(f'Exploratory common {model_subject}/template forward\n\n'
         '01_forward_manifest.json: status, numerical checks, provenance and limitations.\n'
         '02_frozen_reconstruction_schedule.csv: unchanged 5,124-job plan.\n'
         '03_job_forward_availability.csv: per-job common-forward availability.\n'
         '04_template_sensor_coordinates.csv: unchanged Script 01 coordinates.\n'
         'source_configurations/: copied frozen configuration/policy snapshots.\n'
-        'template_head_to_fsaverage-trans.fif: fixed template-to-fsaverage transform.\n'
-        'forwards/template_fsaverage-fwd.fif: common forward (build phase only).\n'
+        f'template_head_to_{model_subject}-trans.fif: fixed template-to-model transform.\n'
+        f'forwards/template_{model_subject}-fwd.fif: common forward (build phase only).\n'
         'script_snapshot.py.txt: exact implementation used.\n\n'
         'Numerical success is exploratory; physical channel mapping and anatomical accuracy remain unverified.\n')
     checkpoint()
@@ -225,7 +265,7 @@ def main(argv=None):
             data = forward['sol']['data']
             require(forward['sol']['row_names']==names and data.shape==(256,3*forward['nsource'])
                     and forward['nsource']>0 and np.isfinite(data).all(), 'Invalid free-orientation EEG leadfield')
-            path = out/'forwards/template_fsaverage-fwd.fif'
+            path = out/f'forwards/template_{model_subject}-fwd.fif'
             mne.write_forward_solution(path,forward,overwrite=False,verbose=False)
             reloaded = mne.read_forward_solution(path,verbose=False)
             check_sensors(reloaded['info'])

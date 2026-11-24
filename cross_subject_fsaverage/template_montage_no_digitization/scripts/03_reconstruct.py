@@ -114,7 +114,7 @@ def selected_definitions(path, names, namespace):
     exec(compile(ast.fix_missing_locations(unit),str(path),'exec'),namespace)
 
 
-def make_engine(sources, forward_path, bem_path, geometry, subsets, args):
+def make_engine(sources, forward_path, bem_path, geometry, subsets, args, model_subject):
     import mne
     env = dict(np=np,pd=pd,json=json,inspect=inspect,Path=Path,METHODS=METHODS,digest=digest)
     selected_definitions(sources['engine'],['boolean','peak_head'],env)
@@ -127,7 +127,7 @@ def make_engine(sources, forward_path, bem_path, geometry, subsets, args):
     base = ast.ClassDef(name='FrozenDispatch',bases=[],keywords=[],body=methods,decorator_list=[])
     exec(compile(ast.fix_missing_locations(ast.Module(body=[base],type_ignores=[])),str(sources['engine']),'exec'),env)
     def template_bem(root, subject):
-        require(subject=='fsaverage','Individual BEM lookup is forbidden')
+        require(subject==model_subject,'Individual BEM lookup is forbidden')
         return bem_path
     env['find_bem'] = template_bem
     grid_env = dict(np=np)
@@ -241,8 +241,11 @@ def main(argv=None):
     require(args.limit>=0,'Negative --limit')
     args.dataset=args.dataset.expanduser().resolve()
     froot=args.forward_root.expanduser().resolve();out=args.output_root.expanduser().resolve()
-    require((VARIANT/'outputs').resolve() in out.parents,'Output must stay within this variant/outputs')
-    require(VARIANT in froot.parents and out!=froot and froot not in out.parents and out not in froot.parents,'Output overlaps forward inputs')
+    maskface_outputs=(VARIANT.parents[1]/'localize_mi_average_seven/outputs').resolve()
+    fsaverage_outputs=(VARIANT/'outputs').resolve()
+    require(any(root in froot.parents for root in (maskface_outputs,fsaverage_outputs)),
+            'Forward must belong to a supported experiment')
+    require(out!=froot and froot not in out.parents and out not in froot.parents,'Output overlaps forward inputs')
     require(not out.exists() or args.resume,'Existing output requires --resume')
     if out.exists():
         require((out/'06_frozen_run_manifest.json').is_file(),'Existing output has no frozen run; use a fresh directory')
@@ -254,6 +257,11 @@ def main(argv=None):
         return path
     fm=json.loads(verify(froot/'01_forward_manifest.json').read_text())
     require(fm['status']=='PASS_EXPLORATORY_FORWARD_NUMERICAL_ONLY' and fm['phase']=='build','Successful Script 02 build required')
+    model_subject=fm.get('model_subject','fsaverage')
+    require(model_subject in {'fsaverage','average_seven_maskface'},'Unknown template model')
+    experiment_outputs=maskface_outputs if model_subject=='average_seven_maskface' else fsaverage_outputs
+    require(experiment_outputs in froot.parents and experiment_outputs in out.parents,
+            f'Forward and reconstruction must stay within {experiment_outputs}')
     require(importlib.metadata.version('mne')=='1.12.1','Reviewed MNE 1.12.1 environment required')
     for path,expected in fm['input_sha256'].items():
         verify(path,expected)
@@ -274,7 +282,10 @@ def main(argv=None):
     sources['capacity']=verify(Path(__file__).with_name('sesame_capacity_compat.py'))
     verify(Path(__file__))
     anatomy={r['role']:r for r in prep['fsaverage_resources']}
-    bem=verify(anatomy['bem_solution']['path'],anatomy['bem_solution']['sha256'])
+    bem_path=fm.get('bem_solution',anatomy['bem_solution']['path'])
+    bem=verify(bem_path,fm['input_sha256'][bem_path])
+    matrix=np.asarray(fm['head_to_model_mri'] if 'head_to_model_mri' in fm else
+        json.loads((prep_paths[0].parent/'07_coordinate_transform_provenance.json').read_text())['head_to_fsaverage_mri'],float)
     coords_path=verify(froot/'04_template_sensor_coordinates.csv')
     require(digest(coords_path)==digest(prep_paths[0].parent/'06_sensor_scalp_geometry_qa.csv'),'Copied sensor coordinates differ')
     geometry=pd.read_csv(coords_path)
@@ -299,7 +310,8 @@ def main(argv=None):
         require(cfg['configuration_key']==job['configuration_key'] and cfg['parameters']==json.loads(job['configuration_parameters']),'Frozen configuration differs from job schedule')
         for k,v in [('covariance_tmin_s',-.25),('covariance_tmax_s',-.05),('target_tmin_s',-.002),('target_tmax_s',.002)]:
             require(np.isclose(float(cfg['parameters'][k]),v),f'Unexpected preprocessing window: {k}')
-        job.update(condition='template_montage_no_digitization',mapping_status='ASSUMED_UNVERIFIED')
+        job.update(model_subject=model_subject,condition='template_montage_no_digitization',
+                   mapping_status='ASSUMED_UNVERIFIED')
     requested=[j for j in jobs if all(not getattr(args,k) or j[k] in getattr(args,k)
         for k in ['strategy','method','test_subject','reference_subject','run'])]
     require(requested,'Filters match no jobs')
@@ -350,7 +362,7 @@ def main(argv=None):
                 'covariance_method_selected','reference_channel_scope','montage_template_subject','failure_reason']
             atomic_csv(out/'09_channel_selection_audit.csv',result.reindex(columns=fields))
         checkpoint()
-        (out/'README.md').write_text('Template/fsaverage inverse reconstruction\n\n'
+        (out/'README.md').write_text(f'Template/{model_subject} inverse reconstruction\n\n'
             '01_execution_status.csv: all 5,124 jobs; only PENDING rows are attempted.\n'
             '02_reconstruction_plan.csv and 05_resolved_configurations.json: frozen design.\n'
             '06_frozen_run_manifest.json: strict resume input/code/environment fingerprint.\n'
@@ -359,15 +371,15 @@ def main(argv=None):
             '09_channel_selection_audit.csv: actual/nominal/bad/replacement channels and EEG fingerprints.\n'
             'source_snapshots/: reused numerical code; anatomy loaders are excluded via AST.\n'
             '04_failure_tracebacks.log: attempted-fit failures, preserved on resume.\n\n'
-            'PASS means solver completion only. Coordinates are template HEAD and fsaverage MRI RAS mm.\n'
+            f'PASS means solver completion only. Coordinates are template HEAD and {model_subject} MRI RAS mm.\n'
             'No anatomical localization errors or individual sensor/anatomy inputs. Cortical peaks use known hemisphere.\n'
             'ASSUMED_UNVERIFIED physical channel correspondence; anatomy and sensor geometry both differ from no-warp.\n')
         if args.phase=='plan':
             print(f'PLAN_READY: {len(jobs)} jobs; no EEG epochs loaded or inverse computed. {out}')
             return 0
         engine_args=SimpleNamespace(dataset=args.dataset,quiet=args.quiet,bem_root=bem.parent)
-        engine=make_engine(sources,forward_path,bem,geometry,subsets,engine_args)
-        matrix=np.asarray(json.loads((prep_paths[0].parent/'07_coordinate_transform_provenance.json').read_text())['head_to_fsaverage_mri'],float)
+        engine=make_engine(sources,forward_path,bem,geometry,subsets,engine_args,model_subject)
+        mri_columns='fsaverage' if model_subject=='fsaverage' else 'maskface'
         attempted=failed=0
         for job in requested:
             key=tuple(job[k] for k in KEY)
@@ -385,11 +397,12 @@ def main(argv=None):
                 row.update(result)
                 head=np.array([row[f'estimated_head_{a}_mm'] for a in 'xyz'])/1000
                 mapped=(matrix[:3,:3]@head+matrix[:3,3])*1000
-                for i,a in enumerate('xyz'):row[f'estimated_fsaverage_mri_{a}_mm']=float(mapped[i])
+                for i,a in enumerate('xyz'):row[f'estimated_{mri_columns}_mri_{a}_mm']=float(mapped[i])
                 row.update(status='PASS',coordinate_frame='template_head',
-                    fsaverage_coordinate_frame='MRI surface RAS',localization_error_valid=False,
+                    localization_error_valid=False,
                     interpretation='EXPLORATORY_TEMPLATE_GEOMETRY_NO_ANATOMICAL_ERROR_EVALUATION',
                     peak_selection_policy='original_known_hemisphere_for_cortical_STCs_max_GOF_for_dipoles')
+                row[f'{mri_columns}_coordinate_frame']='MRI surface RAS'
             except Exception as exc:
                 failed+=1;row['failure_reason']=f'{type(exc).__name__}: {exc}'
                 with (out/'04_failure_tracebacks.log').open('a') as log:

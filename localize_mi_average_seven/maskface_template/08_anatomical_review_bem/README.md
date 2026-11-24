@@ -75,6 +75,47 @@ output directory. The build verifies the completed review and its input
 hashes, records the pending review in the manifest, and applies the same
 numerical validation.
 
+## LOSO source localization with a fixed montage
+
+Use the same frozen HydroCel-256 template geometry, channel subsets, EEG
+preprocessing and parameter selections as the no-digitization fsaverage
+experiment. The Maskface arm uses one shared EEG forward. A rigid fit of
+the fsaverage MRI fiducials to Talairach-estimated Maskface fiducials
+defines its fixed template HEAD-to-MRI transform. Individual digitization
+and manual fiducial placement are unnecessary for this workflow.
+
+From the repository root:
+
+```bash
+export MNE_DONTWRITE_HOME=true
+export MPLCONFIGDIR=/tmp/maskface-matplotlib
+variant=cross_subject_fsaverage/template_montage_no_digitization
+bem=localize_mi_average_seven/maskface_template/outputs/08_anatomical_review_bem/bem_run_05
+outputs=localize_mi_average_seven/outputs
+forward="$outputs/02_maskface_forward_no_digitization"
+results="$outputs/03_maskface_reconstruct_no_digitization"
+
+# Build once. The output directory must be fresh.
+.venv/bin/python "$variant/scripts/02_make_template_forward.py" \
+  --phase build --maskface-bem-root "$bem" --output-root "$forward"
+
+# Pilot all 12 methods on one LOSO run.
+.venv/bin/python "$variant/scripts/03_reconstruct.py" \
+  --phase reconstruct --resume --forward-root "$forward" --output-root "$results" \
+  --dataset data/Localize-MI --strategy LOSO --test-subject sub-01 --run run-01 --quiet
+
+# After inspecting the pilot, complete the 732-job LOSO schedule.
+.venv/bin/python "$variant/scripts/03_reconstruct.py" \
+  --phase reconstruct --resume --forward-root "$forward" --output-root "$results" \
+  --dataset data/Localize-MI --strategy LOSO --quiet
+```
+
+Inspect `01_execution_status.csv` and `07_execution_summary.csv` in the
+results directory. LOSO holds out the test subject during parameter selection.
+The shared Maskface anatomy includes all seven MRIs. Estimates are in
+template HEAD and Maskface surface RAS. Anatomical review remains pending
+and this workflow does not calculate anatomical localization errors.
+
 This uses the unmodified watershed vertices in FreeSurfer surface RAS.
 The MNE model uses 0.3, 0.006 and 0.3 S/m for brain, skull and scalp and
 ico=4. The downsampled meshes must pass topology, outward orientation,
